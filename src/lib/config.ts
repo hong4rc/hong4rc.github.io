@@ -126,7 +126,8 @@ export const config = {
     showTools: true,
     showAvailability: true,
     showGuestbook: true,
-    enableAnalytics: false
+    enableAnalytics: false,
+    enableRss: true
   },
 
   keys: {

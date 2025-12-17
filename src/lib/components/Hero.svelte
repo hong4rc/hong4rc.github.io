@@ -5,10 +5,28 @@
 	// Split name to highlight "4"
 	const nameParts = config.name.match(/^(.*?)(4)(.*)$/);
 
+	const devQuotes = [
+		"it works on my machine ¯\\_(ツ)_/¯",
+		"// TODO: fix this later (written 3 years ago)",
+		"git commit -m 'fix' for the 47th time",
+		"99 bugs in the code, fix one, 127 bugs in the code",
+		"it's not a bug, it's an undocumented feature",
+		"works perfectly, no clue why",
+		"deleted node_modules, fixed everything",
+		"copy from stackoverflow, mass as own",
+		"console.log('here') debugging master",
+		"spent 6 hours on a typo"
+	];
+
 	let bioText = $state('');
+	let quote = $state('');
 	const fullBio = config.bio;
 
 	onMount(() => {
+		// Random quote
+		quote = devQuotes[Math.floor(Math.random() * devQuotes.length)];
+
+		// Typewriter effect
 		let i = 0;
 		const interval = setInterval(() => {
 			if (i < fullBio.length) {
@@ -34,6 +52,9 @@
 	<p class="title">{config.title}</p>
 	<p class="bio">{bioText}<span class="cursor">|</span></p>
 	<p class="experience">{config.experience} years of experience</p>
+	{#if quote}
+		<p class="quote">"{quote}"</p>
+	{/if}
 </section>
 
 <style>
@@ -84,5 +105,13 @@
 	.experience {
 		font-size: 0.9rem;
 		color: var(--surface2);
+	}
+
+	.quote {
+		margin-top: 2rem;
+		font-size: 0.85rem;
+		color: var(--surface2);
+		font-style: italic;
+		opacity: 0.7;
 	}
 </style>

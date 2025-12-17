@@ -36,4 +36,9 @@
 	<meta name="twitter:description" content={pageDescription} />
 	<meta name="twitter:image" content="{config.seo.siteUrl}{pageImage}" />
 	<meta name="twitter:site" content={config.seo.twitterHandle} />
+
+	<!-- RSS Feed -->
+	{#if config.features.enableRss}
+		<link rel="alternate" type="application/rss+xml" title="{config.name} RSS Feed" href="{config.seo.siteUrl}/rss.xml" />
+	{/if}
 </svelte:head>

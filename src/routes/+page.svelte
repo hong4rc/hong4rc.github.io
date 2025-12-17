@@ -11,6 +11,7 @@
 	import Contact from '$lib/components/Contact.svelte';
 	import AvailabilityGuestbook from '$lib/components/AvailabilityGuestbook.svelte';
 	import Blog from '$lib/components/Blog.svelte';
+	import TechFooter from '$lib/components/TechFooter.svelte';
 </script>
 
 <SEO />
@@ -29,20 +30,11 @@
 	<Blog />
 </main>
 
-<footer>
-	<p>&copy; {new Date().getFullYear()} Hong4rc</p>
-</footer>
+<TechFooter />
 
 <style>
 	main {
 		max-width: 1200px;
 		margin: 0 auto;
-	}
-
-	footer {
-		text-align: center;
-		padding: 2rem;
-		color: var(--surface2);
-		font-size: 0.85rem;
 	}
 </style>
