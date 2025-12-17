@@ -16,7 +16,8 @@
 		{ id: 'tools', label: 'Tools' },
 		{ id: 'github-stats', label: 'GitHub' },
 		{ id: 'contact', label: 'Contact' },
-		{ id: 'availability', label: 'Status' }
+		{ id: 'availability', label: 'Status' },
+		{ id: 'guestbook', label: 'Guest' }
 	];
 
 	let currentSection = $state('hero');

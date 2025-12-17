@@ -125,6 +125,7 @@ export const config = {
     showOpenSource: true,
     showTools: true,
     showAvailability: true,
+    showGuestbook: true,
     enableAnalytics: false
   },
 
@@ -138,7 +139,8 @@ export const config = {
       tools: 'l',
       github: 'g',
       contact: 'c',
-      availability: 'a'
+      availability: 'a',
+      guestbook: 'b'
     }
   }
 };

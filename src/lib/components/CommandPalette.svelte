@@ -23,7 +23,7 @@
 
 	const keys = config.keys;
 
-	const sectionOrder = ['hero', 'tech-stack', 'skills', 'experience', 'opensource', 'tools', 'github-stats', 'contact', 'availability'];
+	const sectionOrder = ['hero', 'tech-stack', 'skills', 'experience', 'opensource', 'tools', 'github-stats', 'contact', 'availability', 'guestbook'];
 
 	const sections: Command[] = [
 		{ key: keys.sections.home, label: 'Home', action: () => scrollTo('hero') },
@@ -34,7 +34,8 @@
 		{ key: keys.sections.tools, label: 'Tools', action: () => scrollTo('tools') },
 		{ key: keys.sections.github, label: 'GitHub', action: () => scrollTo('github-stats') },
 		{ key: keys.sections.contact, label: 'Contact', action: () => scrollTo('contact') },
-		{ key: keys.sections.availability, label: 'Availability', action: () => scrollTo('availability') }
+		{ key: keys.sections.availability, label: 'Availability', action: () => scrollTo('availability') },
+		{ key: keys.sections.guestbook, label: 'Guestbook', action: () => scrollTo('guestbook') }
 	];
 
 	const themeKeys: Command[] = themes.map((t, i) => ({
@@ -102,6 +103,40 @@
 		window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 	}
 
+	function halfPageDown() {
+		window.scrollBy({ top: window.innerHeight / 2, behavior: 'smooth' });
+	}
+
+	function halfPageUp() {
+		window.scrollBy({ top: -window.innerHeight / 2, behavior: 'smooth' });
+	}
+
+	function fullPageDown() {
+		window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+	}
+
+	function fullPageUp() {
+		window.scrollBy({ top: -window.innerHeight, behavior: 'smooth' });
+	}
+
+	function centerCurrentSection() {
+		const current = getCurrentSectionIndex();
+		const el = document.querySelector(`.${sectionOrder[current]}`);
+		if (el) {
+			const rect = el.getBoundingClientRect();
+			const offset = rect.top + window.scrollY - (window.innerHeight / 2) + (rect.height / 2);
+			window.scrollTo({ top: offset, behavior: 'smooth' });
+		}
+	}
+
+	function cycleTheme() {
+		const themeOrder = ['latte', 'frappe', 'macchiato', 'mocha'] as const;
+		const currentTheme = document.documentElement.getAttribute('data-theme') || 'frappe';
+		const currentIndex = themeOrder.indexOf(currentTheme as typeof themeOrder[number]);
+		const nextIndex = (currentIndex + 1) % themeOrder.length;
+		theme.set(themeOrder[nextIndex]);
+	}
+
 	function closeAll() {
 		showWhichKey = false;
 		showSearch = false;
@@ -151,6 +186,105 @@
 
 		// Ignore if typing in inputs
 		if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+			return;
+		}
+
+		// / - open search
+		if (event.key === '/' && !leaderPressed && !showWhichKey && !gPressed) {
+			event.preventDefault();
+			openSearch();
+			return;
+		}
+
+		// ? - show help (whichkey)
+		if (event.key === '?' && !leaderPressed && !gPressed) {
+			event.preventDefault();
+			showWhichKey = true;
+			leaderPressed = true;
+			leaderTimeout = setTimeout(() => {
+				if (showWhichKey && !showSearch) {
+					closeAll();
+				}
+			}, 5000) as unknown as number;
+			return;
+		}
+
+		// Tab - cycle themes
+		if (event.key === 'Tab' && !leaderPressed && !showWhichKey && !gPressed && !showSearch) {
+			event.preventDefault();
+			cycleTheme();
+			return;
+		}
+
+		// Ctrl+d - half page down
+		if (event.key === 'd' && event.ctrlKey && !leaderPressed && !showWhichKey) {
+			event.preventDefault();
+			halfPageDown();
+			return;
+		}
+
+		// Ctrl+u - half page up
+		if (event.key === 'u' && event.ctrlKey && !leaderPressed && !showWhichKey) {
+			event.preventDefault();
+			halfPageUp();
+			return;
+		}
+
+		// Ctrl+f - full page down
+		if (event.key === 'f' && event.ctrlKey && !leaderPressed && !showWhichKey) {
+			event.preventDefault();
+			fullPageDown();
+			return;
+		}
+
+		// Ctrl+b - full page up
+		if (event.key === 'b' && event.ctrlKey && !leaderPressed && !showWhichKey) {
+			event.preventDefault();
+			fullPageUp();
+			return;
+		}
+
+		// w - next section
+		if (event.key === 'w' && !leaderPressed && !showWhichKey && !gPressed) {
+			event.preventDefault();
+			goToNextSection();
+			return;
+		}
+
+		// b - previous section (when not ctrl)
+		if (event.key === 'b' && !event.ctrlKey && !leaderPressed && !showWhichKey && !gPressed) {
+			event.preventDefault();
+			goToPrevSection();
+			return;
+		}
+
+		// 0 or ^ - first section
+		if ((event.key === '0' || event.key === '^') && !leaderPressed && !showWhichKey && !gPressed) {
+			event.preventDefault();
+			goToTop();
+			return;
+		}
+
+		// $ - last section
+		if (event.key === '$' && !leaderPressed && !showWhichKey && !gPressed) {
+			event.preventDefault();
+			goToBottom();
+			return;
+		}
+
+		// zz - center current section
+		if (event.key === 'z' && !leaderPressed && !showWhichKey && !gPressed) {
+			event.preventDefault();
+			// Wait for second z
+			const handleSecondZ = (e: KeyboardEvent) => {
+				if (e.key === 'z') {
+					e.preventDefault();
+					centerCurrentSection();
+				}
+				window.removeEventListener('keydown', handleSecondZ);
+			};
+			window.addEventListener('keydown', handleSecondZ);
+			setTimeout(() => window.removeEventListener('keydown', handleSecondZ), 1000);
 			return;
 		}
 
@@ -340,10 +474,20 @@
 			</div>
 			<div class="which-key-group">
 				<span class="group-title">Navigation</span>
-				<div class="which-key-item"><kbd>SPC</kbd><span>Search</span></div>
-				<div class="which-key-item"><kbd>↑↓</kbd><span>Sections</span></div>
+				<div class="which-key-item"><kbd>/</kbd><span>Search</span></div>
+				<div class="which-key-item"><kbd>w</kbd><span>Next</span></div>
+				<div class="which-key-item"><kbd>b</kbd><span>Prev</span></div>
 				<div class="which-key-item"><kbd>gg</kbd><span>Top</span></div>
 				<div class="which-key-item"><kbd>G</kbd><span>Bottom</span></div>
+				<div class="which-key-item"><kbd>zz</kbd><span>Center</span></div>
+			</div>
+			<div class="which-key-group">
+				<span class="group-title">Scroll</span>
+				<div class="which-key-item"><kbd>^d</kbd><span>Half ↓</span></div>
+				<div class="which-key-item"><kbd>^u</kbd><span>Half ↑</span></div>
+				<div class="which-key-item"><kbd>^f</kbd><span>Page ↓</span></div>
+				<div class="which-key-item"><kbd>^b</kbd><span>Page ↑</span></div>
+				<div class="which-key-item"><kbd>Tab</kbd><span>Theme</span></div>
 			</div>
 		</div>
 	</div>
