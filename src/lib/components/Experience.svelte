@@ -82,11 +82,21 @@
 		background-color: var(--surface2);
 		border: 2px solid var(--mantle);
 		transform: translateX(-5px);
+		transition: background-color 0.2s, box-shadow 0.2s;
+	}
+
+	.timeline-item:hover .timeline-marker {
+		background-color: var(--accent);
+		box-shadow: 0 0 8px var(--accent);
 	}
 
 	.timeline-item.current .timeline-marker {
 		background-color: var(--accent);
 		box-shadow: 0 0 0 4px var(--surface0);
+	}
+
+	.timeline-item.current:hover .timeline-marker {
+		box-shadow: 0 0 12px var(--accent);
 	}
 
 	.timeline-content {
@@ -136,5 +146,11 @@
 		background-color: var(--surface1);
 		color: var(--accent);
 		border-radius: 3px;
+		transition: background-color 0.2s, transform 0.2s;
+	}
+
+	.tech-tag:hover {
+		background-color: var(--surface2);
+		transform: translateY(-1px);
 	}
 </style>

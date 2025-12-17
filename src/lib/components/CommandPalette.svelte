@@ -20,6 +20,8 @@
 
 	const keys = config.keys;
 
+	const sectionOrder = ['hero', 'tech-stack', 'skills', 'experience', 'opensource', 'tools', 'github-stats', 'contact', 'availability'];
+
 	const sections: Command[] = [
 		{ key: keys.sections.home, label: 'Home', action: () => scrollTo('hero') },
 		{ key: keys.sections.tech, label: 'Tech Stack', action: () => scrollTo('tech-stack') },
@@ -63,6 +65,29 @@
 		}
 	}
 
+	function getCurrentSectionIndex(): number {
+		const scrollY = window.scrollY + window.innerHeight / 3;
+		for (let i = sectionOrder.length - 1; i >= 0; i--) {
+			const el = document.querySelector(`.${sectionOrder[i]}`);
+			if (el && (el as HTMLElement).offsetTop <= scrollY) {
+				return i;
+			}
+		}
+		return 0;
+	}
+
+	function goToNextSection() {
+		const current = getCurrentSectionIndex();
+		const next = Math.min(current + 1, sectionOrder.length - 1);
+		scrollTo(sectionOrder[next]);
+	}
+
+	function goToPrevSection() {
+		const current = getCurrentSectionIndex();
+		const prev = Math.max(current - 1, 0);
+		scrollTo(sectionOrder[prev]);
+	}
+
 	function closeAll() {
 		showWhichKey = false;
 		showSearch = false;
@@ -78,62 +103,52 @@
 		setTimeout(() => inputElement?.focus(), 10);
 	}
 
-	function moveDown() {
-		selectedIndex = (selectedIndex + 1) % filteredCommands.length;
-	}
-
-	function moveUp() {
-		selectedIndex = (selectedIndex - 1 + filteredCommands.length) % filteredCommands.length;
-	}
-
-	function selectCurrent() {
-		if (filteredCommands[selectedIndex]) {
-			filteredCommands[selectedIndex].action();
-			closeAll();
-		}
-	}
-
 	function handleKeydown(event: KeyboardEvent) {
-		// Search mode - handle navigation in input
+		// Search mode
 		if (showSearch) {
-			const key = event.key;
-
-			if (key === 'Escape') {
+			if (event.key === 'Escape') {
 				event.preventDefault();
 				closeAll();
 				return;
 			}
-
-			if (key === 'Enter') {
+			if (event.key === 'Enter') {
 				event.preventDefault();
-				selectCurrent();
+				if (filteredCommands[selectedIndex]) {
+					filteredCommands[selectedIndex].action();
+					closeAll();
+				}
 				return;
 			}
-
-			if (key === 'ArrowDown' || keys.down.includes(key)) {
-				// Only intercept j/n if Ctrl is held (to allow typing)
-				if (key === 'ArrowDown' || event.ctrlKey) {
-					event.preventDefault();
-					moveDown();
-					return;
-				}
+			if (event.key === 'ArrowDown') {
+				event.preventDefault();
+				selectedIndex = (selectedIndex + 1) % filteredCommands.length;
+				return;
 			}
-
-			if (key === 'ArrowUp' || keys.up.includes(key)) {
-				if (key === 'ArrowUp' || event.ctrlKey) {
-					event.preventDefault();
-					moveUp();
-					return;
-				}
+			if (event.key === 'ArrowUp') {
+				event.preventDefault();
+				selectedIndex = (selectedIndex - 1 + filteredCommands.length) % filteredCommands.length;
+				return;
 			}
-
-			// Let other keys through for typing
 			return;
 		}
 
-		// Ignore if typing in other inputs
+		// Ignore if typing in inputs
 		if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
 			return;
+		}
+
+		// Arrow keys for section navigation (when not in leader mode)
+		if (!leaderPressed && !showWhichKey) {
+			if (event.key === 'ArrowDown') {
+				event.preventDefault();
+				goToNextSection();
+				return;
+			}
+			if (event.key === 'ArrowUp') {
+				event.preventDefault();
+				goToPrevSection();
+				return;
+			}
 		}
 
 		// Leader key (Space)
@@ -141,7 +156,6 @@
 			event.preventDefault();
 
 			if (leaderPressed) {
-				// Space Space = open search
 				if (leaderTimeout) clearTimeout(leaderTimeout);
 				openSearch();
 				leaderPressed = false;
@@ -151,7 +165,6 @@
 			leaderPressed = true;
 			showWhichKey = true;
 
-			// Auto-hide after 3s if no action
 			leaderTimeout = setTimeout(() => {
 				if (showWhichKey && !showSearch) {
 					closeAll();
@@ -160,12 +173,11 @@
 			return;
 		}
 
-		// If leader is pressed, handle shortcuts
+		// Leader shortcuts
 		if (leaderPressed && showWhichKey) {
 			event.preventDefault();
 			const key = event.key;
 
-			// Find matching command
 			const cmd = [...sections, ...themeKeys].find((c) => c.key === key);
 			if (cmd) {
 				cmd.action();
@@ -173,7 +185,6 @@
 				return;
 			}
 
-			// Capital letters for links
 			if (key === 'G') {
 				window.open(config.contact.github, '_blank');
 				closeAll();
@@ -190,7 +201,6 @@
 				return;
 			}
 
-			// Escape to close
 			if (key === 'Escape') {
 				closeAll();
 				return;
@@ -212,7 +222,6 @@
 	});
 </script>
 
-<!-- Which-key popup -->
 {#if showWhichKey && !showSearch}
 	<div class="which-key">
 		<div class="which-key-header">
@@ -244,14 +253,14 @@
 				<div class="which-key-item"><kbd>E</kbd><span>Email</span></div>
 			</div>
 			<div class="which-key-group">
-				<span class="group-title">Search</span>
-				<div class="which-key-item"><kbd>SPC</kbd><span>Open</span></div>
+				<span class="group-title">Other</span>
+				<div class="which-key-item"><kbd>SPC</kbd><span>Search</span></div>
+				<div class="which-key-item"><kbd>↑↓</kbd><span>Sections</span></div>
 			</div>
 		</div>
 	</div>
 {/if}
 
-<!-- Search palette -->
 {#if showSearch}
 	<div class="backdrop" on:click={closeAll} role="presentation">
 		<div class="palette">
@@ -283,14 +292,13 @@
 				{/if}
 			</div>
 			<div class="search-footer">
-				<span><kbd>↑↓</kbd> or <kbd>ctrl+{keys.up[1]}/{keys.down[1]}</kbd></span>
+				<span><kbd>↑↓</kbd> navigate</span>
 				<span><kbd>↵</kbd> select</span>
 			</div>
 		</div>
 	</div>
 {/if}
 
-<!-- Trigger hint -->
 <div class="trigger">
 	<kbd>SPC</kbd>
 </div>
@@ -480,7 +488,6 @@
 		color: var(--accent);
 	}
 
-	/* Hide trigger when which-key is shown */
 	.which-key ~ .trigger {
 		display: none;
 	}

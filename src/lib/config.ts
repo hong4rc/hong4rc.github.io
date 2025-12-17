@@ -94,15 +94,12 @@ export const config = {
     enableAnalytics: false
   },
 
-  // Keybindings (Colemak: down=n, up=e)
   keys: {
-    down: ['j', 'n'],  // j for QWERTY, n for Colemak
-    up: ['k', 'e'],    // k for QWERTY, e for Colemak
     sections: {
       home: 'h',
       tech: 't',
       skills: 's',
-      experience: 'f',  // f for Colemak (e is up)
+      experience: 'e',
       opensource: 'o',
       tools: 'l',
       github: 'g',
