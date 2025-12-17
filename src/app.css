@@ -63,6 +63,17 @@
 
 html {
 	scroll-behavior: smooth;
+	scroll-padding-top: 5rem;
+}
+
+/* Section styling */
+section {
+	scroll-margin-top: 5rem;
+	border-bottom: 1px solid var(--surface0);
+}
+
+section:last-of-type {
+	border-bottom: none;
 }
 
 body {

@@ -35,11 +35,8 @@
 <header class:scrolled>
 	<nav>
 		<a href="/" class="logo">
-			{#if scrolled}
-				Hong<span class="highlight">4</span>rc
-			{:else}
-				H
-			{/if}
+			<span class="logo-text logo-short">H</span>
+			<span class="logo-text logo-full">Hong<span class="highlight">4</span>rc</span>
 		</a>
 		<ThemeToggle />
 	</nav>
@@ -76,6 +73,9 @@
 		font-size: 1.5rem;
 		font-weight: 600;
 		color: var(--text);
+		display: flex;
+		align-items: center;
+		overflow: hidden;
 	}
 
 	.logo:hover {
@@ -84,5 +84,29 @@
 
 	.logo .highlight {
 		color: var(--accent);
+	}
+
+	.logo-text {
+		display: inline-block;
+		transition: opacity 0.3s ease, transform 0.3s ease;
+	}
+
+	.logo-short {
+		position: absolute;
+	}
+
+	.scrolled .logo-short {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+
+	.logo-full {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+
+	.scrolled .logo-full {
+		opacity: 1;
+		transform: translateY(0);
 	}
 </style>
