@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { config } from '$lib/config';
+	import { reveal } from '$lib/actions/reveal';
 </script>
 
 {#if config.features.showExperience && config.experience_timeline?.length}
-	<section class="experience">
+	<section class="experience" use:reveal>
 		<h2>Experience</h2>
 		<div class="timeline">
 			{#each config.experience_timeline as job, i}

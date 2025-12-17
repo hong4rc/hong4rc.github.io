@@ -7,6 +7,11 @@ export interface ExperienceItem {
   current?: boolean;
 }
 
+export interface SkillItem {
+  name: string;
+  level: number;
+}
+
 export const config = {
   name: 'Hong4rc',
   title: 'Backend Developer',
@@ -14,6 +19,15 @@ export const config = {
   experience: 6,
 
   techStack: ['Node.js', 'NestJS', 'MongoDB', 'Docker', 'AWS'],
+
+  skills: [
+    { name: 'Node.js', level: 90 },
+    { name: 'TypeScript', level: 85 },
+    { name: 'MongoDB', level: 80 },
+    { name: 'Docker', level: 75 },
+    { name: 'AWS', level: 70 },
+    { name: 'PostgreSQL', level: 70 }
+  ] as SkillItem[],
 
   experience_timeline: [
     {
@@ -54,6 +68,7 @@ export const config = {
     showBlog: false,
     showExperience: true,
     showGitHubStats: true,
+    showSkills: true,
     enableAnalytics: false
   }
 };

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { config } from '$lib/config';
+	import { reveal } from '$lib/actions/reveal';
 	import { onMount } from 'svelte';
 
 	interface GitHubUser {
@@ -36,7 +37,7 @@
 </script>
 
 {#if config.features.showGitHubStats}
-	<section class="github-stats">
+	<section class="github-stats" use:reveal>
 		<h2>GitHub</h2>
 		{#if loading}
 			<div class="loading">

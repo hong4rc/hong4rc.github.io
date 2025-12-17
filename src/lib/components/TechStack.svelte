@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { config } from '$lib/config';
+	import { reveal } from '$lib/actions/reveal';
 </script>
 
-<section class="tech-stack">
+<section class="tech-stack" use:reveal>
 	<h2>Tech Stack</h2>
 	<div class="stack-list">
 		{#each config.techStack as tech}

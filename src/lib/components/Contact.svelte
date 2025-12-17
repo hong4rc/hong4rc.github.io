@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { config } from '$lib/config';
+	import { reveal } from '$lib/actions/reveal';
 </script>
 
-<section class="contact">
+<section class="contact" use:reveal>
 	<h2>Contact</h2>
 	<div class="links">
 		<a href="mailto:{config.contact.email}" class="link">
