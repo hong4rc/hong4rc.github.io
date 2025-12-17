@@ -6,6 +6,7 @@
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 	import Analytics from '$lib/components/Analytics.svelte';
 	import CommandPalette from '$lib/components/CommandPalette.svelte';
+	import SectionNav from '$lib/components/SectionNav.svelte';
 
 	let { children } = $props();
 	let scrolled = $state(false);
@@ -31,6 +32,7 @@
 
 <Analytics />
 <CommandPalette />
+<SectionNav />
 
 <header class:scrolled>
 	<nav>
