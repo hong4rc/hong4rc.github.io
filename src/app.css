@@ -1,0 +1,95 @@
+/* Catppuccin Latte (Light) */
+[data-theme='latte'] {
+	--base: #eff1f5;
+	--mantle: #e6e9ef;
+	--crust: #dce0e8;
+	--text: #4c4f69;
+	--subtext: #6c6f85;
+	--accent: #1e66f5;
+	--secondary: #8839ef;
+	--surface0: #ccd0da;
+	--surface1: #bcc0cc;
+	--surface2: #acb0be;
+}
+
+/* Catppuccin Frappé (Default) */
+:root,
+[data-theme='frappe'] {
+	--base: #303446;
+	--mantle: #292c3c;
+	--crust: #232634;
+	--text: #c6d0f5;
+	--subtext: #a5adce;
+	--accent: #8caaee;
+	--secondary: #ca9ee6;
+	--surface0: #414559;
+	--surface1: #51576d;
+	--surface2: #626880;
+}
+
+/* Catppuccin Macchiato */
+[data-theme='macchiato'] {
+	--base: #24273a;
+	--mantle: #1e2030;
+	--crust: #181926;
+	--text: #cad3f5;
+	--subtext: #a5adcb;
+	--accent: #8aadf4;
+	--secondary: #c6a0f6;
+	--surface0: #363a4f;
+	--surface1: #494d64;
+	--surface2: #5b6078;
+}
+
+/* Catppuccin Mocha (Darkest) */
+[data-theme='mocha'] {
+	--base: #1e1e2e;
+	--mantle: #181825;
+	--crust: #11111b;
+	--text: #cdd6f4;
+	--subtext: #a6adc8;
+	--accent: #89b4fa;
+	--secondary: #cba6f7;
+	--surface0: #313244;
+	--surface1: #45475a;
+	--surface2: #585b70;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	font-family: 'Fira Code', monospace;
+	font-weight: 400;
+	background-color: var(--base);
+	color: var(--text);
+	line-height: 1.6;
+	min-height: 100vh;
+	transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: 600;
+}
+
+a {
+	color: var(--accent);
+	text-decoration: none;
+	transition: color 0.2s ease;
+}
+
+a:hover {
+	color: var(--secondary);
+}
+
+::selection {
+	background-color: var(--accent);
+	color: var(--crust);
+}
