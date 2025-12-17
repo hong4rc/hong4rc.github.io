@@ -2,6 +2,8 @@
 	import SEO from '$lib/components/SEO.svelte';
 	import Hero from '$lib/components/Hero.svelte';
 	import TechStack from '$lib/components/TechStack.svelte';
+	import Experience from '$lib/components/Experience.svelte';
+	import GitHubStats from '$lib/components/GitHubStats.svelte';
 	import Projects from '$lib/components/Projects.svelte';
 	import Contact from '$lib/components/Contact.svelte';
 	import Blog from '$lib/components/Blog.svelte';
@@ -12,6 +14,8 @@
 <main>
 	<Hero />
 	<TechStack />
+	<Experience />
+	<GitHubStats />
 	<Projects />
 	<Contact />
 	<Blog />

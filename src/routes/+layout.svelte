@@ -4,6 +4,7 @@
 	import { theme } from '$lib/stores/theme';
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 	import Analytics from '$lib/components/Analytics.svelte';
+	import CommandPalette from '$lib/components/CommandPalette.svelte';
 
 	let { children } = $props();
 
@@ -13,6 +14,7 @@
 </script>
 
 <Analytics />
+<CommandPalette />
 
 <header>
 	<nav>
