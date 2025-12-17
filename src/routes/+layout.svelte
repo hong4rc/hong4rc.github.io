@@ -35,8 +35,7 @@
 <header class:scrolled>
 	<nav>
 		<a href="/" class="logo">
-			<span class="logo-text logo-short">H</span>
-			<span class="logo-text logo-full">Hong<span class="highlight">4</span>rc</span>
+			<span class="logo-letter">H</span><span class="logo-expand">ong<span class="highlight">4</span>rc</span>
 		</a>
 		<ThemeToggle />
 	</nav>
@@ -75,7 +74,6 @@
 		color: var(--text);
 		display: flex;
 		align-items: center;
-		overflow: hidden;
 	}
 
 	.logo:hover {
@@ -86,27 +84,20 @@
 		color: var(--accent);
 	}
 
-	.logo-text {
+	.logo-letter {
 		display: inline-block;
-		transition: opacity 0.3s ease, transform 0.3s ease;
 	}
 
-	.logo-short {
-		position: absolute;
-	}
-
-	.scrolled .logo-short {
+	.logo-expand {
+		display: inline-block;
+		max-width: 0;
+		overflow: hidden;
 		opacity: 0;
-		transform: translateY(-10px);
+		transition: max-width 0.4s ease, opacity 0.3s ease;
 	}
 
-	.logo-full {
-		opacity: 0;
-		transform: translateY(10px);
-	}
-
-	.scrolled .logo-full {
+	.scrolled .logo-expand {
+		max-width: 6rem;
 		opacity: 1;
-		transform: translateY(0);
 	}
 </style>

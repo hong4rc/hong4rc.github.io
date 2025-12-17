@@ -12,8 +12,11 @@
 
 	let showWhichKey = false;
 	let showSearch = false;
+	let showGoTo = false;
 	let leaderPressed = false;
+	let gPressed = false;
 	let leaderTimeout: number | null = null;
+	let gTimeout: number | null = null;
 	let searchQuery = '';
 	let selectedIndex = 0;
 	let inputElement: HTMLInputElement;
@@ -84,15 +87,29 @@
 
 	function goToPrevSection() {
 		const current = getCurrentSectionIndex();
-		const prev = Math.max(current - 1, 0);
-		scrollTo(sectionOrder[prev]);
+		if (current === 0) {
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		} else {
+			scrollTo(sectionOrder[current - 1]);
+		}
+	}
+
+	function goToTop() {
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	}
+
+	function goToBottom() {
+		window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 	}
 
 	function closeAll() {
 		showWhichKey = false;
 		showSearch = false;
+		showGoTo = false;
 		leaderPressed = false;
+		gPressed = false;
 		if (leaderTimeout) clearTimeout(leaderTimeout);
+		if (gTimeout) clearTimeout(gTimeout);
 	}
 
 	function openSearch() {
@@ -138,7 +155,7 @@
 		}
 
 		// Arrow keys for section navigation (when not in leader mode)
-		if (!leaderPressed && !showWhichKey) {
+		if (!leaderPressed && !showWhichKey && !gPressed) {
 			if (event.key === 'ArrowDown') {
 				event.preventDefault();
 				goToNextSection();
@@ -147,6 +164,54 @@
 			if (event.key === 'ArrowUp') {
 				event.preventDefault();
 				goToPrevSection();
+				return;
+			}
+		}
+
+		// G (uppercase) - go to end of page
+		if (event.key === 'G' && !leaderPressed && !showWhichKey && !gPressed) {
+			event.preventDefault();
+			goToBottom();
+			return;
+		}
+
+		// g key - enter go-to mode
+		if (event.key === 'g' && !leaderPressed && !showWhichKey) {
+			event.preventDefault();
+
+			if (gPressed) {
+				// gg - go to top
+				if (gTimeout) clearTimeout(gTimeout);
+				goToTop();
+				gPressed = false;
+				showGoTo = false;
+				return;
+			}
+
+			gPressed = true;
+			showGoTo = true;
+
+			gTimeout = setTimeout(() => {
+				gPressed = false;
+				showGoTo = false;
+			}, 2000) as unknown as number;
+			return;
+		}
+
+		// g + key - go to section
+		if (gPressed && showGoTo) {
+			event.preventDefault();
+			const key = event.key;
+
+			const cmd = sections.find((c) => c.key === key);
+			if (cmd) {
+				cmd.action();
+				closeAll();
+				return;
+			}
+
+			if (key === 'Escape') {
+				closeAll();
 				return;
 			}
 		}
@@ -218,9 +283,30 @@
 		if (browser) {
 			window.removeEventListener('keydown', handleKeydown);
 			if (leaderTimeout) clearTimeout(leaderTimeout);
+			if (gTimeout) clearTimeout(gTimeout);
 		}
 	});
 </script>
+
+{#if showGoTo && !showSearch && !showWhichKey}
+	<div class="which-key go-to">
+		<div class="which-key-header">
+			<kbd>g</kbd> + key
+		</div>
+		<div class="which-key-grid">
+			<div class="which-key-group">
+				<span class="group-title">Go to</span>
+				<div class="which-key-item"><kbd>g</kbd><span>Top</span></div>
+				{#each sections as cmd}
+					<div class="which-key-item">
+						<kbd>{cmd.key}</kbd>
+						<span>{cmd.label}</span>
+					</div>
+				{/each}
+			</div>
+		</div>
+	</div>
+{/if}
 
 {#if showWhichKey && !showSearch}
 	<div class="which-key">
@@ -253,9 +339,11 @@
 				<div class="which-key-item"><kbd>E</kbd><span>Email</span></div>
 			</div>
 			<div class="which-key-group">
-				<span class="group-title">Other</span>
+				<span class="group-title">Navigation</span>
 				<div class="which-key-item"><kbd>SPC</kbd><span>Search</span></div>
 				<div class="which-key-item"><kbd>↑↓</kbd><span>Sections</span></div>
+				<div class="which-key-item"><kbd>gg</kbd><span>Top</span></div>
+				<div class="which-key-item"><kbd>G</kbd><span>Bottom</span></div>
 			</div>
 		</div>
 	</div>
@@ -488,7 +576,8 @@
 		color: var(--accent);
 	}
 
-	.which-key ~ .trigger {
+	.which-key ~ .trigger,
+	.go-to ~ .trigger {
 		display: none;
 	}
 </style>

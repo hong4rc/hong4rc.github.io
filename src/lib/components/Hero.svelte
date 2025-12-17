@@ -1,8 +1,26 @@
 <script lang="ts">
 	import { config } from '$lib/config';
+	import { onMount } from 'svelte';
 
 	// Split name to highlight "4"
 	const nameParts = config.name.match(/^(.*?)(4)(.*)$/);
+
+	let bioText = $state('');
+	const fullBio = config.bio;
+
+	onMount(() => {
+		let i = 0;
+		const interval = setInterval(() => {
+			if (i < fullBio.length) {
+				bioText = fullBio.slice(0, i + 1);
+				i++;
+			} else {
+				clearInterval(interval);
+			}
+		}, 50);
+
+		return () => clearInterval(interval);
+	});
 </script>
 
 <section class="hero">
@@ -14,7 +32,7 @@
 		{/if}
 	</h1>
 	<p class="title">{config.title}</p>
-	<p class="bio">{config.bio}</p>
+	<p class="bio">{bioText}<span class="cursor">|</span></p>
 	<p class="experience">{config.experience} years of experience</p>
 </section>
 
@@ -51,6 +69,16 @@
 		color: var(--subtext);
 		margin-bottom: 0.5rem;
 		white-space: nowrap;
+	}
+
+	.cursor {
+		color: var(--accent);
+		animation: blink 1s step-end infinite;
+	}
+
+	@keyframes blink {
+		0%, 100% { opacity: 1; }
+		50% { opacity: 0; }
 	}
 
 	.experience {
