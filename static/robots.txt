@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hong4rc.github.io/sitemap.xml
