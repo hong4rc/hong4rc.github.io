@@ -1,151 +1,200 @@
 <script lang="ts">
-	import { config, themes, type Theme } from '$lib/config';
+	import { config, themes } from '$lib/config';
 	import { theme } from '$lib/stores/theme';
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
 
 	interface Command {
-		id: string;
+		key: string;
 		label: string;
-		category: string;
-		shortcut?: string;
 		action: () => void;
 	}
 
-	let isOpen = false;
+	let showWhichKey = false;
+	let showSearch = false;
+	let leaderPressed = false;
+	let leaderTimeout: number | null = null;
 	let searchQuery = '';
 	let selectedIndex = 0;
 	let inputElement: HTMLInputElement;
 
-	const commands: Command[] = [
-		{
-			id: 'home',
-			label: 'Go to Home',
-			category: 'Navigation',
-			action: () => scrollTo('hero')
-		},
-		{
-			id: 'tech',
-			label: 'Go to Tech Stack',
-			category: 'Navigation',
-			action: () => scrollTo('tech-stack')
-		},
-		{
-			id: 'experience',
-			label: 'Go to Experience',
-			category: 'Navigation',
-			action: () => scrollTo('experience')
-		},
-		{
-			id: 'github-section',
-			label: 'Go to GitHub Stats',
-			category: 'Navigation',
-			action: () => scrollTo('github-stats')
-		},
-		{
-			id: 'contact',
-			label: 'Go to Contact',
-			category: 'Navigation',
-			action: () => scrollTo('contact')
-		},
-		...themes.map((t) => ({
-			id: `theme-${t.id}`,
-			label: `Theme: ${t.name}`,
-			category: 'Theme',
-			action: () => theme.set(t.id)
-		})),
-		{
-			id: 'github',
-			label: 'Open GitHub',
-			category: 'Links',
-			action: () => window.open(config.contact.github, '_blank')
-		},
-		{
-			id: 'linkedin',
-			label: 'Open LinkedIn',
-			category: 'Links',
-			action: () => window.open(config.contact.linkedin, '_blank')
-		},
-		{
-			id: 'email',
-			label: 'Send Email',
-			category: 'Links',
-			action: () => (window.location.href = `mailto:${config.contact.email}`)
-		}
+	const keys = config.keys;
+
+	const sections: Command[] = [
+		{ key: keys.sections.home, label: 'Home', action: () => scrollTo('hero') },
+		{ key: keys.sections.tech, label: 'Tech Stack', action: () => scrollTo('tech-stack') },
+		{ key: keys.sections.skills, label: 'Skills', action: () => scrollTo('skills') },
+		{ key: keys.sections.experience, label: 'Experience', action: () => scrollTo('experience') },
+		{ key: keys.sections.opensource, label: 'Open Source', action: () => scrollTo('opensource') },
+		{ key: keys.sections.tools, label: 'Tools', action: () => scrollTo('tools') },
+		{ key: keys.sections.github, label: 'GitHub', action: () => scrollTo('github-stats') },
+		{ key: keys.sections.contact, label: 'Contact', action: () => scrollTo('contact') },
+		{ key: keys.sections.availability, label: 'Availability', action: () => scrollTo('availability') }
+	];
+
+	const themeKeys: Command[] = themes.map((t, i) => ({
+		key: String(i + 1),
+		label: t.name,
+		action: () => theme.set(t.id)
+	}));
+
+	const allCommands = [
+		...sections.map((s) => ({ ...s, category: 'Section' })),
+		...themeKeys.map((t) => ({ ...t, category: 'Theme' })),
+		{ key: 'G', label: 'Open GitHub', category: 'Link', action: () => window.open(config.contact.github, '_blank') },
+		{ key: 'L', label: 'Open LinkedIn', category: 'Link', action: () => window.open(config.contact.linkedin, '_blank') },
+		{ key: 'E', label: 'Send Email', category: 'Link', action: () => (window.location.href = `mailto:${config.contact.email}`) }
 	];
 
 	$: filteredCommands = searchQuery
-		? commands.filter(
-				(cmd) =>
-					cmd.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-					cmd.category.toLowerCase().includes(searchQuery.toLowerCase())
+		? allCommands.filter((cmd) =>
+				cmd.label.toLowerCase().includes(searchQuery.toLowerCase())
 			)
-		: commands;
+		: allCommands;
 
 	$: if (selectedIndex >= filteredCommands.length) {
 		selectedIndex = Math.max(0, filteredCommands.length - 1);
 	}
 
-	function scrollTo(id: string) {
-		const element = document.querySelector(`.${id}`);
+	function scrollTo(className: string) {
+		const element = document.querySelector(`.${className}`);
 		if (element) {
 			element.scrollIntoView({ behavior: 'smooth' });
 		}
 	}
 
-	function open() {
-		isOpen = true;
+	function closeAll() {
+		showWhichKey = false;
+		showSearch = false;
+		leaderPressed = false;
+		if (leaderTimeout) clearTimeout(leaderTimeout);
+	}
+
+	function openSearch() {
+		showWhichKey = false;
+		showSearch = true;
 		searchQuery = '';
 		selectedIndex = 0;
 		setTimeout(() => inputElement?.focus(), 10);
 	}
 
-	function close() {
-		isOpen = false;
+	function moveDown() {
+		selectedIndex = (selectedIndex + 1) % filteredCommands.length;
 	}
 
-	function executeCommand(command: Command) {
-		command.action();
-		close();
+	function moveUp() {
+		selectedIndex = (selectedIndex - 1 + filteredCommands.length) % filteredCommands.length;
+	}
+
+	function selectCurrent() {
+		if (filteredCommands[selectedIndex]) {
+			filteredCommands[selectedIndex].action();
+			closeAll();
+		}
 	}
 
 	function handleKeydown(event: KeyboardEvent) {
-		if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
-			event.preventDefault();
-			if (isOpen) {
-				close();
-			} else {
-				open();
+		// Search mode - handle navigation in input
+		if (showSearch) {
+			const key = event.key;
+
+			if (key === 'Escape') {
+				event.preventDefault();
+				closeAll();
+				return;
 			}
+
+			if (key === 'Enter') {
+				event.preventDefault();
+				selectCurrent();
+				return;
+			}
+
+			if (key === 'ArrowDown' || keys.down.includes(key)) {
+				// Only intercept j/n if Ctrl is held (to allow typing)
+				if (key === 'ArrowDown' || event.ctrlKey) {
+					event.preventDefault();
+					moveDown();
+					return;
+				}
+			}
+
+			if (key === 'ArrowUp' || keys.up.includes(key)) {
+				if (key === 'ArrowUp' || event.ctrlKey) {
+					event.preventDefault();
+					moveUp();
+					return;
+				}
+			}
+
+			// Let other keys through for typing
 			return;
 		}
 
-		if (!isOpen) return;
-
-		switch (event.key) {
-			case 'Escape':
-				close();
-				break;
-			case 'ArrowDown':
-				event.preventDefault();
-				selectedIndex = (selectedIndex + 1) % filteredCommands.length;
-				break;
-			case 'ArrowUp':
-				event.preventDefault();
-				selectedIndex = (selectedIndex - 1 + filteredCommands.length) % filteredCommands.length;
-				break;
-			case 'Enter':
-				event.preventDefault();
-				if (filteredCommands[selectedIndex]) {
-					executeCommand(filteredCommands[selectedIndex]);
-				}
-				break;
+		// Ignore if typing in other inputs
+		if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+			return;
 		}
-	}
 
-	function handleBackdropClick(event: MouseEvent) {
-		if (event.target === event.currentTarget) {
-			close();
+		// Leader key (Space)
+		if (event.code === 'Space' && !event.metaKey && !event.ctrlKey && !event.altKey) {
+			event.preventDefault();
+
+			if (leaderPressed) {
+				// Space Space = open search
+				if (leaderTimeout) clearTimeout(leaderTimeout);
+				openSearch();
+				leaderPressed = false;
+				return;
+			}
+
+			leaderPressed = true;
+			showWhichKey = true;
+
+			// Auto-hide after 3s if no action
+			leaderTimeout = setTimeout(() => {
+				if (showWhichKey && !showSearch) {
+					closeAll();
+				}
+			}, 3000) as unknown as number;
+			return;
+		}
+
+		// If leader is pressed, handle shortcuts
+		if (leaderPressed && showWhichKey) {
+			event.preventDefault();
+			const key = event.key;
+
+			// Find matching command
+			const cmd = [...sections, ...themeKeys].find((c) => c.key === key);
+			if (cmd) {
+				cmd.action();
+				closeAll();
+				return;
+			}
+
+			// Capital letters for links
+			if (key === 'G') {
+				window.open(config.contact.github, '_blank');
+				closeAll();
+				return;
+			}
+			if (key === 'L') {
+				window.open(config.contact.linkedin, '_blank');
+				closeAll();
+				return;
+			}
+			if (key === 'E') {
+				window.location.href = `mailto:${config.contact.email}`;
+				closeAll();
+				return;
+			}
+
+			// Escape to close
+			if (key === 'Escape') {
+				closeAll();
+				return;
+			}
 		}
 	}
 
@@ -158,12 +207,53 @@
 	onDestroy(() => {
 		if (browser) {
 			window.removeEventListener('keydown', handleKeydown);
+			if (leaderTimeout) clearTimeout(leaderTimeout);
 		}
 	});
 </script>
 
-{#if isOpen}
-	<div class="backdrop" on:click={handleBackdropClick} role="presentation">
+<!-- Which-key popup -->
+{#if showWhichKey && !showSearch}
+	<div class="which-key">
+		<div class="which-key-header">
+			<kbd>SPC</kbd> + key
+		</div>
+		<div class="which-key-grid">
+			<div class="which-key-group">
+				<span class="group-title">Sections</span>
+				{#each sections as cmd}
+					<div class="which-key-item">
+						<kbd>{cmd.key}</kbd>
+						<span>{cmd.label}</span>
+					</div>
+				{/each}
+			</div>
+			<div class="which-key-group">
+				<span class="group-title">Theme</span>
+				{#each themeKeys as cmd}
+					<div class="which-key-item">
+						<kbd>{cmd.key}</kbd>
+						<span>{cmd.label}</span>
+					</div>
+				{/each}
+			</div>
+			<div class="which-key-group">
+				<span class="group-title">Links</span>
+				<div class="which-key-item"><kbd>G</kbd><span>GitHub</span></div>
+				<div class="which-key-item"><kbd>L</kbd><span>LinkedIn</span></div>
+				<div class="which-key-item"><kbd>E</kbd><span>Email</span></div>
+			</div>
+			<div class="which-key-group">
+				<span class="group-title">Search</span>
+				<div class="which-key-item"><kbd>SPC</kbd><span>Open</span></div>
+			</div>
+		</div>
+	</div>
+{/if}
+
+<!-- Search palette -->
+{#if showSearch}
+	<div class="backdrop" on:click={closeAll} role="presentation">
 		<div class="palette">
 			<div class="search-container">
 				<span class="prompt">&gt;</span>
@@ -171,7 +261,7 @@
 					bind:this={inputElement}
 					bind:value={searchQuery}
 					type="text"
-					placeholder="Type a command..."
+					placeholder="Search..."
 					class="search-input"
 				/>
 				<kbd class="hint">esc</kbd>
@@ -181,7 +271,7 @@
 					<button
 						class="command"
 						class:selected={i === selectedIndex}
-						on:click={() => executeCommand(command)}
+						on:click={() => { command.action(); closeAll(); }}
 						on:mouseenter={() => (selectedIndex = i)}
 					>
 						<span class="command-label">{command.label}</span>
@@ -189,23 +279,78 @@
 					</button>
 				{/each}
 				{#if filteredCommands.length === 0}
-					<div class="no-results">No commands found</div>
+					<div class="no-results">No results</div>
 				{/if}
 			</div>
-			<div class="footer">
-				<span><kbd>↑↓</kbd> navigate</span>
+			<div class="search-footer">
+				<span><kbd>↑↓</kbd> or <kbd>ctrl+{keys.up[1]}/{keys.down[1]}</kbd></span>
 				<span><kbd>↵</kbd> select</span>
-				<span><kbd>esc</kbd> close</span>
 			</div>
 		</div>
 	</div>
 {/if}
 
-<button class="trigger" on:click={open} aria-label="Open command palette">
-	<kbd>⌘K</kbd>
-</button>
+<!-- Trigger hint -->
+<div class="trigger">
+	<kbd>SPC</kbd>
+</div>
 
 <style>
+	.which-key {
+		position: fixed;
+		bottom: 1rem;
+		right: 1rem;
+		background-color: var(--mantle);
+		border: 1px solid var(--surface0);
+		border-radius: 8px;
+		padding: 0.75rem;
+		z-index: 1000;
+		font-size: 0.8rem;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+	}
+
+	.which-key-header {
+		color: var(--subtext);
+		margin-bottom: 0.5rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 1px solid var(--surface0);
+	}
+
+	.which-key-grid {
+		display: flex;
+		gap: 1.5rem;
+	}
+
+	.which-key-group {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.group-title {
+		color: var(--accent);
+		font-size: 0.7rem;
+		text-transform: uppercase;
+		margin-bottom: 0.25rem;
+	}
+
+	.which-key-item {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: var(--text);
+	}
+
+	.which-key-item kbd {
+		min-width: 1.2rem;
+		text-align: center;
+		padding: 0.1rem 0.3rem;
+		background-color: var(--surface0);
+		border-radius: 3px;
+		color: var(--accent);
+		font-size: 0.7rem;
+	}
+
 	.backdrop {
 		position: fixed;
 		inset: 0;
@@ -219,20 +364,19 @@
 
 	.palette {
 		width: 90%;
-		max-width: 500px;
+		max-width: 400px;
 		background-color: var(--mantle);
 		border: 1px solid var(--surface0);
-		border-radius: 12px;
+		border-radius: 8px;
 		overflow: hidden;
-		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 	}
 
 	.search-container {
 		display: flex;
 		align-items: center;
-		padding: 1rem;
+		padding: 0.75rem;
 		border-bottom: 1px solid var(--surface0);
-		gap: 0.75rem;
+		gap: 0.5rem;
 	}
 
 	.prompt {
@@ -246,7 +390,7 @@
 		border: none;
 		color: var(--text);
 		font-family: 'Fira Code', monospace;
-		font-size: 1rem;
+		font-size: 0.9rem;
 		outline: none;
 	}
 
@@ -255,15 +399,15 @@
 	}
 
 	.hint {
-		font-size: 0.7rem;
-		padding: 0.2rem 0.4rem;
+		font-size: 0.65rem;
+		padding: 0.15rem 0.3rem;
 		background-color: var(--surface0);
 		color: var(--subtext);
-		border-radius: 4px;
+		border-radius: 3px;
 	}
 
 	.commands {
-		max-height: 300px;
+		max-height: 250px;
 		overflow-y: auto;
 	}
 
@@ -272,12 +416,12 @@
 		justify-content: space-between;
 		align-items: center;
 		width: 100%;
-		padding: 0.75rem 1rem;
+		padding: 0.5rem 0.75rem;
 		background: transparent;
 		border: none;
 		color: var(--text);
 		font-family: 'Fira Code', monospace;
-		font-size: 0.9rem;
+		font-size: 0.85rem;
 		cursor: pointer;
 		text-align: left;
 	}
@@ -291,57 +435,53 @@
 	}
 
 	.command-category {
-		font-size: 0.75rem;
+		font-size: 0.7rem;
 		color: var(--subtext);
 	}
 
 	.no-results {
-		padding: 2rem;
+		padding: 1.5rem;
 		text-align: center;
 		color: var(--subtext);
+		font-size: 0.85rem;
 	}
 
-	.footer {
+	.search-footer {
 		display: flex;
 		justify-content: center;
-		gap: 1.5rem;
-		padding: 0.75rem;
+		gap: 1rem;
+		padding: 0.5rem;
 		border-top: 1px solid var(--surface0);
 		background-color: var(--crust);
-		font-size: 0.75rem;
+		font-size: 0.7rem;
 		color: var(--subtext);
 	}
 
-	.footer kbd {
-		font-size: 0.7rem;
-		padding: 0.15rem 0.3rem;
+	.search-footer kbd {
+		font-size: 0.65rem;
+		padding: 0.1rem 0.25rem;
 		background-color: var(--surface0);
 		border-radius: 3px;
-		margin-right: 0.25rem;
 	}
 
 	.trigger {
 		position: fixed;
-		bottom: 2rem;
-		right: 2rem;
+		bottom: 1rem;
+		right: 1rem;
 		background-color: var(--surface0);
-		border: 1px solid var(--surface1);
-		border-radius: 8px;
-		padding: 0.5rem 0.75rem;
+		border-radius: 6px;
+		padding: 0.4rem 0.6rem;
 		color: var(--subtext);
-		font-family: 'Fira Code', monospace;
-		font-size: 0.85rem;
-		cursor: pointer;
-		transition: all 0.2s ease;
+		font-size: 0.75rem;
 		z-index: 100;
 	}
 
-	.trigger:hover {
-		background-color: var(--surface1);
-		color: var(--text);
+	.trigger kbd {
+		color: var(--accent);
 	}
 
-	.trigger kbd {
-		pointer-events: none;
+	/* Hide trigger when which-key is shown */
+	.which-key ~ .trigger {
+		display: none;
 	}
 </style>

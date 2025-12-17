@@ -92,6 +92,23 @@ export const config = {
     showTools: true,
     showAvailability: true,
     enableAnalytics: false
+  },
+
+  // Keybindings (Colemak: down=n, up=e)
+  keys: {
+    down: ['j', 'n'],  // j for QWERTY, n for Colemak
+    up: ['k', 'e'],    // k for QWERTY, e for Colemak
+    sections: {
+      home: 'h',
+      tech: 't',
+      skills: 's',
+      experience: 'f',  // f for Colemak (e is up)
+      opensource: 'o',
+      tools: 'l',
+      github: 'g',
+      contact: 'c',
+      availability: 'a'
+    }
   }
 };
 
