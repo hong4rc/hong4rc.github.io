@@ -15,7 +15,9 @@
 					</h3>
 					<ul>
 						{#each group.items as item}
-							<li>{item}</li>
+							<li>
+								<a href={item.url} target="_blank" rel="noopener noreferrer">{item.name}</a>
+							</li>
 						{/each}
 					</ul>
 				</div>
@@ -75,7 +77,16 @@
 
 	li {
 		font-size: 0.85rem;
-		color: var(--text);
 		padding: 0.2rem 0;
+	}
+
+	li a {
+		color: var(--text);
+		text-decoration: none;
+		transition: color 0.2s;
+	}
+
+	li a:hover {
+		color: var(--accent);
 	}
 </style>

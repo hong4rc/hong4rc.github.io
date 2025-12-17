@@ -3,11 +3,18 @@
 	import { reveal } from '$lib/actions/reveal';
 </script>
 
+<svelte:head>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
+</svelte:head>
+
 <section class="tech-stack" use:reveal>
 	<h2>Tech Stack</h2>
 	<div class="stack-list">
 		{#each config.techStack as tech}
-			<span class="tech-item">{tech}</span>
+			<span class="tech-item">
+				<i class="devicon-{tech.icon}-plain"></i>
+				{tech.name}
+			</span>
 		{/each}
 	</div>
 </section>
@@ -35,18 +42,29 @@
 	}
 
 	.tech-item {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
 		padding: 0.5rem 1rem;
 		background-color: var(--surface0);
 		color: var(--text);
 		border-radius: 4px;
 		font-size: 0.9rem;
 		transition: all 0.2s ease;
-		cursor: pointer;
+		cursor: default;
 		user-select: none;
+	}
+
+	.tech-item i {
+		font-size: 1.2rem;
+		color: var(--accent);
 	}
 
 	.tech-item:hover {
 		background-color: var(--surface1);
-		color: var(--accent);
+	}
+
+	.tech-item:hover i {
+		color: var(--secondary);
 	}
 </style>

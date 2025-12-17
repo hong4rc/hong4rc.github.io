@@ -15,10 +15,16 @@ export interface SkillItem {
 export const config = {
   name: 'Hong4rc',
   title: 'Backend Developer',
-  bio: 'backend dev. lazy by design, simple by choice',
+  bio: 'backemd dev. lazy by desgin, simpel by chocie',
   experience: 6,
 
-  techStack: ['Node.js', 'NestJS', 'MongoDB', 'Docker', 'AWS'],
+  techStack: [
+    { name: 'Node.js', icon: 'nodejs' },
+    { name: 'NestJS', icon: 'nestjs' },
+    { name: 'MongoDB', icon: 'mongodb' },
+    { name: 'Docker', icon: 'docker' },
+    { name: 'AWS', icon: 'amazonwebservices' }
+  ],
 
   skills: [
     { name: 'Node.js', level: 90 },
@@ -48,16 +54,44 @@ export const config = {
   ] as ExperienceItem[],
 
   tools: [
-    { category: 'Terminal', icon: '▶', items: ['Ghostty', 'tmux', 'Starship'] },
-    { category: 'Editor', icon: '◆', items: ['LazyVim', 'lazygit'] },
-    { category: 'IDE', icon: '◇', items: ['VS Code'] },
-    { category: 'Database', icon: '●', items: ['Compass', 'DataGrip'] },
-    { category: 'Fonts', icon: '◈', items: ['Fira Code', 'CaskaydiaCove Nerd Font'] },
-    { category: 'OS', icon: '○', items: ['macOS', 'Fedora'] },
-    { category: 'Keyboard', icon: '⌨', items: ['Colemak', 'Sofle v2'] },
-    { category: 'Dotfiles', icon: '◎', items: ['stow'] },
-    { category: 'Package Manager', icon: '◉', items: ['mise'] },
-    { category: 'CLI', icon: '→', items: ['zoxide', 'fzf'] }
+    { category: 'Terminal', icon: '▶', items: [
+      { name: 'Ghostty', url: 'https://ghostty.org' },
+      { name: 'tmux', url: 'https://github.com/tmux/tmux' },
+      { name: 'Starship', url: 'https://starship.rs' }
+    ]},
+    { category: 'Editor', icon: '◆', items: [
+      { name: 'LazyVim', url: 'https://www.lazyvim.org' },
+      { name: 'lazygit', url: 'https://github.com/jesseduffield/lazygit' }
+    ]},
+    { category: 'IDE', icon: '◇', items: [
+      { name: 'VS Code', url: 'https://code.visualstudio.com' }
+    ]},
+    { category: 'Database', icon: '●', items: [
+      { name: 'Compass', url: 'https://www.mongodb.com/products/compass' },
+      { name: 'DataGrip', url: 'https://www.jetbrains.com/datagrip' }
+    ]},
+    { category: 'Fonts', icon: '◈', items: [
+      { name: 'Fira Code', url: 'https://github.com/tonsky/FiraCode' },
+      { name: 'Cascadia Code', url: 'https://github.com/microsoft/cascadia-code' }
+    ]},
+    { category: 'OS', icon: '○', items: [
+      { name: 'macOS', url: 'https://www.apple.com/macos' },
+      { name: 'Fedora', url: 'https://fedoraproject.org' }
+    ]},
+    { category: 'Keyboard', icon: '⌨', items: [
+      { name: 'Colemak', url: 'https://colemak.com' },
+      { name: 'Sofle v2', url: 'https://github.com/josefadamcik/SofleKeyboard' }
+    ]},
+    { category: 'Dotfiles', icon: '◎', items: [
+      { name: 'stow', url: 'https://www.gnu.org/software/stow' }
+    ]},
+    { category: 'Package Manager', icon: '◉', items: [
+      { name: 'mise', url: 'https://mise.jdx.dev' }
+    ]},
+    { category: 'CLI', icon: '→', items: [
+      { name: 'zoxide', url: 'https://github.com/ajeetdsouza/zoxide' },
+      { name: 'fzf', url: 'https://github.com/junegunn/fzf' }
+    ]}
   ],
 
   availability: {
