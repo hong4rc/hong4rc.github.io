@@ -57,7 +57,13 @@
 <section class="guestbook" use:reveal>
 	<h2>Guestbook</h2>
 	<p class="subtitle">Leave a message, say hi, or share your thoughts!</p>
-	<div class="giscus-wrapper" bind:this={giscusContainer}></div>
+	<div class="giscus-wrapper" bind:this={giscusContainer}>
+		<p class="setup-note">
+			<a href="https://github.com/hong4rc/hong4rc.github.io/discussions" target="_blank" rel="noopener noreferrer">
+				→ View discussions on GitHub
+			</a>
+		</p>
+	</div>
 </section>
 
 <style>
@@ -91,5 +97,15 @@
 
 	:global(.giscus-frame) {
 		width: 100%;
+	}
+
+	.setup-note {
+		text-align: center;
+		color: var(--subtext);
+		font-size: 0.85rem;
+	}
+
+	.setup-note a {
+		color: var(--accent);
 	}
 </style>
