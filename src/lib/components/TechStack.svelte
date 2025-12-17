@@ -37,10 +37,12 @@
 	.tech-item {
 		padding: 0.5rem 1rem;
 		background-color: var(--surface0);
-		color: var(--subtext);
+		color: var(--text);
 		border-radius: 4px;
 		font-size: 0.9rem;
 		transition: all 0.2s ease;
+		cursor: pointer;
+		user-select: none;
 	}
 
 	.tech-item:hover {

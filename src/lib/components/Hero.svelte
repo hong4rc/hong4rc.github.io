@@ -1,9 +1,18 @@
 <script lang="ts">
 	import { config } from '$lib/config';
+
+	// Split name to highlight "4"
+	const nameParts = config.name.match(/^(.*?)(4)(.*)$/);
 </script>
 
 <section class="hero">
-	<h1 class="name">{config.name}</h1>
+	<h1 class="name">
+		{#if nameParts}
+			<span>{nameParts[1]}</span><span class="highlight">{nameParts[2]}</span><span>{nameParts[3]}</span>
+		{:else}
+			{config.name}
+		{/if}
+	</h1>
 	<p class="title">{config.title}</p>
 	<p class="bio">{config.bio}</p>
 	<p class="experience">{config.experience} years of experience</p>
@@ -27,6 +36,10 @@
 		margin-bottom: 0.5rem;
 	}
 
+	.highlight {
+		color: var(--accent);
+	}
+
 	.title {
 		font-size: clamp(1.2rem, 4vw, 1.5rem);
 		color: var(--accent);
@@ -36,8 +49,8 @@
 	.bio {
 		font-size: clamp(1rem, 3vw, 1.2rem);
 		color: var(--subtext);
-		max-width: 500px;
 		margin-bottom: 0.5rem;
+		white-space: nowrap;
 	}
 
 	.experience {

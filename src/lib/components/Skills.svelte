@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { config } from '$lib/config';
 	import { reveal } from '$lib/actions/reveal';
+	import { getTechColor, getTechIcon } from '$lib/techColors';
 </script>
 
 {#if config.features.showSkills && config.skills?.length}
@@ -8,14 +9,9 @@
 		<h2>Skills</h2>
 		<div class="skills-grid">
 			{#each config.skills as skill, i}
-				<div class="skill-item" style="--delay: {i * 100}ms">
-					<div class="skill-header">
-						<span class="skill-name">{skill.name}</span>
-						<span class="skill-level">{skill.level}%</span>
-					</div>
-					<div class="skill-bar">
-						<div class="skill-fill" style="--level: {skill.level}%"></div>
-					</div>
+				<div class="skill-item" style="--delay: {i * 50}ms; --color: {getTechColor(skill.name)}">
+					<span class="skill-icon">{getTechIcon(skill.name)}</span>
+					<span class="skill-name">{skill.name}</span>
 				</div>
 			{/each}
 		</div>
@@ -35,68 +31,57 @@
 	}
 
 	.skills-grid {
-		max-width: 500px;
-		margin: 0 auto;
 		display: flex;
-		flex-direction: column;
-		gap: 1.25rem;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 1rem;
+		max-width: 600px;
+		margin: 0 auto;
 	}
 
 	.skill-item {
-		text-align: left;
-		animation: slideIn 0.5s ease forwards;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 1rem;
+		background-color: var(--surface0);
+		border-radius: 6px;
+		border-left: 3px solid var(--color);
+		animation: fadeIn 0.4s ease forwards;
 		animation-delay: var(--delay);
 		opacity: 0;
+		cursor: pointer;
+		user-select: none;
+		transition: all 0.2s ease;
 	}
 
-	@keyframes slideIn {
+	.skill-item:hover {
+		background-color: var(--surface1);
+		transform: translateY(-2px);
+	}
+
+	@keyframes fadeIn {
 		from {
 			opacity: 0;
-			transform: translateX(-20px);
+			transform: scale(0.9);
 		}
 		to {
 			opacity: 1;
-			transform: translateX(0);
+			transform: scale(1);
 		}
 	}
 
-	.skill-header {
-		display: flex;
-		justify-content: space-between;
-		margin-bottom: 0.5rem;
+	.skill-icon {
+		font-size: 0.7rem;
+		font-weight: 700;
+		color: var(--color);
+		background-color: var(--surface1);
+		padding: 0.25rem 0.4rem;
+		border-radius: 4px;
 	}
 
 	.skill-name {
 		color: var(--text);
 		font-size: 0.9rem;
-	}
-
-	.skill-level {
-		color: var(--subtext);
-		font-size: 0.8rem;
-	}
-
-	.skill-bar {
-		height: 8px;
-		background-color: var(--surface0);
-		border-radius: 4px;
-		overflow: hidden;
-	}
-
-	.skill-fill {
-		height: 100%;
-		width: var(--level);
-		background: linear-gradient(90deg, var(--accent), var(--secondary));
-		border-radius: 4px;
-		animation: fillBar 1s ease forwards;
-		animation-delay: var(--delay);
-		transform-origin: left;
-		transform: scaleX(0);
-	}
-
-	@keyframes fillBar {
-		to {
-			transform: scaleX(1);
-		}
 	}
 </style>

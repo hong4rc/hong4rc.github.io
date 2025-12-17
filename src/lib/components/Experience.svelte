@@ -7,7 +7,7 @@
 	<section class="experience" use:reveal>
 		<h2>Experience</h2>
 		<div class="timeline">
-			{#each config.experience_timeline as job, i}
+			{#each config.experience_timeline as job}
 				<div class="timeline-item" class:current={job.current}>
 					<div class="timeline-marker"></div>
 					<div class="timeline-content">
@@ -134,7 +134,7 @@
 		font-size: 0.75rem;
 		padding: 0.2rem 0.5rem;
 		background-color: var(--surface1);
-		color: var(--subtext);
+		color: var(--accent);
 		border-radius: 3px;
 	}
 </style>
