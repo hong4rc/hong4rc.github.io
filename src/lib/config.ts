@@ -139,8 +139,7 @@ export const config = {
       tools: 'l',
       github: 'g',
       contact: 'c',
-      availability: 'a',
-      guestbook: 'b'
+      availability: 'a'
     }
   }
 };

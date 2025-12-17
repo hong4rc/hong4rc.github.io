@@ -23,7 +23,7 @@
 
 	const keys = config.keys;
 
-	const sectionOrder = ['hero', 'tech-stack', 'skills', 'experience', 'opensource', 'tools', 'github-stats', 'contact', 'availability', 'guestbook'];
+	const sectionOrder = ['hero', 'tech-stack', 'skills', 'experience', 'opensource', 'tools', 'github-stats', 'contact', 'split-section'];
 
 	const sections: Command[] = [
 		{ key: keys.sections.home, label: 'Home', action: () => scrollTo('hero') },
@@ -34,8 +34,7 @@
 		{ key: keys.sections.tools, label: 'Tools', action: () => scrollTo('tools') },
 		{ key: keys.sections.github, label: 'GitHub', action: () => scrollTo('github-stats') },
 		{ key: keys.sections.contact, label: 'Contact', action: () => scrollTo('contact') },
-		{ key: keys.sections.availability, label: 'Availability', action: () => scrollTo('availability') },
-		{ key: keys.sections.guestbook, label: 'Guestbook', action: () => scrollTo('guestbook') }
+		{ key: keys.sections.availability, label: 'Status & Guestbook', action: () => scrollTo('split-section') }
 	];
 
 	const themeKeys: Command[] = themes.map((t, i) => ({

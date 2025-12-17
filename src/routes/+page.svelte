@@ -9,8 +9,7 @@
 	import GitHubStats from '$lib/components/GitHubStats.svelte';
 	import Projects from '$lib/components/Projects.svelte';
 	import Contact from '$lib/components/Contact.svelte';
-	import Availability from '$lib/components/Availability.svelte';
-	import Guestbook from '$lib/components/Guestbook.svelte';
+	import AvailabilityGuestbook from '$lib/components/AvailabilityGuestbook.svelte';
 	import Blog from '$lib/components/Blog.svelte';
 </script>
 
@@ -26,8 +25,7 @@
 	<GitHubStats />
 	<Projects />
 	<Contact />
-	<Availability />
-	<Guestbook />
+	<AvailabilityGuestbook />
 	<Blog />
 </main>
 
