@@ -47,6 +47,25 @@ export const config = {
     }
   ] as ExperienceItem[],
 
+  tools: [
+    { category: 'Terminal', icon: '▶', items: ['Ghostty', 'tmux', 'Starship'] },
+    { category: 'Editor', icon: '◆', items: ['LazyVim', 'lazygit'] },
+    { category: 'IDE', icon: '◇', items: ['VS Code'] },
+    { category: 'Database', icon: '●', items: ['Compass', 'DataGrip'] },
+    { category: 'Fonts', icon: '◈', items: ['Fira Code', 'CaskaydiaCove Nerd Font'] },
+    { category: 'OS', icon: '○', items: ['macOS', 'Fedora'] },
+    { category: 'Keyboard', icon: '⌨', items: ['Colemak', 'Sofle v2'] },
+    { category: 'Dotfiles', icon: '◎', items: ['stow'] },
+    { category: 'Package Manager', icon: '◉', items: ['mise'] },
+    { category: 'CLI', icon: '→', items: ['zoxide', 'fzf'] }
+  ],
+
+  availability: {
+    available: true,
+    status: 'Open for opportunities',
+    message: 'Interested in backend roles and consulting'
+  },
+
   contact: {
     email: 'hong4rc@gmail.com',
     github: 'https://github.com/hong4rc',
@@ -69,6 +88,9 @@ export const config = {
     showExperience: true,
     showGitHubStats: true,
     showSkills: true,
+    showOpenSource: true,
+    showTools: true,
+    showAvailability: true,
     enableAnalytics: false
   }
 };

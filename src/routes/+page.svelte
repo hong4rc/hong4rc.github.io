@@ -4,9 +4,12 @@
 	import TechStack from '$lib/components/TechStack.svelte';
 	import Skills from '$lib/components/Skills.svelte';
 	import Experience from '$lib/components/Experience.svelte';
+	import OpenSource from '$lib/components/OpenSource.svelte';
+	import Tools from '$lib/components/Tools.svelte';
 	import GitHubStats from '$lib/components/GitHubStats.svelte';
 	import Projects from '$lib/components/Projects.svelte';
 	import Contact from '$lib/components/Contact.svelte';
+	import Availability from '$lib/components/Availability.svelte';
 	import Blog from '$lib/components/Blog.svelte';
 </script>
 
@@ -17,9 +20,12 @@
 	<TechStack />
 	<Skills />
 	<Experience />
+	<OpenSource />
+	<Tools />
 	<GitHubStats />
 	<Projects />
 	<Contact />
+	<Availability />
 	<Blog />
 </main>
 
