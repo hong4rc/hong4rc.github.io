@@ -36,9 +36,12 @@
 
 <header class:scrolled>
 	<nav>
-		<a href="/" class="logo">
-			<span class="logo-letter">H</span><span class="logo-expand">ong<span class="highlight">4</span>rc</span>
-		</a>
+		<div class="nav-left">
+			<a href="/" class="logo">
+				<span class="logo-letter">H</span><span class="logo-expand">ong<span class="highlight">4</span>rc</span>
+			</a>
+			<a href="/blog" class="nav-link">Blog</a>
+		</div>
 		<ThemeToggle />
 	</nav>
 </header>
@@ -68,6 +71,23 @@
 		align-items: center;
 		max-width: 1200px;
 		margin: 0 auto;
+	}
+
+	.nav-left {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+	}
+
+	.nav-link {
+		font-size: 0.9rem;
+		color: var(--subtext);
+		text-decoration: none;
+		transition: color 0.2s;
+	}
+
+	.nav-link:hover {
+		color: var(--accent);
 	}
 
 	.logo {

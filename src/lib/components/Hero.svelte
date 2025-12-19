@@ -42,16 +42,13 @@
 </script>
 
 <section class="hero">
-	<nav class="top-nav">
-		<h1 class="name">
-			{#if nameParts}
-				<span>{nameParts[1]}</span><span class="highlight">{nameParts[2]}</span><span>{nameParts[3]}</span>
-			{:else}
-				{config.name}
-			{/if}
-		</h1>
-		<a href="/blog" class="nav-link">Blog</a>
-	</nav>
+	<h1 class="name">
+		{#if nameParts}
+			<span>{nameParts[1]}</span><span class="highlight">{nameParts[2]}</span><span>{nameParts[3]}</span>
+		{:else}
+			{config.name}
+		{/if}
+	</h1>
 	<p class="title">{config.title}</p>
 	<p class="bio">{bioText}<span class="cursor">|</span></p>
 	<p class="experience">{config.experience} years of experience</p>
@@ -71,31 +68,11 @@
 		padding: 2rem;
 	}
 
-	.top-nav {
-		display: flex;
-		align-items: center;
-		gap: 1.5rem;
-	}
-
-	.nav-link {
-		font-size: 1rem;
-		color: var(--subtext);
-		text-decoration: none;
-		padding: 0.4rem 0.8rem;
-		border-radius: 4px;
-		transition: all 0.2s;
-	}
-
-	.nav-link:hover {
-		color: var(--accent);
-		background-color: var(--surface0);
-	}
-
 	.name {
 		font-size: clamp(2.5rem, 8vw, 4rem);
 		font-weight: 700;
 		color: var(--text);
-		margin-bottom: 0;
+		margin-bottom: 0.5rem;
 	}
 
 	.highlight {
