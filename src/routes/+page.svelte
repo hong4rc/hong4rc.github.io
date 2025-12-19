@@ -9,6 +9,7 @@
 	import GitHubStats from '$lib/components/GitHubStats.svelte';
 	import Contact from '$lib/components/Contact.svelte';
 	import Availability from '$lib/components/Availability.svelte';
+	import TechFooter from '$lib/components/TechFooter.svelte';
 </script>
 
 <SEO />
@@ -41,6 +42,7 @@
 		<GitHubStats />
 		<Contact />
 		<Availability />
+		<TechFooter />
 	</div>
 </main>
 

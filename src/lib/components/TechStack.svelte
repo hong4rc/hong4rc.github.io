@@ -3,10 +3,6 @@
 	import { reveal } from '$lib/actions/reveal';
 </script>
 
-<svelte:head>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
-</svelte:head>
-
 <section class="tech-stack" use:reveal>
 	<h2>Tech Stack</h2>
 	<div class="stack-list">
