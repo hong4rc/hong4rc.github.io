@@ -32,7 +32,9 @@ jobs:
 
       - name: Build
         env:
-          BASE_PATH: '/${{ github.event.repository.name }}'
+          # For user/org sites (username.github.io), BASE_PATH should be empty
+          # For project sites, use: BASE_PATH: '/${{ github.event.repository.name }}'
+          BASE_PATH: ''
         run: npm run build
 
       - name: Upload artifact
