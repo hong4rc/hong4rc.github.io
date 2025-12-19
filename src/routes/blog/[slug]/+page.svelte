@@ -1,24 +1,37 @@
 <script lang="ts">
 	import { config } from '$lib/config';
-	import { page } from '$app/stores';
+	import { fade } from 'svelte/transition';
 
 	let { data } = $props();
+	let showBackLink = $state(false);
 
 	function formatDate(dateStr: string): string {
-		const date = new Date(dateStr);
-		return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+		return new Date(dateStr).toLocaleDateString('en-US', {
+			month: 'long',
+			day: 'numeric',
+			year: 'numeric'
+		});
+	}
+
+	function handleScroll() {
+		showBackLink = window.scrollY > 300;
 	}
 </script>
+
+<svelte:window onscroll={handleScroll} />
 
 <svelte:head>
 	<title>{data.post?.title || 'Post'} | {config.name}</title>
 </svelte:head>
 
+{#if showBackLink}
+	<a href="/blog" class="back-link" transition:fade={{ duration: 200 }}>← Back to blog</a>
+{/if}
+
 <main class="post-page">
 	{#if data.post && data.Content}
 		<article>
 			<header class="post-header">
-				<a href="/blog" class="back-link">← Back to blog</a>
 				<h1>{data.post.title}</h1>
 				<div class="post-meta">
 					<span class="date">{formatDate(data.post.date)}</span>
@@ -41,7 +54,6 @@
 	{:else}
 		<div class="not-found">
 			<h1>Post not found</h1>
-			<a href="/blog" class="back-link">← Back to blog</a>
 		</div>
 	{/if}
 </main>
@@ -57,12 +69,24 @@
 	}
 
 	.back-link {
-		display: inline-block;
+		position: fixed;
+		top: 5rem;
+		left: calc(50% - 350px - 8rem);
 		color: var(--subtext);
 		text-decoration: none;
 		font-size: 0.9rem;
-		margin-bottom: 2rem;
 		transition: color 0.2s;
+		z-index: 10;
+	}
+
+	@media (max-width: 900px) {
+		.back-link {
+			position: static;
+			display: block;
+			padding: 6rem 2rem 0;
+			max-width: 700px;
+			margin: 0 auto;
+		}
 	}
 
 	.back-link:hover {
