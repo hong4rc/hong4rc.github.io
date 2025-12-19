@@ -2,6 +2,7 @@
 	import '../app.css';
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
+	import { page } from '$app/stores';
 	import { theme } from '$lib/stores/theme';
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 	import Analytics from '$lib/components/Analytics.svelte';
@@ -9,6 +10,8 @@
 	import SectionNav from '$lib/components/SectionNav.svelte';
 
 	let { children } = $props();
+
+	let isHomePage = $derived($page.url.pathname === '/');
 	let scrolled = $state(false);
 
 	function handleScroll() {
@@ -31,8 +34,10 @@
 </script>
 
 <Analytics />
-<CommandPalette />
-<SectionNav />
+{#if isHomePage}
+	<CommandPalette />
+	<SectionNav />
+{/if}
 
 <header class:scrolled>
 	<nav>
