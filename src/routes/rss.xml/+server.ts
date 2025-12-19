@@ -1,6 +1,8 @@
 import { config } from '$lib/config';
 import type { RequestHandler } from './$types';
 
+export const prerender = true;
+
 interface BlogPost {
 	title: string;
 	slug: string;
