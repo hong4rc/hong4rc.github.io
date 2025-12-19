@@ -2,81 +2,103 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
 
-	interface Section {
+	interface Page {
 		id: string;
 		label: string;
+		key: string;
 	}
 
-	const sections: Section[] = [
-		{ id: 'hero', label: 'Home' },
-		{ id: 'tech-stack', label: 'Tech' },
-		{ id: 'skills', label: 'Skills' },
-		{ id: 'experience', label: 'Exp' },
-		{ id: 'opensource', label: 'OSS' },
-		{ id: 'tools', label: 'Tools' },
-		{ id: 'github-stats', label: 'GitHub' },
-		{ id: 'contact', label: 'Contact' },
-		{ id: 'split-section', label: 'Status' }
+	const pages: Page[] = [
+		{ id: 'page-hero', label: 'Home', key: 'h' },
+		{ id: 'page-experience', label: 'Exp', key: 'e' },
+		{ id: 'page-tech', label: 'Tech', key: 't' },
+		{ id: 'page-tools', label: 'Tools', key: 'l' },
+		{ id: 'page-contact', label: 'Contact', key: 'c' }
 	];
 
-	let currentSection = $state('hero');
-	let progress = $state(0);
+	let currentPage = $state('page-hero');
+	let currentIndex = $state(0);
 
-	function updateCurrentSection() {
-		const scrollY = window.scrollY + window.innerHeight / 3;
-		const docHeight = document.body.scrollHeight - window.innerHeight;
-		progress = Math.min((window.scrollY / docHeight) * 100, 100);
+	function updateCurrentPage() {
+		const scrollY = window.scrollY + window.innerHeight / 2;
 
-		for (let i = sections.length - 1; i >= 0; i--) {
-			const el = document.querySelector(`.${sections[i].id}`);
+		for (let i = pages.length - 1; i >= 0; i--) {
+			const el = document.querySelector(`.${pages[i].id}`);
 			if (el && (el as HTMLElement).offsetTop <= scrollY) {
-				currentSection = sections[i].id;
+				currentPage = pages[i].id;
+				currentIndex = i;
 				return;
 			}
 		}
-		currentSection = 'hero';
+		currentPage = 'page-hero';
+		currentIndex = 0;
 	}
 
-	function scrollTo(id: string) {
+	function scrollToPage(id: string) {
 		const element = document.querySelector(`.${id}`);
 		if (element) {
 			element.scrollIntoView({ behavior: 'smooth' });
 		}
 	}
 
+	export function goToPage(index: number) {
+		if (index >= 0 && index < pages.length) {
+			scrollToPage(pages[index].id);
+		}
+	}
+
+	export function nextPage() {
+		goToPage(Math.min(currentIndex + 1, pages.length - 1));
+	}
+
+	export function prevPage() {
+		goToPage(Math.max(currentIndex - 1, 0));
+	}
+
+	export function firstPage() {
+		goToPage(0);
+	}
+
+	export function lastPage() {
+		goToPage(pages.length - 1);
+	}
+
+	export { pages, currentIndex };
+
 	onMount(() => {
 		if (browser) {
-			window.addEventListener('scroll', updateCurrentSection);
-			updateCurrentSection();
+			window.addEventListener('scroll', updateCurrentPage);
+			updateCurrentPage();
 		}
 	});
 
 	onDestroy(() => {
 		if (browser) {
-			window.removeEventListener('scroll', updateCurrentSection);
+			window.removeEventListener('scroll', updateCurrentPage);
 		}
 	});
 </script>
 
 <nav class="section-nav">
-	<div class="progress-line">
-		<div class="progress-fill" style="height: {progress}%"></div>
+	<div class="progress-bar">
+		<div class="progress-fill" style="height: {((currentIndex + 1) / pages.length) * 100}%"></div>
 	</div>
 	<ul>
-		{#each sections as section}
+		{#each pages as page, i}
 			<li>
 				<button
 					class="nav-item"
-					class:active={currentSection === section.id}
-					onclick={() => scrollTo(section.id)}
-					title={section.label}
+					class:active={currentPage === page.id}
+					onclick={() => scrollToPage(page.id)}
+					title="{page.label} ({page.key})"
 				>
 					<span class="dot"></span>
-					<span class="label">{section.label}</span>
+					<span class="label">{page.label}</span>
 				</button>
 			</li>
 		{/each}
 	</ul>
+	<div class="page-indicator">{currentIndex + 1}/{pages.length}</div>
 </nav>
 
 <style>
@@ -90,12 +112,19 @@
 		gap: 0.5rem;
 	}
 
-	.progress-line {
+	.progress-bar {
 		width: 2px;
 		background-color: var(--surface0);
 		border-radius: 1px;
 		position: relative;
 		overflow: hidden;
+	}
+
+	.page-indicator {
+		font-size: 0.6rem;
+		color: var(--subtext);
+		text-align: center;
+		margin-top: 0.5rem;
 	}
 
 	.progress-fill {

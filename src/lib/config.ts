@@ -22,8 +22,10 @@ export const config = {
     { name: 'Node.js', icon: 'nodejs' },
     { name: 'NestJS', icon: 'nestjs' },
     { name: 'MongoDB', icon: 'mongodb' },
-    { name: 'Docker', icon: 'docker' },
-    { name: 'AWS', icon: 'amazonwebservices' }
+    { name: 'PostgreSQL', icon: 'postgresql' },
+    { name: 'Redis', icon: 'redis' },
+    { name: 'AWS', icon: 'amazonwebservices' },
+    { name: 'Git', icon: 'git' }
   ],
 
   skills: [
@@ -37,19 +39,26 @@ export const config = {
 
   experience_timeline: [
     {
-      role: 'Senior Backend Developer',
-      company: 'Your Company',
+      role: 'Node Whisperer',
+      company: 'Everfit',
       period: '2022 - Present',
-      description: 'Building scalable backend systems',
+      description: 'Professional Promise keeper. Still waiting for some callbacks from 2022',
       tech: ['Node.js', 'NestJS', 'MongoDB', 'AWS'],
       current: true
     },
     {
-      role: 'Backend Developer',
-      company: 'Previous Company',
-      period: '2019 - 2022',
-      description: 'Developed RESTful APIs and microservices',
-      tech: ['Node.js', 'Express', 'PostgreSQL', 'Docker']
+      role: 'Paperwork Slayer',
+      company: 'EcoIt',
+      period: '2020 - 2022',
+      description: 'Digitized government chaos. Documents now flow faster than bureaucracy can approve them',
+      tech: ['Java', 'PostgreSQL', 'OCR', 'Digital Signatures']
+    },
+    {
+      role: 'Frame Rate Guardian',
+      company: 'Gameloft',
+      period: '2019 - 2020',
+      description: 'Made games go brrr. Mass-murdered memory leaks. Fluent in segfault',
+      tech: ['C++', 'Python', 'Performance Optimization']
     }
   ] as ExperienceItem[],
 
@@ -64,6 +73,7 @@ export const config = {
       { name: 'lazygit', url: 'https://github.com/jesseduffield/lazygit' }
     ]},
     { category: 'IDE', icon: '◇', items: [
+      { name: 'Neovim', url: 'https://neovim.io' },
       { name: 'VS Code', url: 'https://code.visualstudio.com' }
     ]},
     { category: 'Database', icon: '●', items: [
@@ -94,6 +104,29 @@ export const config = {
     ]}
   ],
 
+  funFacts: [
+    {
+      icon: '⌨️',
+      title: 'Colemak User',
+      description: 'QWERTY is for normies. My fingers travel less, my brain works more'
+    },
+    {
+      icon: '🪓',
+      title: 'Split Keyboard',
+      description: 'Sofle v2. Because one keyboard is never enough'
+    },
+    {
+      icon: '💚',
+      title: 'Neovim Addict',
+      description: "BTW I use Neovim. Try pressing 'gg' or '?' on this site"
+    },
+    {
+      icon: '🌙',
+      title: 'Dark Mode Only',
+      description: "Light mode? My eyes left the chat"
+    }
+  ],
+
   availability: {
     available: true,
     status: 'Open for opportunities',
@@ -121,11 +154,12 @@ export const config = {
     showBlog: false,
     showExperience: true,
     showGitHubStats: true,
-    showSkills: true,
+    showSkills: false,
+    showFunFacts: true,
     showOpenSource: true,
     showTools: true,
     showAvailability: true,
-    showGuestbook: true,
+    showGuestbook: false,
     enableAnalytics: false,
     enableRss: true
   },

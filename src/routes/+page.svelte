@@ -2,39 +2,59 @@
 	import SEO from '$lib/components/SEO.svelte';
 	import Hero from '$lib/components/Hero.svelte';
 	import TechStack from '$lib/components/TechStack.svelte';
-	import Skills from '$lib/components/Skills.svelte';
+	import FunFacts from '$lib/components/FunFacts.svelte';
 	import Experience from '$lib/components/Experience.svelte';
 	import OpenSource from '$lib/components/OpenSource.svelte';
 	import Tools from '$lib/components/Tools.svelte';
 	import GitHubStats from '$lib/components/GitHubStats.svelte';
-	import Projects from '$lib/components/Projects.svelte';
 	import Contact from '$lib/components/Contact.svelte';
-	import AvailabilityGuestbook from '$lib/components/AvailabilityGuestbook.svelte';
-	import Blog from '$lib/components/Blog.svelte';
-	import TechFooter from '$lib/components/TechFooter.svelte';
+	import Availability from '$lib/components/Availability.svelte';
 </script>
 
 <SEO />
 
 <main>
-	<Hero />
-	<TechStack />
-	<Skills />
-	<Experience />
-	<OpenSource />
-	<Tools />
-	<GitHubStats />
-	<Projects />
-	<Contact />
-	<AvailabilityGuestbook />
-	<Blog />
-</main>
+	<!-- Page 1: Hero -->
+	<div class="page page-hero">
+		<Hero />
+	</div>
 
-<TechFooter />
+	<!-- Page 2: Experience -->
+	<div class="page page-experience">
+		<Experience />
+	</div>
+
+	<!-- Page 3: Tech Stack + Open Source -->
+	<div class="page page-tech">
+		<TechStack />
+		<OpenSource />
+	</div>
+
+	<!-- Page 4: Tools + Fun Facts -->
+	<div class="page page-tools">
+		<Tools />
+		<FunFacts />
+	</div>
+
+	<!-- Page 5: GitHub + Contact + Status -->
+	<div class="page page-contact">
+		<GitHubStats />
+		<Contact />
+		<Availability />
+	</div>
+</main>
 
 <style>
 	main {
 		max-width: 1200px;
 		margin: 0 auto;
+	}
+
+	.page {
+		padding: 2rem;
+	}
+
+	.page-hero {
+		padding: 0;
 	}
 </style>

@@ -4,11 +4,9 @@
 	import { onMount } from 'svelte';
 
 	interface Repo {
+		author: string;
 		name: string;
 		description: string;
-		stargazers_count: number;
-		forks_count: number;
-		html_url: string;
 		language: string;
 	}
 
@@ -24,8 +22,9 @@
 		}
 
 		try {
+			// Fetch pinned repositories from profile
 			const response = await fetch(
-				`https://api.github.com/users/${username}/repos?sort=stars&per_page=6`
+				`https://pinned.berrysauce.dev/get/${username}`
 			);
 			if (response.ok) {
 				repos = await response.json();
@@ -46,16 +45,14 @@
 		{:else if repos.length}
 			<div class="repos-grid">
 				{#each repos as repo}
-					<a href={repo.html_url} class="repo-card" target="_blank" rel="noopener">
-						<h3>{repo.name}</h3>
+					<a href={`https://github.com/${repo.author}/${repo.name}`} class="repo-card" target="_blank" rel="noopener">
+						<h3><span class="author">{repo.author}/</span>{repo.name}</h3>
 						<p class="desc">{repo.description || 'No description'}</p>
-						<div class="meta">
-							<span class="stars">★ {repo.stargazers_count}</span>
-							<span class="forks">⑂ {repo.forks_count}</span>
-							{#if repo.language}
+						{#if repo.language}
+							<div class="meta">
 								<span class="lang">{repo.language}</span>
-							{/if}
-						</div>
+							</div>
+						{/if}
 					</a>
 				{/each}
 			</div>
@@ -85,9 +82,9 @@
 
 	.repos-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 		gap: 1rem;
-		max-width: 900px;
+		max-width: 1200px;
 		margin: 0 auto;
 	}
 
@@ -110,6 +107,11 @@
 		margin-bottom: 0.5rem;
 	}
 
+	.author {
+		color: var(--subtext);
+		font-weight: 400;
+	}
+
 	.desc {
 		font-size: 0.85rem;
 		color: var(--subtext);
@@ -125,9 +127,5 @@
 		gap: 1rem;
 		font-size: 0.8rem;
 		color: var(--subtext);
-	}
-
-	.stars {
-		color: var(--accent);
 	}
 </style>

@@ -21,20 +21,14 @@
 	let selectedIndex = 0;
 	let inputElement: HTMLInputElement;
 
-	const keys = config.keys;
+	const pageOrder = ['page-hero', 'page-experience', 'page-tech', 'page-tools', 'page-contact'];
 
-	const sectionOrder = ['hero', 'tech-stack', 'skills', 'experience', 'opensource', 'tools', 'github-stats', 'contact', 'split-section'];
-
-	const sections: Command[] = [
-		{ key: keys.sections.home, label: 'Home', action: () => scrollTo('hero') },
-		{ key: keys.sections.tech, label: 'Tech Stack', action: () => scrollTo('tech-stack') },
-		{ key: keys.sections.skills, label: 'Skills', action: () => scrollTo('skills') },
-		{ key: keys.sections.experience, label: 'Experience', action: () => scrollTo('experience') },
-		{ key: keys.sections.opensource, label: 'Open Source', action: () => scrollTo('opensource') },
-		{ key: keys.sections.tools, label: 'Tools', action: () => scrollTo('tools') },
-		{ key: keys.sections.github, label: 'GitHub', action: () => scrollTo('github-stats') },
-		{ key: keys.sections.contact, label: 'Contact', action: () => scrollTo('contact') },
-		{ key: keys.sections.availability, label: 'Status & Guestbook', action: () => scrollTo('split-section') }
+	const pages: Command[] = [
+		{ key: 'h', label: 'Home', action: () => scrollTo('page-hero') },
+		{ key: 'e', label: 'Experience', action: () => scrollTo('page-experience') },
+		{ key: 't', label: 'Tech & OSS', action: () => scrollTo('page-tech') },
+		{ key: 'l', label: 'Tools & Fun', action: () => scrollTo('page-tools') },
+		{ key: 'c', label: 'Contact', action: () => scrollTo('page-contact') }
 	];
 
 	const themeKeys: Command[] = themes.map((t, i) => ({
@@ -44,7 +38,7 @@
 	}));
 
 	const allCommands = [
-		...sections.map((s) => ({ ...s, category: 'Section' })),
+		...pages.map((s) => ({ ...s, category: 'Page' })),
 		...themeKeys.map((t) => ({ ...t, category: 'Theme' })),
 		{ key: 'G', label: 'Open GitHub', category: 'Link', action: () => window.open(config.contact.github, '_blank') },
 		{ key: 'L', label: 'Open LinkedIn', category: 'Link', action: () => window.open(config.contact.linkedin, '_blank') },
@@ -68,10 +62,10 @@
 		}
 	}
 
-	function getCurrentSectionIndex(): number {
-		const scrollY = window.scrollY + window.innerHeight / 3;
-		for (let i = sectionOrder.length - 1; i >= 0; i--) {
-			const el = document.querySelector(`.${sectionOrder[i]}`);
+	function getCurrentPageIndex(): number {
+		const scrollY = window.scrollY + window.innerHeight / 2;
+		for (let i = pageOrder.length - 1; i >= 0; i--) {
+			const el = document.querySelector(`.${pageOrder[i]}`);
 			if (el && (el as HTMLElement).offsetTop <= scrollY) {
 				return i;
 			}
@@ -79,18 +73,18 @@
 		return 0;
 	}
 
-	function goToNextSection() {
-		const current = getCurrentSectionIndex();
-		const next = Math.min(current + 1, sectionOrder.length - 1);
-		scrollTo(sectionOrder[next]);
+	function goToNextPage() {
+		const current = getCurrentPageIndex();
+		const next = Math.min(current + 1, pageOrder.length - 1);
+		scrollTo(pageOrder[next]);
 	}
 
-	function goToPrevSection() {
-		const current = getCurrentSectionIndex();
+	function goToPrevPage() {
+		const current = getCurrentPageIndex();
 		if (current === 0) {
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 		} else {
-			scrollTo(sectionOrder[current - 1]);
+			scrollTo(pageOrder[current - 1]);
 		}
 	}
 
@@ -118,13 +112,11 @@
 		window.scrollBy({ top: -window.innerHeight, behavior: 'smooth' });
 	}
 
-	function centerCurrentSection() {
-		const current = getCurrentSectionIndex();
-		const el = document.querySelector(`.${sectionOrder[current]}`);
+	function centerCurrentPage() {
+		const current = getCurrentPageIndex();
+		const el = document.querySelector(`.${pageOrder[current]}`);
 		if (el) {
-			const rect = el.getBoundingClientRect();
-			const offset = rect.top + window.scrollY - (window.innerHeight / 2) + (rect.height / 2);
-			window.scrollTo({ top: offset, behavior: 'smooth' });
+			el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 		}
 	}
 
@@ -243,17 +235,17 @@
 			return;
 		}
 
-		// w - next section
-		if (event.key === 'w' && !leaderPressed && !showWhichKey && !gPressed) {
+		// j or w - next page
+		if ((event.key === 'j' || event.key === 'w') && !leaderPressed && !showWhichKey && !gPressed) {
 			event.preventDefault();
-			goToNextSection();
+			goToNextPage();
 			return;
 		}
 
-		// b - previous section (when not ctrl)
-		if (event.key === 'b' && !event.ctrlKey && !leaderPressed && !showWhichKey && !gPressed) {
+		// k or b - previous page (when not ctrl)
+		if ((event.key === 'k' || event.key === 'b') && !event.ctrlKey && !leaderPressed && !showWhichKey && !gPressed) {
 			event.preventDefault();
-			goToPrevSection();
+			goToPrevPage();
 			return;
 		}
 
@@ -271,14 +263,14 @@
 			return;
 		}
 
-		// zz - center current section
+		// zz - center current page
 		if (event.key === 'z' && !leaderPressed && !showWhichKey && !gPressed) {
 			event.preventDefault();
 			// Wait for second z
 			const handleSecondZ = (e: KeyboardEvent) => {
 				if (e.key === 'z') {
 					e.preventDefault();
-					centerCurrentSection();
+					centerCurrentPage();
 				}
 				window.removeEventListener('keydown', handleSecondZ);
 			};
@@ -287,16 +279,16 @@
 			return;
 		}
 
-		// Arrow keys for section navigation (when not in leader mode)
+		// Arrow keys for page navigation (when not in leader mode)
 		if (!leaderPressed && !showWhichKey && !gPressed) {
 			if (event.key === 'ArrowDown') {
 				event.preventDefault();
-				goToNextSection();
+				goToNextPage();
 				return;
 			}
 			if (event.key === 'ArrowUp') {
 				event.preventDefault();
-				goToPrevSection();
+				goToPrevPage();
 				return;
 			}
 		}
@@ -331,12 +323,12 @@
 			return;
 		}
 
-		// g + key - go to section
+		// g + key - go to page
 		if (gPressed && showGoTo) {
 			event.preventDefault();
 			const key = event.key;
 
-			const cmd = sections.find((c) => c.key === key);
+			const cmd = pages.find((c) => c.key === key);
 			if (cmd) {
 				cmd.action();
 				closeAll();
@@ -376,7 +368,7 @@
 			event.preventDefault();
 			const key = event.key;
 
-			const cmd = [...sections, ...themeKeys].find((c) => c.key === key);
+			const cmd = [...pages, ...themeKeys].find((c) => c.key === key);
 			if (cmd) {
 				cmd.action();
 				closeAll();
@@ -430,7 +422,7 @@
 			<div class="which-key-group">
 				<span class="group-title">Go to</span>
 				<div class="which-key-item"><kbd>g</kbd><span>Top</span></div>
-				{#each sections as cmd}
+				{#each pages as cmd}
 					<div class="which-key-item">
 						<kbd>{cmd.key}</kbd>
 						<span>{cmd.label}</span>
@@ -448,8 +440,8 @@
 		</div>
 		<div class="which-key-grid">
 			<div class="which-key-group">
-				<span class="group-title">Sections</span>
-				{#each sections as cmd}
+				<span class="group-title">Pages</span>
+				{#each pages as cmd}
 					<div class="which-key-item">
 						<kbd>{cmd.key}</kbd>
 						<span>{cmd.label}</span>
@@ -474,18 +466,15 @@
 			<div class="which-key-group">
 				<span class="group-title">Navigation</span>
 				<div class="which-key-item"><kbd>/</kbd><span>Search</span></div>
-				<div class="which-key-item"><kbd>w</kbd><span>Next</span></div>
-				<div class="which-key-item"><kbd>b</kbd><span>Prev</span></div>
+				<div class="which-key-item"><kbd>j/w</kbd><span>Next</span></div>
+				<div class="which-key-item"><kbd>k/b</kbd><span>Prev</span></div>
 				<div class="which-key-item"><kbd>gg</kbd><span>Top</span></div>
 				<div class="which-key-item"><kbd>G</kbd><span>Bottom</span></div>
-				<div class="which-key-item"><kbd>zz</kbd><span>Center</span></div>
 			</div>
 			<div class="which-key-group">
 				<span class="group-title">Scroll</span>
 				<div class="which-key-item"><kbd>^d</kbd><span>Half ↓</span></div>
 				<div class="which-key-item"><kbd>^u</kbd><span>Half ↑</span></div>
-				<div class="which-key-item"><kbd>^f</kbd><span>Page ↓</span></div>
-				<div class="which-key-item"><kbd>^b</kbd><span>Page ↑</span></div>
 				<div class="which-key-item"><kbd>Tab</kbd><span>Theme</span></div>
 			</div>
 		</div>

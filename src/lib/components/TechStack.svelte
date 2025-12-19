@@ -12,7 +12,7 @@
 	<div class="stack-list">
 		{#each config.techStack as tech}
 			<span class="tech-item">
-				<i class="devicon-{tech.icon}-plain"></i>
+				<i class="devicon-{tech.icon}-plain colored"></i>
 				{tech.name}
 			</span>
 		{/each}
@@ -57,14 +57,10 @@
 
 	.tech-item i {
 		font-size: 1.2rem;
-		color: var(--accent);
 	}
 
 	.tech-item:hover {
 		background-color: var(--surface1);
-	}
-
-	.tech-item:hover i {
-		color: var(--secondary);
+		transform: translateY(-2px);
 	}
 </style>

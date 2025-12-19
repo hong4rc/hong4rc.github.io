@@ -63,16 +63,20 @@
 
 html {
 	scroll-behavior: smooth;
-	scroll-padding-top: 5rem;
+	scroll-snap-type: y mandatory;
+}
+
+/* Full page sections */
+.page {
+	min-height: 100vh;
+	scroll-snap-align: start;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 }
 
 /* Section styling */
 section {
-	scroll-margin-top: 5rem;
-	border-bottom: 1px solid var(--surface0);
-}
-
-section:last-of-type {
 	border-bottom: none;
 }
 
