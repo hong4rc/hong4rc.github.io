@@ -41,13 +41,17 @@
 		<!-- Favicon -->
 		<link rel="icon" type="image/svg+xml" href="%sveltekit.assets%/favicon.svg" />
 
-		<!-- Inline script to prevent theme flash -->
+		<!-- Inline script to prevent theme flash and hide until ready -->
 		<script>
 			(function () {
 				const theme = localStorage.getItem('theme') || 'frappe';
 				document.documentElement.setAttribute('data-theme', theme);
 			})();
 		</script>
+		<style>
+			body { opacity: 0; transition: opacity 0.15s ease; }
+			body.ready { opacity: 1; }
+		</style>
 
 		%sveltekit.head%
 	</head>

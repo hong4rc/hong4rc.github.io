@@ -21,6 +21,9 @@
 	onMount(() => {
 		theme.init();
 		if (browser) {
+			// Show page after ready (prevents flash)
+			document.body.classList.add('ready');
+
 			window.addEventListener('scroll', handleScroll);
 			handleScroll();
 		}
