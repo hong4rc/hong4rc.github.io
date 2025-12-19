@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { config } from '$lib/config';
-	import { getPostBySlug } from '$lib/blog/posts';
 	import { page } from '$app/stores';
 
-	let post = $derived(getPostBySlug($page.params.slug));
+	let { data } = $props();
 
 	function formatDate(dateStr: string): string {
 		const date = new Date(dateStr);
@@ -12,32 +11,31 @@
 </script>
 
 <svelte:head>
-	<title>{post?.title || 'Post'} | {config.name}</title>
+	<title>{data.post?.title || 'Post'} | {config.name}</title>
 </svelte:head>
 
 <main class="post-page">
-	{#if post}
+	{#if data.post && data.Content}
 		<article>
 			<header class="post-header">
 				<a href="/blog" class="back-link">← Back to blog</a>
-				<h1>{post.title}</h1>
+				<h1>{data.post.title}</h1>
 				<div class="post-meta">
-					<span class="date">{formatDate(post.date)}</span>
-					{#if post.readTime}
+					<span class="date">{formatDate(data.post.date)}</span>
+					{#if data.post.readTime}
 						<span class="separator">·</span>
-						<span class="read-time">{post.readTime} read</span>
+						<span class="read-time">{data.post.readTime} read</span>
 					{/if}
 				</div>
 				<div class="post-tags">
-					{#each post.tags as tag}
+					{#each data.post.tags as tag}
 						<a href="/blog?tag={tag}" class="tag">#{tag}</a>
 					{/each}
 				</div>
 			</header>
 
-			<div class="post-content">
-				<p class="coming-soon">Content coming soon...</p>
-				<p class="placeholder">{post.description}</p>
+			<div class="post-content prose">
+				<data.Content />
 			</div>
 		</article>
 	{:else}
@@ -115,20 +113,97 @@
 		background-color: var(--surface1);
 	}
 
-	.post-content {
+	/* Prose styles for markdown content */
+	.prose {
 		color: var(--text);
 		line-height: 1.8;
 	}
 
-	.coming-soon {
-		font-size: 1.2rem;
-		color: var(--accent);
+	.prose :global(h1) {
+		font-size: 1.8rem;
+		margin-top: 2.5rem;
 		margin-bottom: 1rem;
+		color: var(--text);
 	}
 
-	.placeholder {
+	.prose :global(h2) {
+		font-size: 1.4rem;
+		margin-top: 2rem;
+		margin-bottom: 0.75rem;
+		color: var(--text);
+	}
+
+	.prose :global(h3) {
+		font-size: 1.2rem;
+		margin-top: 1.5rem;
+		margin-bottom: 0.5rem;
+		color: var(--text);
+	}
+
+	.prose :global(p) {
+		margin-bottom: 1.25rem;
+	}
+
+	.prose :global(ul),
+	.prose :global(ol) {
+		margin-bottom: 1.25rem;
+		padding-left: 1.5rem;
+	}
+
+	.prose :global(li) {
+		margin-bottom: 0.5rem;
+	}
+
+	.prose :global(a) {
+		color: var(--accent);
+		text-decoration: underline;
+	}
+
+	.prose :global(a:hover) {
+		color: var(--secondary);
+	}
+
+	.prose :global(code) {
+		background-color: var(--surface0);
+		padding: 0.15rem 0.4rem;
+		border-radius: 4px;
+		font-size: 0.9em;
+	}
+
+	.prose :global(pre) {
+		background-color: var(--mantle);
+		padding: 1rem;
+		border-radius: 8px;
+		overflow-x: auto;
+		margin-bottom: 1.25rem;
+	}
+
+	.prose :global(pre code) {
+		background: none;
+		padding: 0;
+	}
+
+	.prose :global(blockquote) {
+		border-left: 3px solid var(--accent);
+		padding-left: 1rem;
+		margin-left: 0;
 		color: var(--subtext);
 		font-style: italic;
+	}
+
+	.prose :global(strong) {
+		color: var(--text);
+		font-weight: 600;
+	}
+
+	.prose :global(em) {
+		color: var(--subtext);
+	}
+
+	.prose :global(hr) {
+		border: none;
+		border-top: 1px solid var(--surface0);
+		margin: 2rem 0;
 	}
 
 	.not-found {

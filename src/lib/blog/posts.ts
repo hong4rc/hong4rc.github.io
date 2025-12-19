@@ -5,34 +5,28 @@ export interface BlogPost {
 	date: string;
 	tags: string[];
 	readTime?: string;
+	published: boolean;
 }
 
-export const posts: BlogPost[] = [
-	{
-		slug: 'welcome-to-my-blog',
-		title: 'Welcome to My Blog',
-		description: 'First post! Sharing my journey as a backend developer, from Gameloft to building government systems to fitness tech.',
-		date: '2024-12-20',
-		tags: ['intro', 'life'],
-		readTime: '2 min'
-	},
-	{
-		slug: 'why-i-switched-to-neovim',
-		title: 'Why I Switched to Neovim',
-		description: 'After years of VS Code, I made the jump to Neovim with LazyVim. Here is what changed.',
-		date: '2024-12-15',
-		tags: ['neovim', 'tools', 'productivity'],
-		readTime: '5 min'
-	},
-	{
-		slug: 'colemak-journey',
-		title: 'My Colemak Journey',
-		description: 'Switching keyboard layouts while working full-time. The pain, the gain, and the 3 months it took.',
-		date: '2024-12-10',
-		tags: ['keyboard', 'productivity'],
-		readTime: '4 min'
-	}
-];
+export interface PostModule {
+	metadata: BlogPost;
+	default: ConstructorOfATypedSvelteComponent;
+}
+
+// Import all markdown files from posts directory
+const postFiles = import.meta.glob<PostModule>('/src/posts/*.md', { eager: true });
+
+// Parse posts from markdown files
+export const posts: BlogPost[] = Object.entries(postFiles)
+	.map(([path, module]) => {
+		const slug = path.split('/').pop()?.replace('.md', '') || '';
+		return {
+			...module.metadata,
+			slug
+		};
+	})
+	.filter(post => post.published)
+	.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
 	return posts.find(p => p.slug === slug);
@@ -46,4 +40,12 @@ export function getAllTags(): string[] {
 	const tags = new Set<string>();
 	posts.forEach(p => p.tags.forEach(t => tags.add(t)));
 	return Array.from(tags).sort();
+}
+
+export async function getPostContent(slug: string): Promise<PostModule | null> {
+	const path = `/src/posts/${slug}.md`;
+	if (postFiles[path]) {
+		return postFiles[path];
+	}
+	return null;
 }
