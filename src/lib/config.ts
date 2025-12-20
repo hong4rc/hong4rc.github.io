@@ -107,11 +107,6 @@ export const config = {
       description: 'Sofle v2. Because one keyboard is never enough'
     },
     {
-      icon: '💚',
-      title: 'Neovim Addict',
-      description: "BTW I use Neovim. Try pressing 'gg' or '?' on this site"
-    },
-    {
       icon: '🌙',
       title: 'Dark Mode Only',
       description: "Light mode? My eyes left the chat"
