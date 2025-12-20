@@ -41,16 +41,14 @@
 
 	.tools-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, 160px);
-		justify-content: center;
+		grid-template-columns: repeat(4, 1fr);
 		gap: 1rem;
-		max-width: 900px;
+		max-width: 700px;
 		margin: 0 auto;
 	}
 
 	.tool-group {
 		text-align: left;
-		width: 160px;
 		padding: 1rem;
 		background-color: var(--surface0);
 		border-radius: 8px;
@@ -102,7 +100,6 @@
 		}
 
 		.tool-group {
-			width: 100%;
 			padding: 0.75rem;
 		}
 
