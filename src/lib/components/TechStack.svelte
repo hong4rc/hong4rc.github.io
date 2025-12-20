@@ -18,7 +18,7 @@
 
 <style>
 	.tech-stack {
-		padding: 4rem 2rem;
+		padding: 2rem 2rem 1rem;
 		text-align: center;
 	}
 
