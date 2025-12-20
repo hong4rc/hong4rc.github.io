@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { config } from '$lib/config';
 	import { onMount } from 'svelte';
+	import TechIcon from './TechIcon.svelte';
 
 	let commitCount = $state<number | null>(null);
 	const version = '1.0.0';
@@ -84,7 +85,7 @@
 				{#each builtWith as tech}
 					<a href={tech.url} target="_blank" rel="noopener noreferrer" class="tech-item">
 						{#if tech.icon}
-							<i class="devicon-{tech.icon}-plain"></i>
+							<TechIcon icon={tech.icon} />
 						{/if}
 						{tech.name}
 					</a>

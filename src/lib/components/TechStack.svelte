@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { config } from '$lib/config';
 	import { reveal } from '$lib/actions/reveal';
+	import TechIcon from './TechIcon.svelte';
 </script>
 
 <section class="tech-stack" use:reveal>
@@ -8,7 +9,7 @@
 	<div class="stack-list">
 		{#each config.techStack as tech}
 			<span class="tech-item">
-				<i class="devicon-{tech.icon}-plain colored"></i>
+				<TechIcon icon={tech.icon} colored />
 				{tech.name}
 			</span>
 		{/each}
