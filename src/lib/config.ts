@@ -24,8 +24,7 @@ export const config = {
     { name: 'MongoDB', icon: 'mongodb' },
     { name: 'PostgreSQL', icon: 'postgresql' },
     { name: 'Redis', icon: 'redis' },
-    { name: 'AWS', icon: 'amazonwebservices' },
-    { name: 'Git', icon: 'git' }
+    { name: 'AWS', icon: 'amazonwebservices' }
   ],
 
   skills: [
@@ -64,11 +63,8 @@ export const config = {
 
   tools: [
     { category: 'Terminal', icon: '▶', items: [
-      { name: 'Ghostty + tmux', url: 'https://ghostty.org' }
-    ]},
-    { category: 'Shell', icon: '◆', items: [
-      { name: 'zsh + Starship', url: 'https://starship.rs' },
-      { name: 'Catppuccin', url: 'https://catppuccin.com' }
+      { name: 'Ghostty', url: 'https://ghostty.org' },
+      { name: 'zsh + tmux', url: 'https://github.com/tmux/tmux' }
     ]},
     { category: 'IDE', icon: '◇', items: [
       { name: 'LazyVim', url: 'https://www.lazyvim.org' },
@@ -89,9 +85,6 @@ export const config = {
     { category: 'Keyboard', icon: '⌨', items: [
       { name: 'Colemak', url: 'https://colemak.com' },
       { name: 'Sofle v2', url: 'https://github.com/josefadamcik/SofleKeyboard' }
-    ]},
-    { category: 'Dotfiles', icon: '◎', items: [
-      { name: 'stow', url: 'https://www.gnu.org/software/stow' }
     ]},
     { category: 'Package Manager', icon: '◉', items: [
       { name: 'mise', url: 'https://mise.jdx.dev' }

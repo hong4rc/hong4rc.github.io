@@ -1,31 +1,11 @@
 <script lang="ts">
 	import { config } from '$lib/config';
-	import { onMount } from 'svelte';
 	import TechIcon from './TechIcon.svelte';
 	import { addUTM } from '$lib/utils/utm';
 
-	let commitCount = $state<number | null>(null);
 	const version = '1.0.0';
 	const linesOfCode = '~2.5k';
 	const buildTime = '< 1s';
-
-	onMount(async () => {
-		// Fetch commit count from GitHub API
-		try {
-			const res = await fetch(`https://api.github.com/repos/hong4rc/hong4rc.github.io/commits?per_page=1`, {
-				headers: { 'Accept': 'application/vnd.github.v3+json' }
-			});
-			const linkHeader = res.headers.get('Link');
-			if (linkHeader) {
-				const match = linkHeader.match(/page=(\d+)>; rel="last"/);
-				if (match) {
-					commitCount = parseInt(match[1], 10);
-				}
-			}
-		} catch {
-			commitCount = null;
-		}
-	});
 
 	const builtWith = [
 		{ name: 'SvelteKit', url: 'https://kit.svelte.dev', icon: 'svelte' },
@@ -49,19 +29,6 @@
 				<span class="stat-icon">⚡</span>
 				<span class="stat-label">Lighthouse</span>
 			</a>
-
-			{#if commitCount !== null}
-				<a
-					href={addUTM('https://github.com/hong4rc/hong4rc.github.io/commits', { content: 'footer-commits' })}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="stat-badge"
-					title="View commits"
-				>
-					<span class="stat-value">{commitCount}</span>
-					<span class="stat-label">commits</span>
-				</a>
-			{/if}
 
 			<span class="stat-badge" title="Lines of code">
 				<span class="stat-value">{linesOfCode}</span>

@@ -154,4 +154,38 @@
 		background-color: var(--surface2);
 		transform: translateY(-1px);
 	}
+
+	@media (max-width: 480px) {
+		.experience {
+			padding: 2rem 1rem;
+		}
+
+		h2 {
+			margin-bottom: 2rem;
+		}
+
+		.timeline {
+			padding-left: 1.5rem;
+		}
+
+		.timeline-marker {
+			left: -1.5rem;
+		}
+
+		.timeline-content {
+			padding: 1rem;
+		}
+
+		h3 {
+			font-size: 1rem;
+		}
+
+		.company {
+			font-size: 0.85rem;
+		}
+
+		.description {
+			font-size: 0.85rem;
+		}
+	}
 </style>

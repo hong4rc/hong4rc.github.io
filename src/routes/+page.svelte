@@ -60,4 +60,14 @@
 	.page-hero {
 		padding: 0;
 	}
+
+	@media (max-width: 480px) {
+		main {
+			padding-top: 3rem;
+		}
+
+		.page {
+			padding: 1rem;
+		}
+	}
 </style>

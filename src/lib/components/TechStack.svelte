@@ -55,4 +55,25 @@
 		background-color: var(--surface1);
 		transform: translateY(-2px);
 	}
+
+	@media (max-width: 480px) {
+		.tech-stack {
+			padding: 1.5rem 1rem 0.5rem;
+		}
+
+		h2 {
+			font-size: 1.25rem;
+			margin-bottom: 1.5rem;
+		}
+
+		.stack-list {
+			gap: 0.5rem;
+		}
+
+		.tech-item {
+			padding: 0.4rem 0.75rem;
+			font-size: 0.8rem;
+			gap: 0.35rem;
+		}
+	}
 </style>

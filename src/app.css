@@ -83,6 +83,17 @@ html {
 	scroll-snap-type: y mandatory;
 }
 
+@media (max-width: 768px) {
+	html {
+		scroll-snap-type: none;
+	}
+
+	.page {
+		min-height: auto;
+		scroll-snap-align: none;
+	}
+}
+
 /* Full page sections */
 .page {
 	min-height: 100vh;

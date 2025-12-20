@@ -3,6 +3,7 @@
 	import { themes, type Theme } from '$lib/config';
 
 	let isOpen = $state(false);
+	let container: HTMLDivElement;
 
 	function selectTheme(t: Theme) {
 		theme.set(t);
@@ -14,11 +15,17 @@
 			isOpen = false;
 		}
 	}
+
+	function handleClickOutside(event: MouseEvent) {
+		if (isOpen && container && !container.contains(event.target as Node)) {
+			isOpen = false;
+		}
+	}
 </script>
 
-<svelte:window onkeydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} onclick={handleClickOutside} />
 
-<div class="theme-toggle">
+<div class="theme-toggle" bind:this={container}>
 	<button
 		class="toggle-btn"
 		onclick={() => (isOpen = !isOpen)}
@@ -132,7 +139,7 @@
 	.option-note {
 		margin-left: auto;
 		font-size: 0.7rem;
-		color: var(--surface2);
+		color: var(--red);
 		font-style: italic;
 	}
 </style>

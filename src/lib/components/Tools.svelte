@@ -90,4 +90,28 @@
 	li a:hover {
 		color: var(--accent);
 	}
+
+	@media (max-width: 480px) {
+		.tools {
+			padding: 1.5rem 1rem;
+		}
+
+		.tools-grid {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 0.75rem;
+		}
+
+		.tool-group {
+			width: 100%;
+			padding: 0.75rem;
+		}
+
+		h3 {
+			font-size: 0.65rem;
+		}
+
+		li {
+			font-size: 0.8rem;
+		}
+	}
 </style>

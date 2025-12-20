@@ -10,8 +10,10 @@
 			{#each config.funFacts as fact}
 				<div class="fact-card">
 					<span class="fact-icon">{fact.icon}</span>
-					<h3>{fact.title}</h3>
-					<p>{fact.description}</p>
+					<div class="fact-content">
+						<h3>{fact.title}</h3>
+						<p>{fact.description}</p>
+					</div>
 				</div>
 			{/each}
 		</div>
@@ -41,7 +43,34 @@
 
 	@media (max-width: 768px) {
 		.facts-grid {
-			grid-template-columns: repeat(2, 1fr);
+			grid-template-columns: 1fr;
+			gap: 1rem;
+		}
+
+		.fact-card {
+			display: flex;
+			align-items: center;
+			gap: 1rem;
+			text-align: left;
+			padding: 1rem;
+		}
+
+		.fact-icon {
+			font-size: 1.5rem;
+			margin-bottom: 0;
+			flex-shrink: 0;
+		}
+
+		.fact-content {
+			flex: 1;
+		}
+
+		h3 {
+			margin-bottom: 0.25rem;
+		}
+
+		p {
+			font-size: 0.8rem;
 		}
 	}
 

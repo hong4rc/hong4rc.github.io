@@ -69,4 +69,24 @@
 		height: 18px;
 		color: var(--color);
 	}
+
+	@media (max-width: 480px) {
+		.contact {
+			padding: 1.5rem 1rem;
+		}
+
+		.links {
+			gap: 0.5rem;
+		}
+
+		.link {
+			padding: 0.4rem 0.75rem;
+			font-size: 0.8rem;
+		}
+
+		.icon {
+			width: 16px;
+			height: 16px;
+		}
+	}
 </style>

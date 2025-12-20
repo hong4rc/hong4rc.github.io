@@ -194,4 +194,29 @@
 		border-radius: 3px;
 		color: var(--accent);
 	}
+
+	@media (max-width: 480px) {
+		.hero {
+			padding: 1rem;
+			min-height: 70vh;
+		}
+
+		.info-row {
+			gap: 0.75rem;
+			margin-top: 1rem;
+		}
+
+		.info-item {
+			font-size: 0.7rem;
+		}
+
+		.quote {
+			font-size: 0.75rem;
+			padding: 0 1rem;
+		}
+
+		.experience {
+			font-size: 0.8rem;
+		}
+	}
 </style>

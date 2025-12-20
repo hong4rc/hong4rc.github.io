@@ -130,4 +130,22 @@
 		max-width: 6rem;
 		opacity: 1;
 	}
+
+	@media (max-width: 480px) {
+		header {
+			padding: 0.75rem 1rem;
+		}
+
+		.nav-left {
+			gap: 1rem;
+		}
+
+		.logo {
+			font-size: 1.25rem;
+		}
+
+		.nav-link {
+			font-size: 0.8rem;
+		}
+	}
 </style>
