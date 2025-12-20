@@ -3,6 +3,7 @@
 	import { reveal } from '$lib/actions/reveal';
 	import { onMount } from 'svelte';
 	import { addUTM } from '$lib/utils/utm';
+	import Skeleton from './Skeleton.svelte';
 
 	interface Repo {
 		author: string;
@@ -58,7 +59,16 @@
 	<section class="opensource" use:reveal>
 		<h2>Open Source</h2>
 		{#if loading}
-			<p class="loading">_</p>
+			<div class="repos-grid">
+				{#each [1, 2, 3, 4] as _}
+					<div class="repo-card skeleton-card">
+						<Skeleton width="70%" height="1rem" />
+						<Skeleton width="100%" height="0.85rem" />
+						<Skeleton width="85%" height="0.85rem" />
+						<Skeleton width="4rem" height="0.8rem" />
+					</div>
+				{/each}
+			</div>
 		{:else if repos.length}
 			<div class="repos-grid">
 				{#each repos as repo}
@@ -115,9 +125,15 @@
 		transition: all 0.2s ease;
 	}
 
-	.repo-card:hover {
+	.repo-card:hover:not(.skeleton-card) {
 		background-color: var(--surface1);
 		transform: translateY(-2px);
+	}
+
+	.skeleton-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
 	}
 
 	h3 {

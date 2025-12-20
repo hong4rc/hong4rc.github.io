@@ -10,11 +10,42 @@
 	import Contact from '$lib/components/Contact.svelte';
 	import Availability from '$lib/components/Availability.svelte';
 	import TechFooter from '$lib/components/TechFooter.svelte';
+	import { swipe } from '$lib/actions/swipe';
+
+	const pages = ['page-hero', 'page-experience', 'page-tech', 'page-tools', 'page-contact'];
+
+	function getCurrentPageIndex(): number {
+		const scrollY = window.scrollY + window.innerHeight / 2;
+		for (let i = pages.length - 1; i >= 0; i--) {
+			const el = document.querySelector(`.${pages[i]}`);
+			if (el && (el as HTMLElement).offsetTop <= scrollY) {
+				return i;
+			}
+		}
+		return 0;
+	}
+
+	function scrollToPage(index: number) {
+		if (index >= 0 && index < pages.length) {
+			const el = document.querySelector(`.${pages[index]}`);
+			if (el) el.scrollIntoView({ behavior: 'smooth' });
+		}
+	}
+
+	function handleSwipeLeft() {
+		const current = getCurrentPageIndex();
+		scrollToPage(Math.min(current + 1, pages.length - 1));
+	}
+
+	function handleSwipeRight() {
+		const current = getCurrentPageIndex();
+		scrollToPage(Math.max(current - 1, 0));
+	}
 </script>
 
 <SEO />
 
-<main>
+<main use:swipe={{ onLeft: handleSwipeLeft, onRight: handleSwipeRight }}>
 	<!-- Page 1: Hero -->
 	<div class="page page-hero">
 		<Hero />

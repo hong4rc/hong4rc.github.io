@@ -7,7 +7,7 @@
 {#if config.features.showTools && config.tools?.length}
 	<section class="tools" use:reveal>
 		<h2>Tools I Use</h2>
-		<div class="tools-grid">
+		<div class="tools-grid" use:reveal={{ stagger: true }}>
 			{#each config.tools as group, i}
 				<div class="tool-group">
 					<h3>

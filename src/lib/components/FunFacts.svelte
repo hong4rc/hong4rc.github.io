@@ -6,7 +6,7 @@
 {#if config.features.showFunFacts}
 	<section class="fun-facts" use:reveal>
 		<h2>Fun Facts</h2>
-		<div class="facts-grid">
+		<div class="facts-grid" use:reveal={{ stagger: true }}>
 			{#each config.funFacts as fact}
 				<div class="fact-card">
 					<span class="fact-icon">{fact.icon}</span>

@@ -2,6 +2,7 @@
 	import { config } from '$lib/config';
 	import { reveal } from '$lib/actions/reveal';
 	import { onMount } from 'svelte';
+	import Skeleton from './Skeleton.svelte';
 
 	interface GitHubUser {
 		public_repos: number;
@@ -46,8 +47,14 @@
 	<section class="github-stats" use:reveal>
 		<h2>GitHub</h2>
 		{#if loading}
-			<div class="loading">
-				<span class="cursor">_</span>
+			<div class="stats-grid">
+				{#each [1, 2, 3] as _}
+					<div class="stat-card skeleton-card">
+						<Skeleton width="24px" height="24px" />
+						<Skeleton width="3rem" height="1.5rem" />
+						<Skeleton width="5rem" height="0.85rem" />
+					</div>
+				{/each}
 			</div>
 		{:else if error || !stats}
 			<p class="error">Failed to load stats</p>
@@ -136,9 +143,16 @@
 		text-decoration: none;
 	}
 
-	.stat-card:hover {
+	.stat-card:hover:not(.skeleton-card) {
 		background-color: var(--surface1);
 		transform: translateY(-2px);
+	}
+
+	.skeleton-card {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.5rem;
 	}
 
 	.stat-icon {
