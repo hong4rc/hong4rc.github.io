@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { config } from '$lib/config';
 	import { reveal } from '$lib/actions/reveal';
+	import { addUTM } from '$lib/utils/utm';
 </script>
 
 {#if config.features.showTools && config.tools?.length}
@@ -16,7 +17,7 @@
 					<ul>
 						{#each group.items as item}
 							<li>
-								<a href={item.url} target="_blank" rel="noopener noreferrer">{item.name}</a>
+								<a href={addUTM(item.url, { content: 'tools' })} target="_blank" rel="noopener noreferrer">{item.name}</a>
 							</li>
 						{/each}
 					</ul>

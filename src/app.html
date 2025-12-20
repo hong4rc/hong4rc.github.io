@@ -8,6 +8,7 @@
 		<!-- Preconnect to external resources -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 
 		<!-- Non-blocking font loading -->
 		<link
@@ -23,8 +24,10 @@
 			/>
 		</noscript>
 
-		<!-- Favicon -->
+		<!-- Favicon & PWA -->
 		<link rel="icon" type="image/svg+xml" href="%sveltekit.assets%/favicon.svg" />
+		<link rel="apple-touch-icon" href="%sveltekit.assets%/apple-touch-icon.png" />
+		<link rel="manifest" href="%sveltekit.assets%/manifest.json" />
 
 		<!-- Inline script to prevent theme flash and hide until ready -->
 		<script>

@@ -2,6 +2,7 @@
 	import { config } from '$lib/config';
 	import { onMount } from 'svelte';
 	import TechIcon from './TechIcon.svelte';
+	import { addUTM } from '$lib/utils/utm';
 
 	let commitCount = $state<number | null>(null);
 	const version = '1.0.0';
@@ -39,7 +40,7 @@
 		<!-- Stats Row -->
 		<div class="stats-row">
 			<a
-				href="https://pagespeed.web.dev/analysis?url={encodeURIComponent(config.seo.siteUrl)}"
+				href={addUTM(`https://pagespeed.web.dev/analysis?url=${encodeURIComponent(config.seo.siteUrl)}`, { content: 'footer-lighthouse' })}
 				target="_blank"
 				rel="noopener noreferrer"
 				class="stat-badge"
@@ -51,7 +52,7 @@
 
 			{#if commitCount !== null}
 				<a
-					href="https://github.com/hong4rc/hong4rc.github.io/commits"
+					href={addUTM('https://github.com/hong4rc/hong4rc.github.io/commits', { content: 'footer-commits' })}
 					target="_blank"
 					rel="noopener noreferrer"
 					class="stat-badge"
@@ -83,7 +84,7 @@
 			<span class="built-label">Built with</span>
 			<div class="tech-list">
 				{#each builtWith as tech}
-					<a href={tech.url} target="_blank" rel="noopener noreferrer" class="tech-item">
+					<a href={addUTM(tech.url, { content: 'footer-builtwith' })} target="_blank" rel="noopener noreferrer" class="tech-item">
 						{#if tech.icon}
 							<TechIcon icon={tech.icon} colored />
 						{/if}
@@ -97,7 +98,7 @@
 		<div class="footer-bottom">
 			<p class="copyright">&copy; {new Date().getFullYear()} {config.name}</p>
 			<a
-				href="https://github.com/hong4rc/hong4rc.github.io"
+				href={addUTM('https://github.com/hong4rc/hong4rc.github.io', { content: 'footer-source' })}
 				target="_blank"
 				rel="noopener noreferrer"
 				class="source-link"

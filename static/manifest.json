@@ -1,0 +1,21 @@
+{
+  "name": "Hong4rc | Backend Developer",
+  "short_name": "Hong4rc",
+  "description": "Backend Developer with 6+ years of experience in Node.js, NestJS, MongoDB, and AWS",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#303446",
+  "theme_color": "#303446",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

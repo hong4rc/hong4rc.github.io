@@ -140,7 +140,9 @@ export const config = {
   seo: {
     siteUrl: 'https://hong4rc.github.io',
     ogImage: '/og-image.png',
-    twitterHandle: '@hong4rc'
+    twitterHandle: '@hong4rc',
+    description: 'Backend Developer with 6+ years of experience in Node.js, NestJS, MongoDB, and AWS. Building scalable APIs and microservices.',
+    keywords: ['backend developer', 'nodejs', 'nestjs', 'mongodb', 'aws', 'typescript', 'api development', 'software engineer', 'vietnam']
   },
 
   analytics: {

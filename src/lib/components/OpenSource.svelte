@@ -2,6 +2,7 @@
 	import { config } from '$lib/config';
 	import { reveal } from '$lib/actions/reveal';
 	import { onMount } from 'svelte';
+	import { addUTM } from '$lib/utils/utm';
 
 	interface Repo {
 		author: string;
@@ -45,7 +46,7 @@
 		{:else if repos.length}
 			<div class="repos-grid">
 				{#each repos as repo}
-					<a href={`https://github.com/${repo.author}/${repo.name}`} class="repo-card" target="_blank" rel="noopener">
+					<a href={addUTM(`https://github.com/${repo.author}/${repo.name}`, { content: 'opensource' })} class="repo-card" target="_blank" rel="noopener">
 						<h3><span class="author">{repo.author}/</span>{repo.name}</h3>
 						<p class="desc">{repo.description || 'No description'}</p>
 						{#if repo.language}
