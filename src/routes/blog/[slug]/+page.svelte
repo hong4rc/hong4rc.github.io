@@ -22,6 +22,9 @@
 
 <svelte:head>
 	<title>{data.post?.title || 'Post'} | {config.name}</title>
+	{#if data.post?.description}
+		<meta name="description" content={data.post.description} />
+	{/if}
 </svelte:head>
 
 {#if showBackLink}

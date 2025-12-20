@@ -21,6 +21,7 @@
 
 <svelte:head>
 	<title>Blog | {config.name}</title>
+	<meta name="description" content="Backend dev thoughts, keyboard obsessions, and occasional wisdom from {config.name}. Articles about Node.js, TypeScript, Neovim, and developer productivity." />
 </svelte:head>
 
 <main class="blog-page">
