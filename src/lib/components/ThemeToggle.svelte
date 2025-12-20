@@ -30,15 +30,23 @@
 
 	{#if isOpen}
 		<div class="dropdown" role="menu">
-			{#each themes as t}
+			{#each themes as t, i}
+				{#if i > 0}
+					<div class="divider"></div>
+				{/if}
 				<button
 					class="theme-option"
 					class:active={$theme === t.id}
-					onclick={() => selectTheme(t.id)}
+					class:disabled={t.id === 'latte'}
+					onclick={() => t.id !== 'latte' && selectTheme(t.id)}
 					role="menuitem"
+					aria-disabled={t.id === 'latte'}
 				>
 					<span class="option-icon">{t.icon}</span>
 					<span class="option-name">{t.name}</span>
+					{#if t.id === 'latte'}
+						<span class="option-note">nah</span>
+					{/if}
 				</button>
 			{/each}
 		</div>
@@ -73,10 +81,16 @@
 		right: 0;
 		background: var(--surface0);
 		border-radius: 8px;
-		padding: 0.5rem;
-		min-width: 140px;
+		padding: 0.5rem 0;
+		min-width: 150px;
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 		z-index: 100;
+	}
+
+	.divider {
+		height: 1px;
+		background: var(--surface1);
+		margin: 0.25rem 0.75rem;
 	}
 
 	.theme-option {
@@ -84,10 +98,10 @@
 		align-items: center;
 		gap: 0.5rem;
 		width: 100%;
-		padding: 0.5rem 0.75rem;
+		padding: 0.6rem 0.75rem;
 		background: none;
 		border: none;
-		border-radius: 4px;
+		border-left: 2px solid transparent;
 		cursor: pointer;
 		color: var(--subtext);
 		font-family: inherit;
@@ -95,7 +109,7 @@
 		transition: all 0.2s ease;
 	}
 
-	.theme-option:hover {
+	.theme-option:hover:not(.disabled) {
 		background: var(--surface1);
 		color: var(--text);
 	}
@@ -103,9 +117,22 @@
 	.theme-option.active {
 		background: var(--surface1);
 		color: var(--accent);
+		border-left-color: var(--surface2);
+	}
+
+	.theme-option.disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
 	}
 
 	.option-icon {
 		font-size: 1rem;
+	}
+
+	.option-note {
+		margin-left: auto;
+		font-size: 0.7rem;
+		color: var(--surface2);
+		font-style: italic;
 	}
 </style>

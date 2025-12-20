@@ -5,6 +5,18 @@
 	// Split name to highlight "4"
 	const nameParts = config.name.match(/^(.*?)(4)(.*)$/);
 
+	// Get current time in Vietnam timezone
+	function getLocalTime() {
+		return new Date().toLocaleTimeString('en-US', {
+			timeZone: 'Asia/Ho_Chi_Minh',
+			hour: '2-digit',
+			minute: '2-digit',
+			hour12: false
+		});
+	}
+
+	let localTime = $state(getLocalTime());
+
 	const devQuotes = [
 		"it works on my machine ¯\\_(ツ)_/¯",
 		"// TODO: fix this later (written 3 years ago)",
@@ -29,6 +41,11 @@
 		// Random quote
 		quote = devQuotes[Math.floor(Math.random() * devQuotes.length)];
 
+		// Update time every minute
+		const timeInterval = setInterval(() => {
+			localTime = getLocalTime();
+		}, 60000);
+
 		// Check if animation already played this session
 		const hasPlayed = sessionStorage.getItem('bioAnimationPlayed');
 
@@ -50,8 +67,13 @@
 				}
 			}, 50);
 
-			return () => clearInterval(interval);
+			return () => {
+				clearInterval(interval);
+				clearInterval(timeInterval);
+			};
 		}
+
+		return () => clearInterval(timeInterval);
 	});
 </script>
 
@@ -66,6 +88,22 @@
 	<p class="title">{config.title}</p>
 	<p class="bio">{bioText}<span class="cursor">|</span></p>
 	<p class="experience">{config.experience} years of experience</p>
+
+	<div class="info-row">
+		<span class="info-item">
+			<span class="info-icon">📍</span>
+			<span>Da Nang, Vietnam</span>
+		</span>
+		<span class="info-item">
+			<span class="info-icon">🕐</span>
+			<span>{localTime} (UTC+7)</span>
+		</span>
+		<span class="info-item">
+			<span class="info-icon">⌨️</span>
+			<span><code>&lt;leader&gt;</code> <code>&lt;space&gt;</code></span>
+		</span>
+	</div>
+
 	{#if quote}
 		<p class="quote">"{quote}"</p>
 	{/if}
@@ -126,5 +164,34 @@
 		color: var(--surface2);
 		font-style: italic;
 		opacity: 0.7;
+	}
+
+	.info-row {
+		display: flex;
+		justify-content: center;
+		gap: 1.5rem;
+		margin-top: 1.5rem;
+		flex-wrap: wrap;
+	}
+
+	.info-item {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 0.8rem;
+		color: var(--subtext);
+	}
+
+	.info-icon {
+		font-size: 0.9rem;
+	}
+
+	.info-item code {
+		font-family: 'Fira Code', monospace;
+		font-size: 0.75rem;
+		background: var(--surface0);
+		padding: 0.15rem 0.35rem;
+		border-radius: 3px;
+		color: var(--accent);
 	}
 </style>
