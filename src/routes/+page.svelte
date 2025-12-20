@@ -55,6 +55,7 @@
 
 	.page {
 		padding: 2rem;
+		scroll-margin-top: 5rem;
 	}
 
 	.page-hero {
