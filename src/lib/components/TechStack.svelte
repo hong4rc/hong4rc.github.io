@@ -20,7 +20,6 @@
 	.tech-stack {
 		padding: 4rem 2rem;
 		text-align: center;
-		background-color: var(--mantle);
 	}
 
 	h2 {
@@ -50,10 +49,6 @@
 		transition: all 0.2s ease;
 		cursor: default;
 		user-select: none;
-	}
-
-	.tech-item i {
-		font-size: 1.2rem;
 	}
 
 	.tech-item:hover {

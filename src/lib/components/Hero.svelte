@@ -18,26 +18,40 @@
 		"spent 6 hours on a typo"
 	];
 
-	let bioText = $state('');
+	let cursorPos = $state(0);
+	let animationDone = $state(false);
 	let quote = $state('');
 	const fullBio = config.bio;
+
+	let bioText = $derived(fullBio.slice(0, cursorPos));
 
 	onMount(() => {
 		// Random quote
 		quote = devQuotes[Math.floor(Math.random() * devQuotes.length)];
 
-		// Typewriter effect
-		let i = 0;
-		const interval = setInterval(() => {
-			if (i < fullBio.length) {
-				bioText = fullBio.slice(0, i + 1);
-				i++;
-			} else {
-				clearInterval(interval);
-			}
-		}, 50);
+		// Check if animation already played this session
+		const hasPlayed = sessionStorage.getItem('bioAnimationPlayed');
 
-		return () => clearInterval(interval);
+		if (hasPlayed) {
+			// Skip animation, show full text
+			cursorPos = fullBio.length;
+			animationDone = true;
+		} else {
+			// Typewriter effect
+			let i = 0;
+			const interval = setInterval(() => {
+				if (i < fullBio.length) {
+					cursorPos = i + 1;
+					i++;
+				} else {
+					clearInterval(interval);
+					animationDone = true;
+					sessionStorage.setItem('bioAnimationPlayed', 'true');
+				}
+			}, 50);
+
+			return () => clearInterval(interval);
+		}
 	});
 </script>
 
@@ -89,7 +103,6 @@
 		font-size: clamp(1rem, 3vw, 1.2rem);
 		color: var(--subtext);
 		margin-bottom: 0.5rem;
-		white-space: nowrap;
 	}
 
 	.cursor {

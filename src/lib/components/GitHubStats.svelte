@@ -90,14 +90,14 @@
 
 <style>
 	.github-stats {
-		padding: 4rem 2rem;
+		padding: 2rem;
 		text-align: center;
 	}
 
 	h2 {
-		font-size: 1.5rem;
+		font-size: 1.25rem;
 		color: var(--text);
-		margin-bottom: 2rem;
+		margin-bottom: 1rem;
 	}
 
 	.loading {
@@ -122,16 +122,16 @@
 	.stats-grid {
 		display: flex;
 		justify-content: center;
-		gap: 1.5rem;
+		gap: 1rem;
 		flex-wrap: wrap;
-		margin-bottom: 1.5rem;
+		margin-bottom: 1rem;
 	}
 
 	.stat-card {
 		background-color: var(--surface0);
-		padding: 1.5rem 2rem;
+		padding: 1rem 1.5rem;
 		border-radius: 8px;
-		min-width: 130px;
+		min-width: 100px;
 		transition: all 0.2s ease;
 		text-decoration: none;
 	}
@@ -154,7 +154,7 @@
 
 	.stat-value {
 		display: block;
-		font-size: 2rem;
+		font-size: 1.5rem;
 		font-weight: 700;
 		color: var(--color);
 	}

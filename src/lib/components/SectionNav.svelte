@@ -81,7 +81,9 @@
 
 <nav class="section-nav">
 	<div class="progress-bar">
-		<div class="progress-fill" style="height: {((currentIndex + 1) / pages.length) * 100}%"></div>
+		{#each pages as _, i}
+			<div class="progress-segment" class:active={i === currentIndex}></div>
+		{/each}
 	</div>
 	<ul>
 		{#each pages as page, i}
@@ -113,11 +115,21 @@
 	}
 
 	.progress-bar {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	.progress-segment {
 		width: 2px;
+		flex: 1;
 		background-color: var(--surface0);
 		border-radius: 1px;
-		position: relative;
-		overflow: hidden;
+		transition: background-color 0.2s;
+	}
+
+	.progress-segment.active {
+		background-color: var(--accent);
 	}
 
 	.page-indicator {
@@ -125,15 +137,6 @@
 		color: var(--subtext);
 		text-align: center;
 		margin-top: 0.5rem;
-	}
-
-	.progress-fill {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		background-color: var(--accent);
-		transition: height 0.1s ease-out;
 	}
 
 	ul {

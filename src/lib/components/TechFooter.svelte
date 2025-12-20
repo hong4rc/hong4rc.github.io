@@ -85,7 +85,7 @@
 				{#each builtWith as tech}
 					<a href={tech.url} target="_blank" rel="noopener noreferrer" class="tech-item">
 						{#if tech.icon}
-							<TechIcon icon={tech.icon} />
+							<TechIcon icon={tech.icon} colored />
 						{/if}
 						{tech.name}
 					</a>
@@ -110,8 +110,7 @@
 
 <style>
 	.tech-footer {
-		padding: 3rem 2rem;
-		background-color: var(--crust);
+		padding: 1rem 2rem;
 		border-top: 1px solid var(--surface0);
 	}
 
@@ -120,7 +119,7 @@
 		margin: 0 auto;
 		display: flex;
 		flex-direction: column;
-		gap: 1.5rem;
+		gap: 0.75rem;
 		align-items: center;
 	}
 
@@ -195,11 +194,6 @@
 	}
 
 	.tech-item:hover {
-		color: var(--accent);
-	}
-
-	.tech-item i {
-		font-size: 0.9rem;
 		color: var(--accent);
 	}
 

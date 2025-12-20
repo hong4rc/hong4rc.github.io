@@ -64,16 +64,14 @@ export const config = {
 
   tools: [
     { category: 'Terminal', icon: '▶', items: [
-      { name: 'Ghostty', url: 'https://ghostty.org' },
-      { name: 'tmux', url: 'https://github.com/tmux/tmux' },
-      { name: 'Starship', url: 'https://starship.rs' }
+      { name: 'Ghostty + tmux', url: 'https://ghostty.org' }
     ]},
-    { category: 'Editor', icon: '◆', items: [
-      { name: 'LazyVim', url: 'https://www.lazyvim.org' },
-      { name: 'lazygit', url: 'https://github.com/jesseduffield/lazygit' }
+    { category: 'Shell', icon: '◆', items: [
+      { name: 'zsh + Starship', url: 'https://starship.rs' },
+      { name: 'Catppuccin', url: 'https://catppuccin.com' }
     ]},
     { category: 'IDE', icon: '◇', items: [
-      { name: 'Neovim', url: 'https://neovim.io' },
+      { name: 'LazyVim', url: 'https://www.lazyvim.org' },
       { name: 'VS Code', url: 'https://code.visualstudio.com' }
     ]},
     { category: 'Database', icon: '●', items: [

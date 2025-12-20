@@ -91,12 +91,13 @@
 	}
 
 	.timeline-item.current .timeline-marker {
-		background-color: var(--accent);
-		box-shadow: 0 0 0 4px var(--surface0);
+		border: 2px solid var(--accent);
+		background-color: var(--surface2);
 	}
 
 	.timeline-item.current:hover .timeline-marker {
-		box-shadow: 0 0 12px var(--accent);
+		background-color: var(--accent);
+		box-shadow: 0 0 8px var(--accent);
 	}
 
 	.timeline-content {

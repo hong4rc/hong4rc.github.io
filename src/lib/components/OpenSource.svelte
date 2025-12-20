@@ -65,7 +65,6 @@
 <style>
 	.opensource {
 		padding: 4rem 2rem;
-		background-color: var(--mantle);
 	}
 
 	h2 {
