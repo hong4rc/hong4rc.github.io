@@ -3,12 +3,25 @@
 	import { browser } from '$app/environment';
 	import WhichKey from './WhichKey.svelte';
 
-	let { posts = [] }: { posts: { slug: string }[] } = $props();
+	let { posts = [] }: { posts: { slug: string; title: string; description: string }[] } = $props();
 
 	let selectedIndex = $state(-1);
 	let showHelp = $state(false);
 	let leaderPressed = $state(false);
 	let leaderTimeout: number | null = null;
+	let showSearch = $state(false);
+	let searchQuery = $state('');
+	let searchSelectedIndex = $state(0);
+	let inputElement: HTMLInputElement;
+
+	let filteredPosts = $derived(
+		searchQuery
+			? posts.filter(p =>
+				p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				p.description.toLowerCase().includes(searchQuery.toLowerCase())
+			)
+			: posts
+	);
 
 	const keyGroups = [
 		{
@@ -34,6 +47,7 @@
 		{
 			title: 'Space +',
 			keys: [
+				{ key: 'p', label: 'Search' },
 				{ key: 'h', label: 'Home' },
 				{ key: 'b', label: 'Blog' }
 			]
@@ -66,10 +80,46 @@
 	function closeAll() {
 		showHelp = false;
 		leaderPressed = false;
+		showSearch = false;
 		if (leaderTimeout) clearTimeout(leaderTimeout);
 	}
 
+	function openSearch() {
+		showSearch = true;
+		searchQuery = '';
+		searchSelectedIndex = 0;
+		leaderPressed = false;
+		setTimeout(() => inputElement?.focus(), 10);
+	}
+
 	function handleKeydown(event: KeyboardEvent) {
+		// Search mode
+		if (showSearch) {
+			if (event.key === 'Escape') {
+				event.preventDefault();
+				closeAll();
+				return;
+			}
+			if (event.key === 'Enter') {
+				event.preventDefault();
+				if (filteredPosts[searchSelectedIndex]) {
+					window.location.href = `/blog/${filteredPosts[searchSelectedIndex].slug}`;
+				}
+				return;
+			}
+			if (event.key === 'ArrowDown') {
+				event.preventDefault();
+				searchSelectedIndex = (searchSelectedIndex + 1) % filteredPosts.length;
+				return;
+			}
+			if (event.key === 'ArrowUp') {
+				event.preventDefault();
+				searchSelectedIndex = (searchSelectedIndex - 1 + filteredPosts.length) % filteredPosts.length;
+				return;
+			}
+			return;
+		}
+
 		if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
 			return;
 		}
@@ -91,6 +141,10 @@
 		// Leader shortcuts
 		if (leaderPressed) {
 			event.preventDefault();
+			if (event.key === 'p') {
+				openSearch();
+				return;
+			}
 			if (event.key === 'h') {
 				window.location.href = '/';
 				closeAll();
@@ -190,7 +244,42 @@
 	});
 </script>
 
-{#if leaderPressed}
+{#if showSearch}
+	<div class="search-backdrop" onclick={closeAll} role="presentation">
+		<div class="search-palette" role="dialog" aria-label="Search posts">
+			<div class="search-container">
+				<span class="search-prompt">&gt;</span>
+				<input
+					bind:this={inputElement}
+					bind:value={searchQuery}
+					type="text"
+					placeholder="Search posts..."
+					class="search-input"
+				/>
+				<kbd class="search-hint">esc</kbd>
+			</div>
+			<div class="search-results">
+				{#each filteredPosts as post, i}
+					<button
+						class="search-result"
+						class:selected={i === searchSelectedIndex}
+						onclick={() => { window.location.href = `/blog/${post.slug}`; }}
+						onmouseenter={() => searchSelectedIndex = i}
+					>
+						<span class="result-title">{post.title}</span>
+					</button>
+				{/each}
+				{#if filteredPosts.length === 0}
+					<div class="no-results">No posts found</div>
+				{/if}
+			</div>
+			<div class="search-footer">
+				<span><kbd>↑↓</kbd> navigate</span>
+				<span><kbd>↵</kbd> open</span>
+			</div>
+		</div>
+	</div>
+{:else if leaderPressed}
 	<WhichKey groups={leaderGroups} show={true} onclose={() => { leaderPressed = false; }} />
 {:else}
 	<WhichKey groups={keyGroups} bind:show={showHelp} onclose={() => showHelp = false} />
@@ -200,5 +289,113 @@
 	:global(.timeline-item.vim-selected) {
 		outline: 2px solid var(--accent);
 		outline-offset: 2px;
+	}
+
+	.search-backdrop {
+		position: fixed;
+		inset: 0;
+		background-color: rgba(0, 0, 0, 0.5);
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+		padding-top: 15vh;
+		z-index: 1000;
+	}
+
+	.search-palette {
+		width: 90%;
+		max-width: 400px;
+		background-color: var(--mantle);
+		border: 1px solid var(--surface0);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+
+	.search-container {
+		display: flex;
+		align-items: center;
+		padding: 0.75rem;
+		border-bottom: 1px solid var(--surface0);
+		gap: 0.5rem;
+	}
+
+	.search-prompt {
+		color: var(--accent);
+		font-weight: bold;
+	}
+
+	.search-input {
+		flex: 1;
+		background: transparent;
+		border: none;
+		color: var(--text);
+		font-family: 'Fira Code', monospace;
+		font-size: 0.9rem;
+		outline: none;
+	}
+
+	.search-input::placeholder {
+		color: var(--surface2);
+	}
+
+	.search-hint {
+		font-size: 0.65rem;
+		padding: 0.15rem 0.3rem;
+		background-color: var(--surface0);
+		color: var(--subtext);
+		border-radius: 3px;
+	}
+
+	.search-results {
+		max-height: 250px;
+		overflow-y: auto;
+	}
+
+	.search-result {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+		padding: 0.5rem 0.75rem;
+		background: transparent;
+		border: none;
+		color: var(--text);
+		font-family: 'Fira Code', monospace;
+		font-size: 0.85rem;
+		cursor: pointer;
+		text-align: left;
+	}
+
+	.search-result.selected {
+		background-color: var(--surface0);
+	}
+
+	.result-title {
+		color: var(--text);
+	}
+
+	.no-results {
+		padding: 1.5rem;
+		text-align: center;
+		color: var(--subtext);
+		font-size: 0.85rem;
+	}
+
+	.search-footer {
+		display: flex;
+		justify-content: center;
+		gap: 1rem;
+		padding: 0.5rem;
+		border-top: 1px solid var(--surface0);
+		background-color: var(--crust);
+		font-size: 0.7rem;
+		color: var(--subtext);
+	}
+
+	.search-footer kbd {
+		font-size: 0.65rem;
+		padding: 0.1rem 0.25rem;
+		background-color: var(--surface0);
+		border-radius: 3px;
 	}
 </style>
