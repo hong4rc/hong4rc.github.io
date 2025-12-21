@@ -25,9 +25,12 @@
 			title: 'Actions',
 			keys: [
 				{ key: 'Enter', label: 'Open' },
-				{ key: 'Esc', label: 'Clear' }
+				{ key: 'Esc', label: 'Deselect' }
 			]
-		},
+		}
+	];
+
+	const leaderGroups = [
 		{
 			title: 'Space +',
 			keys: [
@@ -78,15 +81,15 @@
 		if (event.code === 'Space' && !event.metaKey && !event.ctrlKey && !event.altKey) {
 			event.preventDefault();
 			leaderPressed = true;
-			showHelp = true;
 			leaderTimeout = window.setTimeout(() => {
-				closeAll();
+				leaderPressed = false;
+				if (leaderTimeout) clearTimeout(leaderTimeout);
 			}, 3000);
 			return;
 		}
 
 		// Leader shortcuts
-		if (leaderPressed && showHelp) {
+		if (leaderPressed) {
 			event.preventDefault();
 			if (event.key === 'h') {
 				window.location.href = '/';
@@ -187,7 +190,11 @@
 	});
 </script>
 
-<WhichKey groups={keyGroups} bind:show={showHelp} onclose={() => showHelp = false} />
+{#if leaderPressed}
+	<WhichKey groups={leaderGroups} show={true} onclose={() => { leaderPressed = false; }} />
+{:else}
+	<WhichKey groups={keyGroups} bind:show={showHelp} onclose={() => showHelp = false} />
+{/if}
 
 <style>
 	:global(.timeline-item.vim-selected) {
