@@ -97,7 +97,7 @@
 
 <style>
 	.github-stats {
-		padding: 2rem;
+		padding: 1rem 2rem;
 		text-align: center;
 	}
 
