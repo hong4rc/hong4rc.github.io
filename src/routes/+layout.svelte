@@ -37,6 +37,7 @@
 </script>
 
 <Analytics />
+<a href="#main" class="skip-link">Skip to content</a>
 {#if isHomePage}
 	<CommandPalette />
 	<SectionNav />
@@ -57,6 +58,24 @@
 {@render children()}
 
 <style>
+	.skip-link {
+		position: fixed;
+		top: -100%;
+		left: 1rem;
+		z-index: 100;
+		padding: 0.5rem 1rem;
+		background-color: var(--accent);
+		color: var(--base);
+		border-radius: 4px;
+		font-size: 0.875rem;
+		text-decoration: none;
+		transition: top 0.2s;
+	}
+
+	.skip-link:focus {
+		top: 1rem;
+	}
+
 	header {
 		position: fixed;
 		top: 0;

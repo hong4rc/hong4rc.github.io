@@ -45,7 +45,7 @@
 
 <SEO />
 
-<main use:swipe={{ onLeft: handleSwipeLeft, onRight: handleSwipeRight }}>
+<main id="main" use:swipe={{ onLeft: handleSwipeLeft, onRight: handleSwipeRight }}>
 	<!-- Page 1: Hero -->
 	<div class="page page-hero">
 		<Hero />

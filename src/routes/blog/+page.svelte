@@ -24,7 +24,7 @@
 	<meta name="description" content="Backend dev thoughts, keyboard obsessions, and occasional wisdom from {config.name}. Articles about Node.js, TypeScript, Neovim, and developer productivity." />
 </svelte:head>
 
-<main class="blog-page">
+<main id="main" class="blog-page">
 	<header class="blog-header">
 		<div class="avatar">
 			<span class="avatar-text">H4</span>

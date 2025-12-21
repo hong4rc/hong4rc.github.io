@@ -100,7 +100,8 @@ Commands:
 - `Space Space` - Open search
 - `/` - Open search
 - `?` - Show all keybindings
-- `Tab` - Cycle themes
+- `Tab` - Next section
+- `Shift+Tab` - Previous section
 
 Go-to keys (after `g`):
 - `h` - Home (page 1)

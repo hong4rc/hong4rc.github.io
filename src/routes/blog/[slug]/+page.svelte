@@ -31,7 +31,7 @@
 	<a href="/blog" class="back-link" transition:fade={{ duration: 200 }}>← Back to blog</a>
 {/if}
 
-<main class="post-page">
+<main id="main" class="post-page">
 	{#if data.post && data.Content}
 		<article>
 			<header class="post-header">

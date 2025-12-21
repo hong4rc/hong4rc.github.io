@@ -200,10 +200,14 @@
 			return;
 		}
 
-		// Tab - cycle themes
+		// Tab - next page, Shift+Tab - previous page
 		if (event.key === 'Tab' && !leaderPressed && !showWhichKey && !gPressed && !showSearch) {
 			event.preventDefault();
-			cycleTheme();
+			if (event.shiftKey) {
+				goToPrevPage();
+			} else {
+				goToNextPage();
+			}
 			return;
 		}
 
@@ -475,7 +479,8 @@
 				<span class="group-title">Scroll</span>
 				<div class="which-key-item"><kbd>^d</kbd><span>Half ↓</span></div>
 				<div class="which-key-item"><kbd>^u</kbd><span>Half ↑</span></div>
-				<div class="which-key-item"><kbd>Tab</kbd><span>Theme</span></div>
+				<div class="which-key-item"><kbd>Tab</kbd><span>Next</span></div>
+				<div class="which-key-item"><kbd>S-Tab</kbd><span>Prev</span></div>
 			</div>
 		</div>
 	</div>
