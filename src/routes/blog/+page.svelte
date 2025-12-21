@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { config } from '$lib/config';
 	import { posts, getAllTags } from '$lib/blog/posts';
+	import BlogNav from '$lib/components/BlogNav.svelte';
 
 	const allTags = getAllTags();
 	let selectedTag = $state<string | null>(null);
@@ -80,6 +81,8 @@
 		{/if}
 	</section>
 </main>
+
+<BlogNav posts={filteredPosts} />
 
 <style>
 	.blog-page {

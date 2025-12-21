@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { config } from '$lib/config';
 	import { fade } from 'svelte/transition';
+	import PostNav from '$lib/components/PostNav.svelte';
 
 	let { data } = $props();
 	let showBackLink = $state(false);
@@ -60,6 +61,8 @@
 		</div>
 	{/if}
 </main>
+
+<PostNav />
 
 <style>
 	.post-page {

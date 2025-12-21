@@ -28,7 +28,8 @@
 		{ key: 'e', label: 'Experience', action: () => scrollTo('page-experience') },
 		{ key: 't', label: 'Tech & OSS', action: () => scrollTo('page-tech') },
 		{ key: 'l', label: 'Tools & Fun', action: () => scrollTo('page-tools') },
-		{ key: 'c', label: 'Contact', action: () => scrollTo('page-contact') }
+		{ key: 'c', label: 'Contact', action: () => scrollTo('page-contact') },
+		{ key: 'b', label: 'Blog', action: () => window.location.href = '/blog' }
 	];
 
 	const themeKeys: Command[] = themes.map((t, i) => ({

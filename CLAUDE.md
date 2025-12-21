@@ -103,12 +103,36 @@ Commands:
 - `Tab` - Next section
 - `Shift+Tab` - Previous section
 
-Go-to keys (after `g`):
+Go-to keys (after `Space`):
 - `h` - Home (page 1)
 - `e` - Experience (page 2)
 - `t` - Tech Stack (page 3)
 - `l` - Tools (page 4)
-- `g` - GitHub Stats (page 5)
+- `c` - Contact (page 5)
+- `b` - Blog
+
+### Vim Keybindings (Blog List)
+
+- `j` / `↓` - Next post
+- `k` / `↑` - Previous post
+- `Enter` - Open selected post
+- `gg` - First post
+- `G` - Last post
+- `1-9` - Jump to post by number
+- `h` - Go home
+- `?` - Toggle help
+- `Esc` - Clear selection
+
+### Vim Keybindings (Blog Post)
+
+- `j` / `↓` - Scroll down
+- `k` / `↑` - Scroll up
+- `gg` - Top of page
+- `G` - Bottom of page
+- `Ctrl+d` / `Ctrl+u` - Half page down/up
+- `b` - Back to blog list
+- `h` - Go home
+- `?` - Toggle help
 
 ### Theming
 
