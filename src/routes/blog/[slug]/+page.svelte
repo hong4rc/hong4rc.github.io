@@ -70,14 +70,14 @@
 		background-color: var(--base);
 		padding: 2rem;
 		padding-top: 6rem;
-		max-width: 700px;
+		max-width: var(--blog-width);
 		margin: 0 auto;
 	}
 
 	.back-link {
 		position: fixed;
 		top: 5rem;
-		left: calc(50% - 350px - 8rem);
+		left: calc(50% - var(--blog-width) / 2 - 8rem);
 		color: var(--subtext);
 		text-decoration: none;
 		font-size: 0.9rem;
@@ -85,12 +85,12 @@
 		z-index: 10;
 	}
 
-	@media (max-width: 900px) {
+	@media (max-width: 1000px) {
 		.back-link {
 			position: static;
 			display: block;
 			padding: 6rem 2rem 0;
-			max-width: 700px;
+			max-width: var(--blog-width);
 			margin: 0 auto;
 		}
 	}

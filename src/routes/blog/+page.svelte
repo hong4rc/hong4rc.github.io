@@ -90,7 +90,7 @@
 		background-color: var(--base);
 		padding: 2rem;
 		padding-top: 6rem;
-		max-width: 700px;
+		max-width: var(--blog-width);
 		margin: 0 auto;
 	}
 
