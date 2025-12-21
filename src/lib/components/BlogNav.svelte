@@ -7,6 +7,8 @@
 
 	let selectedIndex = $state(-1);
 	let showHelp = $state(false);
+	let leaderPressed = $state(false);
+	let leaderTimeout: number | null = null;
 
 	const keyGroups = [
 		{
@@ -23,8 +25,14 @@
 			title: 'Actions',
 			keys: [
 				{ key: 'Enter', label: 'Open' },
-				{ key: 'h', label: 'Home' },
 				{ key: 'Esc', label: 'Clear' }
+			]
+		},
+		{
+			title: 'Space +',
+			keys: [
+				{ key: 'h', label: 'Home' },
+				{ key: 'b', label: 'Blog' }
 			]
 		}
 	];
@@ -52,6 +60,12 @@
 		}
 	}
 
+	function closeAll() {
+		showHelp = false;
+		leaderPressed = false;
+		if (leaderTimeout) clearTimeout(leaderTimeout);
+	}
+
 	function handleKeydown(event: KeyboardEvent) {
 		if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
 			return;
@@ -59,6 +73,36 @@
 
 		const postElements = getPostElements();
 		const maxIndex = postElements.length - 1;
+
+		// Leader key (Space)
+		if (event.code === 'Space' && !event.metaKey && !event.ctrlKey && !event.altKey) {
+			event.preventDefault();
+			leaderPressed = true;
+			showHelp = true;
+			leaderTimeout = window.setTimeout(() => {
+				closeAll();
+			}, 3000);
+			return;
+		}
+
+		// Leader shortcuts
+		if (leaderPressed && showHelp) {
+			event.preventDefault();
+			if (event.key === 'h') {
+				window.location.href = '/';
+				closeAll();
+				return;
+			}
+			if (event.key === 'b') {
+				closeAll();
+				return;
+			}
+			if (event.key === 'Escape') {
+				closeAll();
+				return;
+			}
+			return;
+		}
 
 		switch (event.key) {
 			case 'j':
@@ -75,10 +119,6 @@
 				event.preventDefault();
 				openPost();
 				break;
-			case 'h':
-				event.preventDefault();
-				window.location.href = '/';
-				break;
 			case 'G':
 				event.preventDefault();
 				selectPost(maxIndex);
@@ -89,6 +129,7 @@
 				break;
 			case 'Escape':
 				showHelp = false;
+				leaderPressed = false;
 				selectedIndex = -1;
 				postElements.forEach(el => el.classList.remove('vim-selected'));
 				break;
@@ -141,6 +182,7 @@
 			window.removeEventListener('keydown', handleKeydown);
 			window.removeEventListener('keydown', handleGKey);
 			if (gTimeout) clearTimeout(gTimeout);
+			if (leaderTimeout) clearTimeout(leaderTimeout);
 		}
 	});
 </script>

@@ -4,6 +4,8 @@
 	import WhichKey from './WhichKey.svelte';
 
 	let showHelp = $state(false);
+	let leaderPressed = $state(false);
+	let leaderTimeout: number | null = null;
 
 	const keyGroups = [
 		{
@@ -18,7 +20,7 @@
 			]
 		},
 		{
-			title: 'Navigate',
+			title: 'Space +',
 			keys: [
 				{ key: 'b', label: 'Blog' },
 				{ key: 'h', label: 'Home' }
@@ -26,20 +28,49 @@
 		}
 	];
 
+	function closeAll() {
+		showHelp = false;
+		leaderPressed = false;
+		if (leaderTimeout) clearTimeout(leaderTimeout);
+	}
+
 	function handleKeydown(event: KeyboardEvent) {
 		if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
 			return;
 		}
 
-		switch (event.key) {
-			case 'h':
-				event.preventDefault();
+		// Leader key (Space)
+		if (event.code === 'Space' && !event.metaKey && !event.ctrlKey && !event.altKey) {
+			event.preventDefault();
+			leaderPressed = true;
+			showHelp = true;
+			leaderTimeout = window.setTimeout(() => {
+				closeAll();
+			}, 3000);
+			return;
+		}
+
+		// Leader shortcuts
+		if (leaderPressed && showHelp) {
+			event.preventDefault();
+			if (event.key === 'h') {
 				window.location.href = '/';
-				break;
-			case 'b':
-				event.preventDefault();
+				closeAll();
+				return;
+			}
+			if (event.key === 'b') {
 				window.location.href = '/blog';
-				break;
+				closeAll();
+				return;
+			}
+			if (event.key === 'Escape') {
+				closeAll();
+				return;
+			}
+			return;
+		}
+
+		switch (event.key) {
 			case 'j':
 			case 'ArrowDown':
 				event.preventDefault();
@@ -71,7 +102,7 @@
 				showHelp = !showHelp;
 				break;
 			case 'Escape':
-				showHelp = false;
+				closeAll();
 				break;
 		}
 	}
@@ -109,6 +140,7 @@
 			window.removeEventListener('keydown', handleKeydown);
 			window.removeEventListener('keydown', handleGKey);
 			if (gTimeout) clearTimeout(gTimeout);
+			if (leaderTimeout) clearTimeout(leaderTimeout);
 		}
 	});
 </script>
