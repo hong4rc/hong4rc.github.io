@@ -23,6 +23,12 @@
 			: posts
 	);
 
+	function highlightMatch(text: string, query: string): string {
+		if (!query) return text;
+		const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+		return text.replace(regex, '<mark>$1</mark>');
+	}
+
 	const keyGroups = [
 		{
 			title: 'Navigate',
@@ -47,7 +53,7 @@
 		{
 			title: 'Space +',
 			keys: [
-				{ key: 'p', label: 'Search' },
+				{ key: '/', label: 'Search' },
 				{ key: 'h', label: 'Home' },
 				{ key: 'b', label: 'Blog' }
 			]
@@ -141,7 +147,7 @@
 		// Leader shortcuts
 		if (leaderPressed) {
 			event.preventDefault();
-			if (event.key === 'p') {
+			if (event.key === '/') {
 				openSearch();
 				return;
 			}
@@ -266,7 +272,7 @@
 						onclick={() => { window.location.href = `/blog/${post.slug}`; }}
 						onmouseenter={() => searchSelectedIndex = i}
 					>
-						<span class="result-title">{post.title}</span>
+						<span class="result-title">{@html highlightMatch(post.title, searchQuery)}</span>
 					</button>
 				{/each}
 				{#if filteredPosts.length === 0}
@@ -372,6 +378,13 @@
 
 	.result-title {
 		color: var(--text);
+	}
+
+	.result-title :global(mark) {
+		background-color: var(--accent);
+		color: var(--crust);
+		border-radius: 2px;
+		padding: 0 2px;
 	}
 
 	.no-results {
