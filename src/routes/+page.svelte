@@ -95,6 +95,8 @@
 
 	.page-contact {
 		padding-bottom: 0;
+		min-height: auto;
+		justify-content: flex-start;
 	}
 
 	@media (max-width: 480px) {

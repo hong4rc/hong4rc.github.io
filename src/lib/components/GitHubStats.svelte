@@ -97,7 +97,7 @@
 
 <style>
 	.github-stats {
-		padding: 1rem 2rem;
+		padding: 0.5rem 2rem 1rem;
 		text-align: center;
 	}
 
@@ -105,21 +105,6 @@
 		font-size: 1.25rem;
 		color: var(--text);
 		margin-bottom: 1rem;
-	}
-
-	.loading {
-		font-size: 1.5rem;
-		color: var(--accent);
-	}
-
-	.cursor {
-		animation: blink 1s step-end infinite;
-	}
-
-	@keyframes blink {
-		50% {
-			opacity: 0;
-		}
 	}
 
 	.error {

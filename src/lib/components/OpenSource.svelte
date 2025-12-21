@@ -104,7 +104,7 @@
 		margin-bottom: 2rem;
 	}
 
-	.loading, .empty {
+	.empty {
 		text-align: center;
 		color: var(--subtext);
 	}

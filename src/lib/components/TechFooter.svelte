@@ -78,7 +78,7 @@
 
 <style>
 	.tech-footer {
-		padding: 1rem 2rem;
+		padding: 1rem 2rem 2rem;
 		border-top: 1px solid var(--surface0);
 	}
 
