@@ -1,6 +1,6 @@
 ---
 title: Welcome to My Blog
-description: First post! A curious tinkerer's journey from making games profitable to digitizing government chaos.
+description: From Gameloft R&D to government OCR systems - a backend dev's journey of breaking things to learn how they work.
 date: '2024-12-20'
 tags:
   - intro

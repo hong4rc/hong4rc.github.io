@@ -1,6 +1,6 @@
 ---
 title: Why I Switched to Neovim
-description: After years of VS Code, I made the jump to Neovim with LazyVim. Here is what changed.
+description: 4 years of VS Code, then LazyVim happened. Week 1 was pain, week 4 I couldn't go back.
 date: '2024-12-15'
 tags:
   - neovim

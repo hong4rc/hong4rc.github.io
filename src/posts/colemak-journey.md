@@ -1,6 +1,6 @@
 ---
 title: My Colemak Journey
-description: Switching keyboard layouts while working full-time. The pain, the gain, and the 3 months it took.
+description: Cold turkey from QWERTY to Colemak. 10 WPM week one, 80 WPM by month three. No regrets.
 date: '2024-12-10'
 tags:
   - keyboard
