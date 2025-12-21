@@ -93,6 +93,10 @@
 		padding: 0;
 	}
 
+	.page-contact {
+		padding-bottom: 0;
+	}
+
 	@media (max-width: 480px) {
 		main {
 			padding-top: 3rem;
