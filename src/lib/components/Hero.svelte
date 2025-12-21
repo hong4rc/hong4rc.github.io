@@ -90,15 +90,15 @@
 	<p class="experience">{config.experience} years of experience</p>
 
 	<div class="info-row">
-		<span class="info-item">
+		<span class="info-item" title="Where I live">
 			<span class="info-icon">📍</span>
 			<span>Da Nang, Vietnam</span>
 		</span>
-		<span class="info-item">
+		<span class="info-item" title="My timezone">
 			<span class="info-icon">🕐</span>
 			<span>{localTime} (UTC+7)</span>
 		</span>
-		<span class="info-item">
+		<span class="info-item" title="My favorite shortcut">
 			<span class="info-icon">⌨️</span>
 			<span><code>&lt;leader&gt;</code> <code>&lt;space&gt;</code></span>
 		</span>

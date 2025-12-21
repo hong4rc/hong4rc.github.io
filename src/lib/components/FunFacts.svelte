@@ -8,7 +8,7 @@
 		<h2>Fun Facts</h2>
 		<div class="facts-grid" use:reveal={{ stagger: true }}>
 			{#each config.funFacts as fact}
-				<div class="fact-card">
+				<div class="fact-card" title={fact.title}>
 					<span class="fact-icon">{fact.icon}</span>
 					<div class="fact-content">
 						<h3>{fact.title}</h3>
