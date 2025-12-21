@@ -22,15 +22,7 @@
 
 <style>
 	.fun-facts {
-		padding: 1rem 2rem 2rem;
 		background-color: var(--base);
-	}
-
-	h2 {
-		font-size: 1.25rem;
-		color: var(--text);
-		text-align: center;
-		margin-bottom: 1rem;
 	}
 
 	.facts-grid {

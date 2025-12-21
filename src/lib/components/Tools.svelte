@@ -29,14 +29,9 @@
 
 <style>
 	.tools {
-		padding: 2rem 2rem 1rem;
+		padding-top: 2rem;
+		padding-bottom: 1rem;
 		text-align: center;
-	}
-
-	h2 {
-		font-size: 1.25rem;
-		color: var(--text);
-		margin-bottom: 1.5rem;
 	}
 
 	.tools-grid {

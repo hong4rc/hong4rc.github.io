@@ -101,12 +101,6 @@
 		text-align: center;
 	}
 
-	h2 {
-		font-size: 1.25rem;
-		color: var(--text);
-		margin-bottom: 1rem;
-	}
-
 	.error {
 		color: var(--subtext);
 	}

@@ -30,14 +30,7 @@
 
 <style>
 	.contact {
-		padding: 1rem 2rem 2rem;
 		text-align: center;
-	}
-
-	h2 {
-		font-size: 1.25rem;
-		color: var(--text);
-		margin-bottom: 1rem;
 	}
 
 	.links {

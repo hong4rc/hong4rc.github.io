@@ -41,8 +41,6 @@
 
 	h2 {
 		font-size: 1.5rem;
-		color: var(--text);
-		text-align: center;
 		margin-bottom: 3rem;
 	}
 
