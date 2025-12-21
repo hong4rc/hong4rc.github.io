@@ -62,7 +62,7 @@
 	{/if}
 </main>
 
-<PostNav />
+<PostNav prevPost={data.prevPost} nextPost={data.nextPost} />
 
 <style>
 	.post-page {

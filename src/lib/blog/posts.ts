@@ -49,3 +49,11 @@ export async function getPostContent(slug: string): Promise<PostModule | null> {
 	}
 	return null;
 }
+
+export function getAdjacentPosts(slug: string): { prev: BlogPost | null; next: BlogPost | null } {
+	const index = posts.findIndex(p => p.slug === slug);
+	return {
+		prev: index < posts.length - 1 ? posts[index + 1] : null,
+		next: index > 0 ? posts[index - 1] : null
+	};
+}

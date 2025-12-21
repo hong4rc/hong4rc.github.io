@@ -2,6 +2,9 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
 	import WhichKey from './WhichKey.svelte';
+	import { theme } from '$lib/stores/theme';
+
+	let { prevPost = null, nextPost = null }: { prevPost: { slug: string } | null; nextPost: { slug: string } | null } = $props();
 
 	let showHelp = $state(false);
 	let leaderPressed = $state(false);
@@ -23,6 +26,14 @@
 				{ key: '^d', label: 'Half ↓' },
 				{ key: '^u', label: 'Half ↑' }
 			]
+		},
+		{
+			title: 'Navigate',
+			keys: [
+				{ key: '/', label: 'Search' },
+				{ key: '[', label: 'Prev post' },
+				{ key: ']', label: 'Next post' }
+			]
 		}
 	];
 
@@ -33,6 +44,14 @@
 				{ key: '/', label: 'Search' },
 				{ key: 'h', label: 'Home' },
 				{ key: 'b', label: 'Blog' }
+			]
+		},
+		{
+			title: 'Theme',
+			keys: [
+				{ key: '1', label: 'Frappé' },
+				{ key: '2', label: 'Macchiato' },
+				{ key: '3', label: 'Mocha' }
 			]
 		}
 	];
@@ -193,6 +212,21 @@
 				closeAll();
 				return;
 			}
+			if (event.key === '1') {
+				theme.set('frappe');
+				closeAll();
+				return;
+			}
+			if (event.key === '2') {
+				theme.set('macchiato');
+				closeAll();
+				return;
+			}
+			if (event.key === '3') {
+				theme.set('mocha');
+				closeAll();
+				return;
+			}
 			if (event.key === 'Escape') {
 				closeAll();
 				return;
@@ -201,6 +235,18 @@
 		}
 
 		switch (event.key) {
+			case '/':
+				event.preventDefault();
+				openSearch();
+				break;
+			case '[':
+				event.preventDefault();
+				if (prevPost) window.location.href = `/blog/${prevPost.slug}`;
+				break;
+			case ']':
+				event.preventDefault();
+				if (nextPost) window.location.href = `/blog/${nextPost.slug}`;
+				break;
 			case 'j':
 			case 'ArrowDown':
 				event.preventDefault();
