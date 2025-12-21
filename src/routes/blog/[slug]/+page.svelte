@@ -120,7 +120,7 @@
 	}
 
 	.separator {
-		color: var(--surface2);
+		color: var(--subtext);
 	}
 
 	.post-tags {
@@ -131,16 +131,17 @@
 
 	.tag {
 		font-size: 0.8rem;
-		color: var(--accent);
+		color: var(--text);
 		text-decoration: none;
 		padding: 0.2rem 0.6rem;
 		background-color: var(--surface0);
 		border-radius: 12px;
-		transition: background-color 0.2s;
+		transition: background-color 0.2s, color 0.2s;
 	}
 
 	.tag:hover {
 		background-color: var(--surface1);
+		color: var(--accent);
 	}
 
 	/* Prose styles for markdown content */
@@ -198,6 +199,7 @@
 		padding: 0.15rem 0.4rem;
 		border-radius: 4px;
 		font-size: 0.9em;
+		color: var(--text);
 	}
 
 	.prose :global(pre) {

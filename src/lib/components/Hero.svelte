@@ -155,15 +155,14 @@
 
 	.experience {
 		font-size: 0.9rem;
-		color: var(--surface2);
+		color: var(--subtext);
 	}
 
 	.quote {
 		margin-top: 2rem;
 		font-size: 0.85rem;
-		color: var(--surface2);
+		color: var(--subtext);
 		font-style: italic;
-		opacity: 0.7;
 	}
 
 	.info-row {
@@ -179,7 +178,7 @@
 		align-items: center;
 		gap: 0.4rem;
 		font-size: 0.8rem;
-		color: var(--subtext);
+		color: var(--text);
 	}
 
 	.info-icon {
@@ -192,7 +191,7 @@
 		background: var(--surface0);
 		padding: 0.15rem 0.35rem;
 		border-radius: 3px;
-		color: var(--accent);
+		color: var(--text);
 	}
 
 	@media (max-width: 480px) {

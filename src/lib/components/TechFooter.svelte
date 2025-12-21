@@ -125,7 +125,7 @@
 	}
 
 	.stat-label {
-		color: var(--subtext);
+		color: var(--text);
 	}
 
 	.built-with {
@@ -173,7 +173,7 @@
 	}
 
 	.copyright {
-		color: var(--surface2);
+		color: var(--subtext);
 	}
 
 	.source-link {

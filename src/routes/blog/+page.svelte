@@ -36,7 +36,7 @@
 		</div>
 	</header>
 
-	<nav class="tags-nav">
+	<nav class="tags-nav" aria-label="Filter posts by tag">
 		<button
 			class="tag-btn"
 			class:active={selectedTag === null}
@@ -143,7 +143,7 @@
 		border: none;
 		border-radius: 20px;
 		background-color: var(--surface0);
-		color: var(--subtext);
+		color: var(--text);
 		font-size: 0.8rem;
 		font-family: inherit;
 		cursor: pointer;
@@ -191,12 +191,12 @@
 
 	.date {
 		font-size: 0.8rem;
-		color: var(--subtext);
+		color: var(--text);
 	}
 
 	.read-time {
 		font-size: 0.7rem;
-		color: var(--surface2);
+		color: var(--text);
 	}
 
 	.timeline-content {
@@ -216,7 +216,7 @@
 
 	.description {
 		font-size: 0.85rem;
-		color: var(--subtext);
+		color: var(--text);
 		line-height: 1.5;
 		margin-bottom: 0.75rem;
 	}
@@ -229,8 +229,7 @@
 
 	.post-tag {
 		font-size: 0.7rem;
-		color: var(--accent);
-		opacity: 0.8;
+		color: var(--text);
 	}
 
 	.no-posts {

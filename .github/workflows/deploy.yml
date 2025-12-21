@@ -37,6 +37,13 @@ jobs:
           BASE_PATH: ''
         run: npm run build
 
+      - name: Run accessibility tests
+        continue-on-error: true
+        run: |
+          npm run preview &
+          sleep 3
+          npm run test:a11y
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

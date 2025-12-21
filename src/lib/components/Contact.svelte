@@ -47,7 +47,7 @@
 		padding: 0.5rem 1rem;
 		background-color: var(--surface0);
 		border-radius: 4px;
-		color: var(--subtext);
+		color: var(--text);
 		transition: all 0.2s ease;
 		font-size: 0.9rem;
 	}

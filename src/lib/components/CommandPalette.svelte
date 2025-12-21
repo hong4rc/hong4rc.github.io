@@ -525,9 +525,9 @@
 	</div>
 {/if}
 
-<div class="trigger">
+<aside class="trigger" aria-label="Keyboard shortcut hint">
 	<kbd>SPC</kbd>
-</div>
+</aside>
 
 <style>
 	.which-key {
@@ -581,7 +581,7 @@
 		padding: 0.1rem 0.3rem;
 		background-color: var(--surface0);
 		border-radius: 3px;
-		color: var(--accent);
+		color: var(--text);
 		font-size: 0.7rem;
 	}
 
@@ -629,7 +629,7 @@
 	}
 
 	.search-input::placeholder {
-		color: var(--surface2);
+		color: var(--subtext);
 	}
 
 	.hint {

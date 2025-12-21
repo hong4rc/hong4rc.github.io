@@ -79,7 +79,7 @@
 	});
 </script>
 
-<nav class="section-nav">
+<nav class="section-nav" aria-label="Page sections">
 	<div class="progress-bar">
 		{#each pages as _, i}
 			<div class="progress-segment" class:active={i === currentIndex}></div>

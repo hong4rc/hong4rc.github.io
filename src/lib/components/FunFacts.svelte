@@ -93,7 +93,7 @@
 
 	p {
 		font-size: 0.85rem;
-		color: var(--subtext);
+		color: var(--text);
 		line-height: 1.4;
 	}
 </style>

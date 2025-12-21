@@ -121,7 +121,7 @@
 		padding: 0.4rem 0.6rem;
 		border-radius: 4px;
 		font-size: 0.7rem;
-		color: var(--subtext);
+		color: var(--text);
 		cursor: pointer;
 		transition: all 0.2s;
 		font-family: inherit;

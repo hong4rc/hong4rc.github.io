@@ -372,7 +372,7 @@
 	}
 
 	.search-input::placeholder {
-		color: var(--surface2);
+		color: var(--subtext);
 	}
 
 	.match-count {

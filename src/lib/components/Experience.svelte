@@ -122,13 +122,13 @@
 	.period {
 		display: block;
 		font-size: 0.8rem;
-		color: var(--subtext);
+		color: var(--text);
 		margin-bottom: 0.75rem;
 	}
 
 	.description {
 		font-size: 0.9rem;
-		color: var(--subtext);
+		color: var(--text);
 		line-height: 1.5;
 		margin-bottom: 0.75rem;
 	}

@@ -128,7 +128,7 @@
 	}
 
 	.theme-option.disabled {
-		opacity: 0.4;
+		color: var(--surface2);
 		cursor: not-allowed;
 	}
 

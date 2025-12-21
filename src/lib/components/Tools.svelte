@@ -51,7 +51,7 @@
 
 	h3 {
 		font-size: 0.7rem;
-		color: var(--subtext);
+		color: var(--text);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		margin-bottom: 0.75rem;
