@@ -272,7 +272,10 @@
 						onclick={() => { window.location.href = `/blog/${post.slug}`; }}
 						onmouseenter={() => searchSelectedIndex = i}
 					>
-						<span class="result-title">{@html highlightMatch(post.title, searchQuery)}</span>
+						<div class="result-content">
+							<span class="result-title">{@html highlightMatch(post.title, searchQuery)}</span>
+							<span class="result-desc">{@html highlightMatch(post.description, searchQuery)}</span>
+						</div>
 					</button>
 				{/each}
 				{#if filteredPosts.length === 0}
@@ -376,11 +379,27 @@
 		background-color: var(--surface0);
 	}
 
+	.result-content {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		text-align: left;
+	}
+
 	.result-title {
 		color: var(--text);
 	}
 
-	.result-title :global(mark) {
+	.result-desc {
+		color: var(--subtext);
+		font-size: 0.75rem;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.result-title :global(mark),
+	.result-desc :global(mark) {
 		background-color: var(--accent);
 		color: var(--crust);
 		border-radius: 2px;

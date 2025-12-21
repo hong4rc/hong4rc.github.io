@@ -6,6 +6,11 @@
 	let showHelp = $state(false);
 	let leaderPressed = $state(false);
 	let leaderTimeout: number | null = null;
+	let showSearch = $state(false);
+	let searchQuery = $state('');
+	let inputElement: HTMLInputElement;
+	let matchCount = $state(0);
+	let currentMatch = $state(0);
 
 	const keyGroups = [
 		{
@@ -25,6 +30,7 @@
 		{
 			title: 'Space +',
 			keys: [
+				{ key: '/', label: 'Search' },
 				{ key: 'h', label: 'Home' },
 				{ key: 'b', label: 'Blog' }
 			]
@@ -34,10 +40,127 @@
 	function closeAll() {
 		showHelp = false;
 		leaderPressed = false;
+		showSearch = false;
+		clearHighlights();
 		if (leaderTimeout) clearTimeout(leaderTimeout);
 	}
 
+	function openSearch() {
+		showSearch = true;
+		searchQuery = '';
+		matchCount = 0;
+		currentMatch = 0;
+		leaderPressed = false;
+		setTimeout(() => inputElement?.focus(), 10);
+	}
+
+	function clearHighlights() {
+		document.querySelectorAll('.search-highlight').forEach(el => {
+			const parent = el.parentNode;
+			if (parent) {
+				parent.replaceChild(document.createTextNode(el.textContent || ''), el);
+				parent.normalize();
+			}
+		});
+	}
+
+	function highlightMatches() {
+		clearHighlights();
+		if (!searchQuery.trim()) {
+			matchCount = 0;
+			currentMatch = 0;
+			return;
+		}
+
+		const content = document.querySelector('.post-content');
+		if (!content) return;
+
+		const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null);
+		const matches: { node: Text; index: number }[] = [];
+		const query = searchQuery.toLowerCase();
+
+		let node;
+		while ((node = walker.nextNode())) {
+			const text = node.textContent || '';
+			let index = text.toLowerCase().indexOf(query);
+			while (index !== -1) {
+				matches.push({ node: node as Text, index });
+				index = text.toLowerCase().indexOf(query, index + 1);
+			}
+		}
+
+		matchCount = matches.length;
+		if (matchCount === 0) {
+			currentMatch = 0;
+			return;
+		}
+
+		// Highlight all matches
+		for (let i = matches.length - 1; i >= 0; i--) {
+			const { node, index } = matches[i];
+			const text = node.textContent || '';
+			const before = text.slice(0, index);
+			const match = text.slice(index, index + query.length);
+			const after = text.slice(index + query.length);
+
+			const span = document.createElement('span');
+			span.className = 'search-highlight';
+			span.textContent = match;
+
+			const parent = node.parentNode;
+			if (parent) {
+				const frag = document.createDocumentFragment();
+				if (before) frag.appendChild(document.createTextNode(before));
+				frag.appendChild(span);
+				if (after) frag.appendChild(document.createTextNode(after));
+				parent.replaceChild(frag, node);
+			}
+		}
+
+		currentMatch = 1;
+		scrollToMatch(0);
+	}
+
+	function scrollToMatch(index: number) {
+		const highlights = document.querySelectorAll('.search-highlight');
+		highlights.forEach((el, i) => {
+			el.classList.toggle('current', i === index);
+		});
+		highlights[index]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+	}
+
+	function nextMatch() {
+		if (matchCount === 0) return;
+		currentMatch = currentMatch >= matchCount ? 1 : currentMatch + 1;
+		scrollToMatch(currentMatch - 1);
+	}
+
+	function prevMatch() {
+		if (matchCount === 0) return;
+		currentMatch = currentMatch <= 1 ? matchCount : currentMatch - 1;
+		scrollToMatch(currentMatch - 1);
+	}
+
 	function handleKeydown(event: KeyboardEvent) {
+		// Search mode - handle specially for input
+		if (showSearch && event.target instanceof HTMLInputElement) {
+			if (event.key === 'Escape') {
+				event.preventDefault();
+				closeAll();
+				return;
+			}
+			if (event.key === 'Enter') {
+				event.preventDefault();
+				if (event.shiftKey) {
+					prevMatch();
+				} else {
+					nextMatch();
+				}
+				return;
+			}
+			return;
+		}
+
 		if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
 			return;
 		}
@@ -56,6 +179,10 @@
 		// Leader shortcuts
 		if (leaderPressed) {
 			event.preventDefault();
+			if (event.key === '/') {
+				openSearch();
+				return;
+			}
 			if (event.key === 'h') {
 				window.location.href = '/';
 				closeAll();
@@ -148,8 +275,99 @@
 	});
 </script>
 
-{#if leaderPressed}
+{#if showSearch}
+	<div class="page-search">
+		<input
+			bind:this={inputElement}
+			bind:value={searchQuery}
+			oninput={highlightMatches}
+			type="text"
+			placeholder="Search in page..."
+			class="search-input"
+		/>
+		{#if matchCount > 0}
+			<span class="match-count">{currentMatch}/{matchCount}</span>
+		{/if}
+		<div class="search-nav">
+			<button onclick={prevMatch} disabled={matchCount === 0} aria-label="Previous">↑</button>
+			<button onclick={nextMatch} disabled={matchCount === 0} aria-label="Next">↓</button>
+		</div>
+		<button class="close-btn" onclick={closeAll} aria-label="Close">×</button>
+	</div>
+{:else if leaderPressed}
 	<WhichKey groups={leaderGroups} show={true} onclose={() => { leaderPressed = false; }} />
 {:else}
 	<WhichKey groups={keyGroups} bind:show={showHelp} onclose={() => showHelp = false} />
 {/if}
+
+<style>
+	.page-search {
+		position: fixed;
+		top: 1rem;
+		right: 1rem;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		background-color: var(--mantle);
+		border: 1px solid var(--surface0);
+		border-radius: 8px;
+		padding: 0.5rem 0.75rem;
+		z-index: 1000;
+	}
+
+	.search-input {
+		background: transparent;
+		border: none;
+		color: var(--text);
+		font-family: 'Fira Code', monospace;
+		font-size: 0.85rem;
+		outline: none;
+		width: 150px;
+	}
+
+	.search-input::placeholder {
+		color: var(--surface2);
+	}
+
+	.match-count {
+		color: var(--subtext);
+		font-size: 0.75rem;
+	}
+
+	.search-nav {
+		display: flex;
+		gap: 0.25rem;
+	}
+
+	.search-nav button,
+	.close-btn {
+		background: var(--surface0);
+		border: none;
+		color: var(--text);
+		padding: 0.25rem 0.5rem;
+		border-radius: 4px;
+		cursor: pointer;
+		font-size: 0.8rem;
+	}
+
+	.search-nav button:hover,
+	.close-btn:hover {
+		background: var(--surface1);
+	}
+
+	.search-nav button:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	:global(.search-highlight) {
+		background-color: var(--yellow);
+		color: var(--crust);
+		border-radius: 2px;
+		padding: 0 2px;
+	}
+
+	:global(.search-highlight.current) {
+		background-color: var(--accent);
+	}
+</style>
