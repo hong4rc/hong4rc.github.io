@@ -11,6 +11,7 @@
 	}
 
 	let showWhichKey = false;
+	let showFullHelp = false;
 	let showSearch = false;
 	let showGoTo = false;
 	let leaderPressed = false;
@@ -131,6 +132,7 @@
 
 	function closeAll() {
 		showWhichKey = false;
+		showFullHelp = false;
 		showSearch = false;
 		showGoTo = false;
 		leaderPressed = false;
@@ -141,6 +143,7 @@
 
 	function openSearch() {
 		showWhichKey = false;
+		showFullHelp = false;
 		showSearch = true;
 		searchQuery = '';
 		selectedIndex = 0;
@@ -184,26 +187,40 @@
 		// / - open search
 		if (event.key === '/' && !leaderPressed && !showWhichKey && !gPressed) {
 			event.preventDefault();
+			if (showFullHelp) closeAll();
 			openSearch();
 			return;
 		}
 
-		// ? - show help (whichkey)
-		if (event.key === '?' && !leaderPressed && !gPressed) {
+		// ? - show full help
+		if (event.key === '?' && !gPressed) {
 			event.preventDefault();
-			showWhichKey = true;
-			leaderPressed = true;
+
+			// Close any open menus first
+			if (showWhichKey || leaderPressed) {
+				closeAll();
+			}
+
+			showFullHelp = true;
 			leaderTimeout = setTimeout(() => {
-				if (showWhichKey && !showSearch) {
+				if (showFullHelp && !showSearch) {
 					closeAll();
 				}
 			}, 5000) as unknown as number;
 			return;
 		}
 
+		// Escape - close full help
+		if (event.key === 'Escape' && showFullHelp) {
+			event.preventDefault();
+			closeAll();
+			return;
+		}
+
 		// Tab - next page, Shift+Tab - previous page
 		if (event.key === 'Tab' && !leaderPressed && !showWhichKey && !gPressed && !showSearch) {
 			event.preventDefault();
+			if (showFullHelp) closeAll();
 			if (event.shiftKey) {
 				goToPrevPage();
 			} else {
@@ -215,6 +232,7 @@
 		// Ctrl+d - half page down
 		if (event.key === 'd' && event.ctrlKey && !leaderPressed && !showWhichKey) {
 			event.preventDefault();
+			if (showFullHelp) closeAll();
 			halfPageDown();
 			return;
 		}
@@ -222,6 +240,7 @@
 		// Ctrl+u - half page up
 		if (event.key === 'u' && event.ctrlKey && !leaderPressed && !showWhichKey) {
 			event.preventDefault();
+			if (showFullHelp) closeAll();
 			halfPageUp();
 			return;
 		}
@@ -229,6 +248,7 @@
 		// Ctrl+f - full page down
 		if (event.key === 'f' && event.ctrlKey && !leaderPressed && !showWhichKey) {
 			event.preventDefault();
+			if (showFullHelp) closeAll();
 			fullPageDown();
 			return;
 		}
@@ -236,6 +256,7 @@
 		// Ctrl+b - full page up
 		if (event.key === 'b' && event.ctrlKey && !leaderPressed && !showWhichKey) {
 			event.preventDefault();
+			if (showFullHelp) closeAll();
 			fullPageUp();
 			return;
 		}
@@ -243,6 +264,7 @@
 		// j or w - next page
 		if ((event.key === 'j' || event.key === 'w') && !leaderPressed && !showWhichKey && !gPressed) {
 			event.preventDefault();
+			if (showFullHelp) closeAll();
 			goToNextPage();
 			return;
 		}
@@ -250,6 +272,7 @@
 		// k or b - previous page (when not ctrl)
 		if ((event.key === 'k' || event.key === 'b') && !event.ctrlKey && !leaderPressed && !showWhichKey && !gPressed) {
 			event.preventDefault();
+			if (showFullHelp) closeAll();
 			goToPrevPage();
 			return;
 		}
@@ -257,6 +280,7 @@
 		// 0 or ^ - first section
 		if ((event.key === '0' || event.key === '^') && !leaderPressed && !showWhichKey && !gPressed) {
 			event.preventDefault();
+			if (showFullHelp) closeAll();
 			goToTop();
 			return;
 		}
@@ -264,6 +288,7 @@
 		// $ - last section
 		if (event.key === '$' && !leaderPressed && !showWhichKey && !gPressed) {
 			event.preventDefault();
+			if (showFullHelp) closeAll();
 			goToBottom();
 			return;
 		}
@@ -271,6 +296,7 @@
 		// zz - center current page
 		if (event.key === 'z' && !leaderPressed && !showWhichKey && !gPressed) {
 			event.preventDefault();
+			if (showFullHelp) closeAll();
 			// Wait for second z
 			const handleSecondZ = (e: KeyboardEvent) => {
 				if (e.key === 'z') {
@@ -288,11 +314,13 @@
 		if (!leaderPressed && !showWhichKey && !gPressed) {
 			if (event.key === 'ArrowDown') {
 				event.preventDefault();
+				if (showFullHelp) closeAll();
 				goToNextPage();
 				return;
 			}
 			if (event.key === 'ArrowUp') {
 				event.preventDefault();
+				if (showFullHelp) closeAll();
 				goToPrevPage();
 				return;
 			}
@@ -301,6 +329,7 @@
 		// G (uppercase) - go to end of page
 		if (event.key === 'G' && !leaderPressed && !showWhichKey && !gPressed) {
 			event.preventDefault();
+			if (showFullHelp) closeAll();
 			goToBottom();
 			return;
 		}
@@ -308,6 +337,8 @@
 		// g key - enter go-to mode
 		if (event.key === 'g' && !leaderPressed && !showWhichKey) {
 			event.preventDefault();
+
+			if (showFullHelp) closeAll();
 
 			if (gPressed) {
 				// gg - go to top
@@ -349,6 +380,12 @@
 		// Leader key (Space)
 		if (event.code === 'Space' && !event.metaKey && !event.ctrlKey && !event.altKey) {
 			event.preventDefault();
+
+			// If full help is showing, close it first
+			if (showFullHelp) {
+				showFullHelp = false;
+				if (leaderTimeout) clearTimeout(leaderTimeout);
+			}
 
 			if (leaderPressed) {
 				if (leaderTimeout) clearTimeout(leaderTimeout);
@@ -418,7 +455,7 @@
 	});
 </script>
 
-{#if showGoTo && !showSearch && !showWhichKey}
+{#if showGoTo && !showSearch && !showWhichKey && !showFullHelp}
 	<div class="which-key go-to">
 		<div class="which-key-header">
 			<kbd>g</kbd> + key
@@ -468,6 +505,16 @@
 				<div class="which-key-item"><kbd>L</kbd><span>LinkedIn</span></div>
 				<div class="which-key-item"><kbd>E</kbd><span>Email</span></div>
 			</div>
+		</div>
+	</div>
+{/if}
+
+{#if showFullHelp && !showSearch}
+	<div class="which-key full-help">
+		<div class="which-key-header">
+			<kbd>?</kbd> - Keybindings
+		</div>
+		<div class="which-key-grid">
 			<div class="which-key-group">
 				<span class="group-title">Navigation</span>
 				<div class="which-key-item"><kbd>/</kbd><span>Search</span></div>
@@ -475,13 +522,22 @@
 				<div class="which-key-item"><kbd>k/b</kbd><span>Prev</span></div>
 				<div class="which-key-item"><kbd>gg</kbd><span>Top</span></div>
 				<div class="which-key-item"><kbd>G</kbd><span>Bottom</span></div>
+				<div class="which-key-item"><kbd>0/^</kbd><span>First</span></div>
+				<div class="which-key-item"><kbd>$</kbd><span>Last</span></div>
 			</div>
 			<div class="which-key-group">
 				<span class="group-title">Scroll</span>
 				<div class="which-key-item"><kbd>^d</kbd><span>Half ↓</span></div>
 				<div class="which-key-item"><kbd>^u</kbd><span>Half ↑</span></div>
+				<div class="which-key-item"><kbd>^f</kbd><span>Full ↓</span></div>
+				<div class="which-key-item"><kbd>^b</kbd><span>Full ↑</span></div>
 				<div class="which-key-item"><kbd>Tab</kbd><span>Next</span></div>
 				<div class="which-key-item"><kbd>S-Tab</kbd><span>Prev</span></div>
+			</div>
+			<div class="which-key-group">
+				<span class="group-title">Other</span>
+				<div class="which-key-item"><kbd>SPC</kbd><span>Leader</span></div>
+				<div class="which-key-item"><kbd>g+key</kbd><span>Go to</span></div>
 			</div>
 		</div>
 	</div>
@@ -715,7 +771,8 @@
 	}
 
 	.which-key ~ .trigger,
-	.go-to ~ .trigger {
+	.go-to ~ .trigger,
+	.full-help ~ .trigger {
 		display: none;
 	}
 </style>
