@@ -2,25 +2,18 @@
 	import { config } from '$lib/config';
 	import { browser, dev } from '$app/environment';
 	import { onMount } from 'svelte';
-
-	const gaId = config.analytics.googleAnalyticsId;
-	const enabled = config.features.enableAnalytics && !!gaId && !dev;
+	import { analytics, GoogleAnalyticsPlugin } from '$lib/analytics';
 
 	onMount(() => {
-		if (!enabled || !browser) return;
+		if (!browser || dev || !config.features.enableAnalytics) return;
 
-		// Load GA script
-		const script = document.createElement('script');
-		script.async = true;
-		script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
-		document.head.appendChild(script);
-
-		// Initialize gtag
-		window.dataLayer = window.dataLayer || [];
-		function gtag(...args: unknown[]) {
-			window.dataLayer.push(args);
+		// Register Google Analytics plugin
+		if (config.analytics.googleAnalyticsId) {
+			const gaPlugin = new GoogleAnalyticsPlugin(config.analytics.googleAnalyticsId);
+			analytics.register(gaPlugin);
 		}
-		gtag('js', new Date());
-		gtag('config', gaId);
+
+		// Initialize all analytics plugins
+		analytics.init();
 	});
 </script>

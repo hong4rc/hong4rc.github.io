@@ -3,7 +3,7 @@
 	import { reveal } from '$lib/actions/reveal';
 	import { onMount } from 'svelte';
 	import { addUTM } from '$lib/utils/utm';
-	import { trackExternalLink } from '$lib/utils/analytics';
+	import { trackExternalLink } from '$lib/analytics';
 	import Skeleton from './Skeleton.svelte';
 
 	interface Repo {
@@ -78,7 +78,7 @@
 						class="repo-card"
 						target="_blank"
 						rel="noopener"
-						onclick={() => trackExternalLink('repo', `${repo.author}/${repo.name}`, `https://github.com/${repo.author}/${repo.name}`)}
+						onclick={trackExternalLink('repo', `${repo.author}/${repo.name}`, `https://github.com/${repo.author}/${repo.name}`)}
 					>
 						<h3><span class="author">{repo.author}/</span><span class="repo-name">{repo.name}</span></h3>
 						<p class="desc">{repo.description || 'No description'}</p>

@@ -3,7 +3,7 @@
 	import { browser } from '$app/environment';
 	import WhichKey from './WhichKey.svelte';
 	import { theme } from '$lib/stores/theme';
-	import { trackBlogPost } from '$lib/utils/analytics';
+	import { tracker } from '$lib/analytics';
 
 	let { posts = [] }: { posts: { slug: string; title: string; description: string }[] } = $props();
 
@@ -92,7 +92,7 @@
 	function openPost() {
 		if (selectedIndex >= 0 && posts[selectedIndex]) {
 			const post = posts[selectedIndex];
-			trackBlogPost('select', post.slug, post.title);
+			tracker.blogSelect(post.slug, post.title);
 			window.location.href = `/blog/${post.slug}`;
 		}
 	}
@@ -124,7 +124,7 @@
 				event.preventDefault();
 				if (filteredPosts[searchSelectedIndex]) {
 					const post = filteredPosts[searchSelectedIndex];
-					trackBlogPost('select', post.slug, post.title);
+					tracker.blogSelect(post.slug, post.title);
 					window.location.href = `/blog/${post.slug}`;
 				}
 				return;
@@ -317,7 +317,7 @@
 						class="search-result"
 						class:selected={i === searchSelectedIndex}
 						onclick={() => {
-							trackBlogPost('select', post.slug, post.title);
+							tracker.blogSelect(post.slug, post.title);
 							window.location.href = `/blog/${post.slug}`;
 						}}
 						onmouseenter={() => searchSelectedIndex = i}

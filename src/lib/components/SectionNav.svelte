@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
-	import { trackNavigation } from '$lib/utils/analytics';
+	import { tracker } from '$lib/analytics';
 
 	interface Page {
 		id: string;
@@ -39,7 +39,7 @@
 		const element = document.querySelector(`.${id}`);
 		if (element) {
 			const sectionName = id.replace('page-', '');
-			trackNavigation(sectionName, source);
+			tracker.navigate(sectionName, source);
 			element.scrollIntoView({ behavior: 'smooth' });
 		}
 	}

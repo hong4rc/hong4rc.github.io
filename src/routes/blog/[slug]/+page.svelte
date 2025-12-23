@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import PostNav from '$lib/components/PostNav.svelte';
 	import SEO from '$lib/components/SEO.svelte';
-	import { trackBlogPost } from '$lib/utils/analytics';
+	import { tracker } from '$lib/analytics';
 
 	let { data } = $props();
 	let showBackLink = $state(false);
@@ -23,7 +23,7 @@
 
 	onMount(() => {
 		if (data.post) {
-			trackBlogPost('view', data.post.slug, data.post.title);
+			tracker.blogView(data.post.slug, data.post.title);
 		}
 	});
 </script>

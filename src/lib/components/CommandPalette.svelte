@@ -7,7 +7,7 @@
 	import { theme } from '$lib/stores/theme';
 	import { addUTM } from '$lib/utils/utm';
 	import * as nav from '$lib/keybindings/navigation';
-	import { trackCommandPalette, trackKeyboardShortcut, trackNavigation, trackSocialClick } from '$lib/utils/analytics';
+	import { tracker } from '$lib/analytics';
 	import LeaderMenu from './palette/LeaderMenu.svelte';
 	import HelpMenu from './palette/HelpMenu.svelte';
 	import SearchPalette from './palette/SearchPalette.svelte';
@@ -45,7 +45,7 @@
 		// / - open search
 		if (event.key === '/' && currentMode === 'idle' && !gPressed) {
 			event.preventDefault();
-			trackCommandPalette('open', 'search');
+			tracker.paletteOpen('search');
 			paletteState.enterSearch();
 			return;
 		}
@@ -56,7 +56,7 @@
 			if (currentMode === 'leader') {
 				paletteState.reset();
 			}
-			trackCommandPalette('open', 'help');
+			tracker.paletteOpen('help');
 			paletteState.enterHelp();
 			return;
 		}
@@ -127,12 +127,12 @@
 
 			// Double Space - open search
 			if (currentMode === 'leader') {
-				trackCommandPalette('open', 'search_from_leader');
+				tracker.paletteOpen('search_from_leader');
 				paletteState.enterSearch();
 				return;
 			}
 
-			trackCommandPalette('open', 'leader');
+			tracker.paletteOpen('leader');
 			paletteState.enterLeader();
 			return;
 		}
@@ -151,7 +151,7 @@
 			}
 
 			gPressed = true;
-			trackCommandPalette('open', 'goto');
+			tracker.paletteOpen('goto');
 			paletteState.enterGoto();
 
 			gTimeout = setTimeout(() => {
@@ -172,27 +172,27 @@
 
 			// Execute goto commands
 			if (event.key === 'h') {
-				trackKeyboardShortcut('g+h', 'goto_hero');
-				trackNavigation('hero', 'keyboard');
+				tracker.shortcut('g+h', 'goto_hero');
+				tracker.navigate('hero', 'keyboard');
 				nav.scrollTo('page-hero');
 			} else if (event.key === 'e') {
-				trackKeyboardShortcut('g+e', 'goto_experience');
-				trackNavigation('experience', 'keyboard');
+				tracker.shortcut('g+e', 'goto_experience');
+				tracker.navigate('experience', 'keyboard');
 				nav.scrollTo('page-experience');
 			} else if (event.key === 't') {
-				trackKeyboardShortcut('g+t', 'goto_tech');
-				trackNavigation('tech', 'keyboard');
+				tracker.shortcut('g+t', 'goto_tech');
+				tracker.navigate('tech', 'keyboard');
 				nav.scrollTo('page-tech');
 			} else if (event.key === 'l') {
-				trackKeyboardShortcut('g+l', 'goto_tools');
-				trackNavigation('tools', 'keyboard');
+				tracker.shortcut('g+l', 'goto_tools');
+				tracker.navigate('tools', 'keyboard');
 				nav.scrollTo('page-tools');
 			} else if (event.key === 'c') {
-				trackKeyboardShortcut('g+c', 'goto_contact');
-				trackNavigation('contact', 'keyboard');
+				tracker.shortcut('g+c', 'goto_contact');
+				tracker.navigate('contact', 'keyboard');
 				nav.scrollTo('page-contact');
 			} else if (event.key === 'b') {
-				trackKeyboardShortcut('g+b', 'goto_blog');
+				tracker.shortcut('g+b', 'goto_blog');
 				window.location.href = '/blog';
 			}
 
@@ -214,65 +214,65 @@
 
 			// Execute leader commands
 			if (event.key === 'h') {
-				trackKeyboardShortcut('Space+h', 'leader_goto_hero');
-				trackNavigation('hero', 'keyboard');
+				tracker.shortcut('Space+h', 'leader_goto_hero');
+				tracker.navigate('hero', 'keyboard');
 				nav.scrollTo('page-hero');
 				paletteState.reset();
 			} else if (event.key === 'e') {
-				trackKeyboardShortcut('Space+e', 'leader_goto_experience');
-				trackNavigation('experience', 'keyboard');
+				tracker.shortcut('Space+e', 'leader_goto_experience');
+				tracker.navigate('experience', 'keyboard');
 				nav.scrollTo('page-experience');
 				paletteState.reset();
 			} else if (event.key === 't') {
-				trackKeyboardShortcut('Space+t', 'leader_goto_tech');
-				trackNavigation('tech', 'keyboard');
+				tracker.shortcut('Space+t', 'leader_goto_tech');
+				tracker.navigate('tech', 'keyboard');
 				nav.scrollTo('page-tech');
 				paletteState.reset();
 			} else if (event.key === 'l') {
-				trackKeyboardShortcut('Space+l', 'leader_goto_tools');
-				trackNavigation('tools', 'keyboard');
+				tracker.shortcut('Space+l', 'leader_goto_tools');
+				tracker.navigate('tools', 'keyboard');
 				nav.scrollTo('page-tools');
 				paletteState.reset();
 			} else if (event.key === 'c') {
-				trackKeyboardShortcut('Space+c', 'leader_goto_contact');
-				trackNavigation('contact', 'keyboard');
+				tracker.shortcut('Space+c', 'leader_goto_contact');
+				tracker.navigate('contact', 'keyboard');
 				nav.scrollTo('page-contact');
 				paletteState.reset();
 			} else if (event.key === 'b') {
-				trackKeyboardShortcut('Space+b', 'leader_goto_blog');
+				tracker.shortcut('Space+b', 'leader_goto_blog');
 				window.location.href = '/blog';
 				paletteState.reset();
 			} else if (event.key === '1') {
-				trackKeyboardShortcut('Space+1', 'theme_latte');
+				tracker.shortcut('Space+1', 'theme_latte');
 				theme.set('latte');
 				paletteState.reset();
 			} else if (event.key === '2') {
-				trackKeyboardShortcut('Space+2', 'theme_frappe');
+				tracker.shortcut('Space+2', 'theme_frappe');
 				theme.set('frappe');
 				paletteState.reset();
 			} else if (event.key === '3') {
-				trackKeyboardShortcut('Space+3', 'theme_macchiato');
+				tracker.shortcut('Space+3', 'theme_macchiato');
 				theme.set('macchiato');
 				paletteState.reset();
 			} else if (event.key === '4') {
-				trackKeyboardShortcut('Space+4', 'theme_mocha');
+				tracker.shortcut('Space+4', 'theme_mocha');
 				theme.set('mocha');
 				paletteState.reset();
 			} else if (event.key === 'G') {
-				trackKeyboardShortcut('Space+G', 'open_github');
-				trackSocialClick('github', 'command_palette');
+				tracker.shortcut('Space+G', 'open_github');
+				tracker.social('github', 'command_palette');
 				const githubUrl = addUTM(config.contact.github, { content: 'command_palette_github' });
 				window.open(githubUrl, '_blank');
 				paletteState.reset();
 			} else if (event.key === 'L') {
-				trackKeyboardShortcut('Space+L', 'open_linkedin');
-				trackSocialClick('linkedin', 'command_palette');
+				tracker.shortcut('Space+L', 'open_linkedin');
+				tracker.social('linkedin', 'command_palette');
 				const linkedinUrl = addUTM(config.contact.linkedin, { content: 'command_palette_linkedin' });
 				window.open(linkedinUrl, '_blank');
 				paletteState.reset();
 			} else if (event.key === 'E') {
-				trackKeyboardShortcut('Space+E', 'send_email');
-				trackSocialClick('email', 'command_palette');
+				tracker.shortcut('Space+E', 'send_email');
+				tracker.social('email', 'command_palette');
 				window.location.href = `mailto:${config.contact.email}?subject=Contact from Portfolio (Command Palette)`;
 				paletteState.reset();
 			} else {

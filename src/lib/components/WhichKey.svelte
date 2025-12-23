@@ -4,7 +4,7 @@
 		keys: { key: string; label: string }[];
 	}
 
-	let { groups = [], show = false, onclose }: { groups: KeyGroup[]; show: boolean; onclose: () => void } = $props();
+	let { groups = [], show = $bindable(false), onclose }: { groups: KeyGroup[]; show: boolean; onclose: () => void } = $props();
 </script>
 
 {#if show}
