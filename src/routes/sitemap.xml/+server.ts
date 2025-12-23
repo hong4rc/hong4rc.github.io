@@ -1,4 +1,5 @@
 import { config } from '$lib/config';
+import { posts } from '$lib/blog/posts';
 import type { RequestHandler } from './$types';
 
 export const prerender = true;
@@ -30,6 +31,16 @@ const getPages = (): Page[] => {
 			lastmod: today,
 			changefreq: 'weekly',
 			priority: 0.8
+		});
+
+		// Add individual blog posts
+		posts.forEach(post => {
+			pages.push({
+				loc: `${siteUrl}/blog/${post.slug}`,
+				lastmod: post.date,
+				changefreq: 'monthly',
+				priority: 0.7
+			});
 		});
 	}
 

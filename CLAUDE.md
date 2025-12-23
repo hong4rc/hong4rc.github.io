@@ -5,10 +5,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm run dev      # Start development server
-npm run build    # Build static site to /build
-npm run preview  # Preview production build
-npm run check    # Type-check with svelte-check
+npm run dev       # Start development server
+npm run build     # Build static site to /build
+npm run preview   # Preview production build
+npm run check     # Type-check with svelte-check
+npm run test:a11y # Run accessibility tests with axe-core
 ```
 
 ## Architecture
@@ -24,6 +25,9 @@ SvelteKit portfolio site with static adapter for GitHub Pages. Features:
 - `src/lib/config.ts` - Central config for personal info, experience, tech stack, fun facts
 - `src/lib/stores/theme.ts` - Theme state with localStorage persistence
 - `src/lib/blog/posts.ts` - Blog post loader from markdown files
+- `src/lib/utils/utm.ts` - UTM tracking utilities for analytics
+- `src/lib/actions/swipe.ts` - Touch swipe gesture handler for mobile navigation
+- `src/lib/actions/reveal.ts` - Reveal animations on scroll
 - `src/app.css` - Catppuccin color palette as CSS variables
 - `svelte.config.js` - SvelteKit + mdsvex configuration
 
@@ -42,6 +46,7 @@ SvelteKit portfolio site with static adapter for GitHub Pages. Features:
 | `Hero.svelte` | Name with highlighted "4", typewriter bio effect |
 | `Experience.svelte` | Timeline with hover effects on dots |
 | `TechStack.svelte` | Colored tech icons using devicon CDN |
+| `TechIcon.svelte` | Individual tech icon component with tooltip |
 | `OpenSource.svelte` | Fetches pinned repos from GitHub profile |
 | `Tools.svelte` | Categorized tools with external links |
 | `FunFacts.svelte` | Personality facts (Colemak, Split Keyboard, etc.) |
@@ -49,9 +54,15 @@ SvelteKit portfolio site with static adapter for GitHub Pages. Features:
 | `Contact.svelte` | Contact links |
 | `Availability.svelte` | Current status (Open to work, etc.) |
 | `CommandPalette.svelte` | Vim-style keybindings and search |
+| `WhichKey.svelte` | Which-key popup showing available keybindings |
 | `SectionNav.svelte` | Left sidebar with 5-page progress indicator |
 | `ThemeToggle.svelte` | Theme switcher dropdown |
 | `TechFooter.svelte` | Footer with tech stack info |
+| `SEO.svelte` | SEO meta tags and Open Graph data |
+| `BlogNav.svelte` | Blog navigation component |
+| `PostNav.svelte` | Previous/next post navigation |
+| `Analytics.svelte` | Google Analytics integration |
+| `Skeleton.svelte` | Loading skeleton for async content |
 
 ### Blog
 
@@ -80,6 +91,17 @@ Your markdown content here...
 **Blog routes:**
 - `/blog` - Blog listing with timeline, tags
 - `/blog/[slug]` - Individual post page
+- `/rss.xml` - RSS feed for blog posts
+- `/sitemap.xml` - Sitemap for SEO
+
+### Actions & Utilities
+
+**Svelte Actions:**
+- `swipe.ts` - Touch gesture handler for mobile swipe navigation between pages
+- `reveal.ts` - Scroll-based reveal animations for elements
+
+**Utilities:**
+- `utm.ts` - UTM parameter tracking for analytics
 
 ### Vim Keybindings (Home Page Only)
 

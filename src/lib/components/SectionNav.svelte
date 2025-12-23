@@ -63,7 +63,13 @@
 		goToPage(pages.length - 1);
 	}
 
-	export { pages, currentIndex };
+	export function getPages() {
+		return pages;
+	}
+
+	export function getCurrentIndex() {
+		return currentIndex;
+	}
 
 	onMount(() => {
 		if (browser) {

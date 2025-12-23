@@ -44,7 +44,7 @@
 		}
 	};
 
-	const iconData = icons[icon];
+	const iconData = $derived(icons[icon]);
 </script>
 
 {#if iconData}

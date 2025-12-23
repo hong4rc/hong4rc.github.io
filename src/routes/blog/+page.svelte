@@ -2,6 +2,7 @@
 	import { config } from '$lib/config';
 	import { posts, getAllTags } from '$lib/blog/posts';
 	import BlogNav from '$lib/components/BlogNav.svelte';
+	import SEO from '$lib/components/SEO.svelte';
 
 	const allTags = getAllTags();
 	let selectedTag = $state<string | null>(null);
@@ -20,10 +21,11 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Blog | {config.name}</title>
-	<meta name="description" content="Backend dev thoughts, keyboard obsessions, and occasional wisdom from {config.name}. Articles about Node.js, TypeScript, Neovim, and developer productivity." />
-</svelte:head>
+<SEO
+	title="Blog"
+	description="Backend dev thoughts, keyboard obsessions, and occasional wisdom from {config.name}. Articles about Node.js, TypeScript, Neovim, and developer productivity."
+	keywords={['blog', 'nodejs', 'typescript', 'neovim', 'developer', 'backend']}
+/>
 
 <main id="main" class="blog-page">
 	<header class="blog-header">

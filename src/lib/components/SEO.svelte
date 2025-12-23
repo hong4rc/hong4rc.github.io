@@ -58,6 +58,29 @@
 			knowsAbout: config.seo.keywords
 		}
 	};
+
+	// BlogPosting schema for articles
+	const blogPostSchema = $derived(type === 'article' ? {
+		'@context': 'https://schema.org',
+		'@type': 'BlogPosting',
+		headline: title,
+		description: pageDescription,
+		image: `${config.seo.siteUrl}${pageImage}`,
+		url: canonicalUrl,
+		datePublished: publishedTime,
+		dateModified: publishedTime,
+		author: {
+			'@type': 'Person',
+			name: config.name,
+			url: config.seo.siteUrl
+		},
+		publisher: {
+			'@type': 'Person',
+			name: config.name,
+			url: config.seo.siteUrl
+		},
+		keywords: keywords.join(', ')
+	} : null);
 </script>
 
 <svelte:head>
@@ -92,7 +115,11 @@
 	<!-- JSON-LD Structured Data -->
 	{@html `<script type="application/ld+json">${JSON.stringify(personSchema)}</script>`}
 	{@html `<script type="application/ld+json">${JSON.stringify(websiteSchema)}</script>`}
-	{@html `<script type="application/ld+json">${JSON.stringify(profilePageSchema)}</script>`}
+	{#if type === 'article' && blogPostSchema}
+		{@html `<script type="application/ld+json">${JSON.stringify(blogPostSchema)}</script>`}
+	{:else}
+		{@html `<script type="application/ld+json">${JSON.stringify(profilePageSchema)}</script>`}
+	{/if}
 
 	<!-- RSS Feed -->
 	{#if config.features.enableRss}

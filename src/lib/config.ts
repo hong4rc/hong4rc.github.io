@@ -62,37 +62,53 @@ export const config = {
   ] as ExperienceItem[],
 
   tools: [
-    { category: 'Terminal', icon: '▶', items: [
-      { name: 'Ghostty', url: 'https://ghostty.org' },
-      { name: 'zsh + tmux', url: 'https://github.com/tmux/tmux' }
-    ]},
-    { category: 'IDE', icon: '◇', items: [
-      { name: 'LazyVim', url: 'https://www.lazyvim.org' },
-      { name: 'VS Code', url: 'https://code.visualstudio.com' }
-    ]},
-    { category: 'Database', icon: '●', items: [
-      { name: 'Compass', url: 'https://www.mongodb.com/products/compass' },
-      { name: 'DataGrip', url: 'https://www.jetbrains.com/datagrip' }
-    ]},
-    { category: 'Fonts', icon: '◈', items: [
-      { name: 'Fira Code', url: 'https://github.com/tonsky/FiraCode' },
-      { name: 'Cascadia Code', url: 'https://github.com/microsoft/cascadia-code' }
-    ]},
-    { category: 'OS', icon: '○', items: [
-      { name: 'macOS', url: 'https://www.apple.com/macos' },
-      { name: 'Fedora', url: 'https://fedoraproject.org' }
-    ]},
-    { category: 'Keyboard', icon: '⌨', items: [
-      { name: 'Colemak', url: 'https://colemak.com' },
-      { name: 'Sofle v2', url: 'https://github.com/josefadamcik/SofleKeyboard' }
-    ]},
-    { category: 'Package Manager', icon: '◉', items: [
-      { name: 'mise', url: 'https://mise.jdx.dev' }
-    ]},
-    { category: 'CLI', icon: '→', items: [
-      { name: 'zoxide', url: 'https://github.com/ajeetdsouza/zoxide' },
-      { name: 'fzf', url: 'https://github.com/junegunn/fzf' }
-    ]}
+    {
+      category: 'Terminal', icon: '▶', items: [
+        { name: 'Ghostty', url: 'https://ghostty.org' },
+        { name: 'zsh + tmux', url: 'https://github.com/tmux/tmux' }
+      ]
+    },
+    {
+      category: 'IDE', icon: '◇', items: [
+        { name: 'LazyVim', url: 'https://www.lazyvim.org' },
+        { name: 'VS Code', url: 'https://code.visualstudio.com' }
+      ]
+    },
+    {
+      category: 'Database', icon: '●', items: [
+        { name: 'Compass', url: 'https://www.mongodb.com/products/compass' },
+        { name: 'DataGrip', url: 'https://www.jetbrains.com/datagrip' }
+      ]
+    },
+    {
+      category: 'Fonts', icon: '◈', items: [
+        { name: 'Fira Code', url: 'https://github.com/tonsky/FiraCode' },
+        { name: 'Cascadia Code', url: 'https://github.com/microsoft/cascadia-code' }
+      ]
+    },
+    {
+      category: 'OS', icon: '○', items: [
+        { name: 'macOS', url: 'https://www.apple.com/macos' },
+        { name: 'Fedora', url: 'https://fedoraproject.org' }
+      ]
+    },
+    {
+      category: 'Keyboard', icon: '⌨', items: [
+        { name: 'Colemak', url: 'https://colemak.com' },
+        { name: 'Sofle v2', url: 'https://github.com/josefadamcik/SofleKeyboard' }
+      ]
+    },
+    {
+      category: 'Package Manager', icon: '◉', items: [
+        { name: 'mise', url: 'https://mise.jdx.dev' }
+      ]
+    },
+    {
+      category: 'CLI', icon: '→', items: [
+        { name: 'zoxide', url: 'https://github.com/ajeetdsouza/zoxide' },
+        { name: 'fzf', url: 'https://github.com/junegunn/fzf' }
+      ]
+    }
   ],
 
   funFacts: [
@@ -139,7 +155,7 @@ export const config = {
 
   features: {
     showProjects: false,
-    showBlog: false,
+    showBlog: true,
     showExperience: true,
     showGitHubStats: true,
     showSkills: false,

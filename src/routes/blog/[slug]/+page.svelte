@@ -2,6 +2,7 @@
 	import { config } from '$lib/config';
 	import { fade } from 'svelte/transition';
 	import PostNav from '$lib/components/PostNav.svelte';
+	import SEO from '$lib/components/SEO.svelte';
 
 	let { data } = $props();
 	let showBackLink = $state(false);
@@ -21,12 +22,13 @@
 
 <svelte:window onscroll={handleScroll} />
 
-<svelte:head>
-	<title>{data.post?.title || 'Post'} | {config.name}</title>
-	{#if data.post?.description}
-		<meta name="description" content={data.post.description} />
-	{/if}
-</svelte:head>
+<SEO
+	title={data.post?.title || 'Post'}
+	description={data.post?.description}
+	type="article"
+	publishedTime={data.post?.date}
+	keywords={data.post?.tags || []}
+/>
 
 {#if showBackLink}
 	<a href="/blog" class="back-link" transition:fade={{ duration: 200 }}>← Back to blog</a>
