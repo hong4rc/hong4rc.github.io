@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { theme } from '$lib/stores/theme';
 	import { themes, type Theme } from '$lib/config';
+	import { trackThemeChange } from '$lib/utils/analytics';
 
 	let isOpen = $state(false);
 	let container: HTMLDivElement;
 
 	function selectTheme(t: Theme) {
 		theme.set(t);
+		trackThemeChange(t);
 		isOpen = false;
 	}
 

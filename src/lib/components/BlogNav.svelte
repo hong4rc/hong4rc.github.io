@@ -3,6 +3,7 @@
 	import { browser } from '$app/environment';
 	import WhichKey from './WhichKey.svelte';
 	import { theme } from '$lib/stores/theme';
+	import { trackBlogPost } from '$lib/utils/analytics';
 
 	let { posts = [] }: { posts: { slug: string; title: string; description: string }[] } = $props();
 
@@ -90,7 +91,9 @@
 
 	function openPost() {
 		if (selectedIndex >= 0 && posts[selectedIndex]) {
-			window.location.href = `/blog/${posts[selectedIndex].slug}`;
+			const post = posts[selectedIndex];
+			trackBlogPost('select', post.slug, post.title);
+			window.location.href = `/blog/${post.slug}`;
 		}
 	}
 
@@ -120,7 +123,9 @@
 			if (event.key === 'Enter') {
 				event.preventDefault();
 				if (filteredPosts[searchSelectedIndex]) {
-					window.location.href = `/blog/${filteredPosts[searchSelectedIndex].slug}`;
+					const post = filteredPosts[searchSelectedIndex];
+					trackBlogPost('select', post.slug, post.title);
+					window.location.href = `/blog/${post.slug}`;
 				}
 				return;
 			}
@@ -311,7 +316,10 @@
 					<button
 						class="search-result"
 						class:selected={i === searchSelectedIndex}
-						onclick={() => { window.location.href = `/blog/${post.slug}`; }}
+						onclick={() => {
+							trackBlogPost('select', post.slug, post.title);
+							window.location.href = `/blog/${post.slug}`;
+						}}
 						onmouseenter={() => searchSelectedIndex = i}
 					>
 						<div class="result-content">

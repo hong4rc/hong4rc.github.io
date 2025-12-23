@@ -2,6 +2,7 @@
 	import { config } from '$lib/config';
 	import { reveal } from '$lib/actions/reveal';
 	import { addUTM } from '$lib/utils/utm';
+	import { trackExternalLink } from '$lib/utils/analytics';
 </script>
 
 {#if config.features.showTools && config.tools?.length}
@@ -17,7 +18,12 @@
 					<ul>
 						{#each group.items as item}
 							<li>
-								<a href={addUTM(item.url, { content: 'tools' })} target="_blank" rel="noopener noreferrer">{item.name}</a>
+								<a
+									href={addUTM(item.url, { content: 'tools' })}
+									target="_blank"
+									rel="noopener noreferrer"
+									onclick={() => trackExternalLink('tool', item.name, item.url)}
+								>{item.name}</a>
 							</li>
 						{/each}
 					</ul>

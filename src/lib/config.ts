@@ -150,7 +150,7 @@ export const config = {
   },
 
   analytics: {
-    googleAnalyticsId: '' // Add your GA4 ID here, e.g., 'G-XXXXXXXXXX'
+    googleAnalyticsId: 'G-YL4P1WR0S1'
   },
 
   features: {
@@ -164,7 +164,7 @@ export const config = {
     showTools: true,
     showAvailability: true,
     showGuestbook: false,
-    enableAnalytics: false,
+    enableAnalytics: true,
     enableRss: true
   },
 

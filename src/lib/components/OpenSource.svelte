@@ -3,6 +3,7 @@
 	import { reveal } from '$lib/actions/reveal';
 	import { onMount } from 'svelte';
 	import { addUTM } from '$lib/utils/utm';
+	import { trackExternalLink } from '$lib/utils/analytics';
 	import Skeleton from './Skeleton.svelte';
 
 	interface Repo {
@@ -72,7 +73,13 @@
 		{:else if repos.length}
 			<div class="repos-grid">
 				{#each repos as repo}
-					<a href={addUTM(`https://github.com/${repo.author}/${repo.name}`, { content: 'opensource' })} class="repo-card" target="_blank" rel="noopener">
+					<a
+						href={addUTM(`https://github.com/${repo.author}/${repo.name}`, { content: 'opensource' })}
+						class="repo-card"
+						target="_blank"
+						rel="noopener"
+						onclick={() => trackExternalLink('repo', `${repo.author}/${repo.name}`, `https://github.com/${repo.author}/${repo.name}`)}
+					>
 						<h3><span class="author">{repo.author}/</span><span class="repo-name">{repo.name}</span></h3>
 						<p class="desc">{repo.description || 'No description'}</p>
 						{#if repo.language}

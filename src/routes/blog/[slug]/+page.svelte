@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { config } from '$lib/config';
 	import { fade } from 'svelte/transition';
+	import { onMount } from 'svelte';
 	import PostNav from '$lib/components/PostNav.svelte';
 	import SEO from '$lib/components/SEO.svelte';
+	import { trackBlogPost } from '$lib/utils/analytics';
 
 	let { data } = $props();
 	let showBackLink = $state(false);
@@ -18,6 +20,12 @@
 	function handleScroll() {
 		showBackLink = window.scrollY > 300;
 	}
+
+	onMount(() => {
+		if (data.post) {
+			trackBlogPost('view', data.post.slug, data.post.title);
+		}
+	});
 </script>
 
 <svelte:window onscroll={handleScroll} />
