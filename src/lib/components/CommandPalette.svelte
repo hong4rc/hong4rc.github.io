@@ -1,443 +1,276 @@
 <script lang="ts">
-	import { config, themes } from '$lib/config';
-	import { theme } from '$lib/stores/theme';
 	import { onMount, onDestroy } from 'svelte';
 	import { browser } from '$app/environment';
+	import { paletteState, mode, isIdle, isLeader, isHelp, isSearch, isGoto } from '$lib/stores/paletteState';
+	import { getAllCommands } from '$lib/keybindings/commands';
+	import { config, themes } from '$lib/config';
+	import { theme } from '$lib/stores/theme';
+	import { addUTM } from '$lib/utils/utm';
+	import * as nav from '$lib/keybindings/navigation';
+	import LeaderMenu from './palette/LeaderMenu.svelte';
+	import HelpMenu from './palette/HelpMenu.svelte';
+	import SearchPalette from './palette/SearchPalette.svelte';
+	import GoToMenu from './palette/GoToMenu.svelte';
 
-	interface Command {
-		key: string;
-		label: string;
-		action: () => void;
-	}
-
-	let showWhichKey = false;
-	let showFullHelp = false;
-	let showSearch = false;
-	let showGoTo = false;
-	let leaderPressed = false;
-	let gPressed = false;
-	let leaderTimeout: number | null = null;
+	let gPressed = $state(false);
 	let gTimeout: number | null = null;
-	let searchQuery = '';
-	let selectedIndex = 0;
-	let inputElement: HTMLInputElement;
 
-	const pageOrder = ['page-hero', 'page-experience', 'page-tech', 'page-tools', 'page-contact'];
-
-	const pages: Command[] = [
-		{ key: 'h', label: 'Home', action: () => scrollTo('page-hero') },
-		{ key: 'e', label: 'Experience', action: () => scrollTo('page-experience') },
-		{ key: 't', label: 'Tech & OSS', action: () => scrollTo('page-tech') },
-		{ key: 'l', label: 'Tools & Fun', action: () => scrollTo('page-tools') },
-		{ key: 'c', label: 'Contact', action: () => scrollTo('page-contact') },
-		{ key: 'b', label: 'Blog', action: () => window.location.href = '/blog' }
-	];
-
-	const themeKeys: Command[] = themes.map((t, i) => ({
-		key: String(i + 1),
-		label: t.name,
-		action: () => theme.set(t.id)
-	}));
-
-	const allCommands = [
-		...pages.map((s) => ({ ...s, category: 'Page' })),
-		...themeKeys.map((t) => ({ ...t, category: 'Theme' })),
-		{ key: 'G', label: 'Open GitHub', category: 'Link', action: () => window.open(config.contact.github, '_blank') },
-		{ key: 'L', label: 'Open LinkedIn', category: 'Link', action: () => window.open(config.contact.linkedin, '_blank') },
-		{ key: 'E', label: 'Send Email', category: 'Link', action: () => (window.location.href = `mailto:${config.contact.email}`) }
-	];
-
-	$: filteredCommands = searchQuery
-		? allCommands.filter((cmd) =>
-				cmd.label.toLowerCase().includes(searchQuery.toLowerCase())
-			)
-		: allCommands;
-
-	$: if (selectedIndex >= filteredCommands.length) {
-		selectedIndex = Math.max(0, filteredCommands.length - 1);
-	}
-
-	function scrollTo(className: string) {
-		const element = document.querySelector(`.${className}`);
-		if (element) {
-			element.scrollIntoView({ behavior: 'smooth' });
-		}
-	}
-
-	function getCurrentPageIndex(): number {
-		const scrollY = window.scrollY + window.innerHeight / 2;
-		for (let i = pageOrder.length - 1; i >= 0; i--) {
-			const el = document.querySelector(`.${pageOrder[i]}`);
-			if (el && (el as HTMLElement).offsetTop <= scrollY) {
-				return i;
-			}
-		}
-		return 0;
-	}
-
-	function goToNextPage() {
-		const current = getCurrentPageIndex();
-		const next = Math.min(current + 1, pageOrder.length - 1);
-		scrollTo(pageOrder[next]);
-	}
-
-	function goToPrevPage() {
-		const current = getCurrentPageIndex();
-		if (current === 0) {
-			window.scrollTo({ top: 0, behavior: 'smooth' });
-		} else {
-			scrollTo(pageOrder[current - 1]);
-		}
-	}
-
-	function goToTop() {
-		window.scrollTo({ top: 0, behavior: 'smooth' });
-	}
-
-	function goToBottom() {
-		window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-	}
-
-	function halfPageDown() {
-		window.scrollBy({ top: window.innerHeight / 2, behavior: 'smooth' });
-	}
-
-	function halfPageUp() {
-		window.scrollBy({ top: -window.innerHeight / 2, behavior: 'smooth' });
-	}
-
-	function fullPageDown() {
-		window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
-	}
-
-	function fullPageUp() {
-		window.scrollBy({ top: -window.innerHeight, behavior: 'smooth' });
-	}
-
-	function centerCurrentPage() {
-		const current = getCurrentPageIndex();
-		const el = document.querySelector(`.${pageOrder[current]}`);
-		if (el) {
-			el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-		}
-	}
-
-	function cycleTheme() {
-		const themeOrder = ['latte', 'frappe', 'macchiato', 'mocha'] as const;
-		const currentTheme = document.documentElement.getAttribute('data-theme') || 'frappe';
-		const currentIndex = themeOrder.indexOf(currentTheme as typeof themeOrder[number]);
-		const nextIndex = (currentIndex + 1) % themeOrder.length;
-		theme.set(themeOrder[nextIndex]);
-	}
-
-	function closeAll() {
-		showWhichKey = false;
-		showFullHelp = false;
-		showSearch = false;
-		showGoTo = false;
-		leaderPressed = false;
-		gPressed = false;
-		if (leaderTimeout) clearTimeout(leaderTimeout);
-		if (gTimeout) clearTimeout(gTimeout);
-	}
-
-	function openSearch() {
-		showWhichKey = false;
-		showFullHelp = false;
-		showSearch = true;
-		searchQuery = '';
-		selectedIndex = 0;
-		setTimeout(() => inputElement?.focus(), 10);
-	}
+	const commands = getAllCommands();
 
 	function handleKeydown(event: KeyboardEvent) {
-		// Search mode
-		if (showSearch) {
-			if (event.key === 'Escape') {
-				event.preventDefault();
-				closeAll();
-				return;
-			}
-			if (event.key === 'Enter') {
-				event.preventDefault();
-				if (filteredCommands[selectedIndex]) {
-					filteredCommands[selectedIndex].action();
-					closeAll();
-				}
-				return;
-			}
-			if (event.key === 'ArrowDown') {
-				event.preventDefault();
-				selectedIndex = (selectedIndex + 1) % filteredCommands.length;
-				return;
-			}
-			if (event.key === 'ArrowUp') {
-				event.preventDefault();
-				selectedIndex = (selectedIndex - 1 + filteredCommands.length) % filteredCommands.length;
-				return;
-			}
-			return;
-		}
-
 		// Ignore if typing in inputs
 		if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
 			return;
 		}
 
-		// / - open search
-		if (event.key === '/' && !leaderPressed && !showWhichKey && !gPressed) {
-			event.preventDefault();
-			if (showFullHelp) closeAll();
-			openSearch();
+		const currentMode = $mode;
+
+		// Search mode - delegate to SearchPalette component
+		if (currentMode === 'search') {
+			if (event.key === 'Escape') {
+				event.preventDefault();
+				paletteState.reset();
+			}
 			return;
 		}
 
-		// ? - show full help
+		// Escape - close any open menu
+		if (event.key === 'Escape' && currentMode !== 'idle') {
+			event.preventDefault();
+			paletteState.reset();
+			return;
+		}
+
+		// / - open search
+		if (event.key === '/' && currentMode === 'idle' && !gPressed) {
+			event.preventDefault();
+			paletteState.enterSearch();
+			return;
+		}
+
+		// ? - show help
 		if (event.key === '?' && !gPressed) {
 			event.preventDefault();
-
-			// Close any open menus first
-			if (showWhichKey || leaderPressed) {
-				closeAll();
+			if (currentMode === 'leader') {
+				paletteState.reset();
 			}
-
-			showFullHelp = true;
-			leaderTimeout = setTimeout(() => {
-				if (showFullHelp && !showSearch) {
-					closeAll();
-				}
-			}, 5000) as unknown as number;
+			paletteState.enterHelp();
 			return;
 		}
 
-		// Escape - close full help
-		if (event.key === 'Escape' && showFullHelp) {
-			event.preventDefault();
-			closeAll();
-			return;
-		}
-
-		// Tab - next page, Shift+Tab - previous page
-		if (event.key === 'Tab' && !leaderPressed && !showWhichKey && !gPressed && !showSearch) {
-			event.preventDefault();
-			if (showFullHelp) closeAll();
-			if (event.shiftKey) {
-				goToPrevPage();
-			} else {
-				goToNextPage();
-			}
-			return;
-		}
-
-		// Ctrl+d - half page down
-		if (event.key === 'd' && event.ctrlKey && !leaderPressed && !showWhichKey) {
-			event.preventDefault();
-			if (showFullHelp) closeAll();
-			halfPageDown();
-			return;
-		}
-
-		// Ctrl+u - half page up
-		if (event.key === 'u' && event.ctrlKey && !leaderPressed && !showWhichKey) {
-			event.preventDefault();
-			if (showFullHelp) closeAll();
-			halfPageUp();
-			return;
-		}
-
-		// Ctrl+f - full page down
-		if (event.key === 'f' && event.ctrlKey && !leaderPressed && !showWhichKey) {
-			event.preventDefault();
-			if (showFullHelp) closeAll();
-			fullPageDown();
-			return;
-		}
-
-		// Ctrl+b - full page up
-		if (event.key === 'b' && event.ctrlKey && !leaderPressed && !showWhichKey) {
-			event.preventDefault();
-			if (showFullHelp) closeAll();
-			fullPageUp();
-			return;
-		}
-
-		// j or w - next page
-		if ((event.key === 'j' || event.key === 'w') && !leaderPressed && !showWhichKey && !gPressed) {
-			event.preventDefault();
-			if (showFullHelp) closeAll();
-			goToNextPage();
-			return;
-		}
-
-		// k or b - previous page (when not ctrl)
-		if ((event.key === 'k' || event.key === 'b') && !event.ctrlKey && !leaderPressed && !showWhichKey && !gPressed) {
-			event.preventDefault();
-			if (showFullHelp) closeAll();
-			goToPrevPage();
-			return;
-		}
-
-		// 0 or ^ - first section
-		if ((event.key === '0' || event.key === '^') && !leaderPressed && !showWhichKey && !gPressed) {
-			event.preventDefault();
-			if (showFullHelp) closeAll();
-			goToTop();
-			return;
-		}
-
-		// $ - last section
-		if (event.key === '$' && !leaderPressed && !showWhichKey && !gPressed) {
-			event.preventDefault();
-			if (showFullHelp) closeAll();
-			goToBottom();
-			return;
-		}
-
-		// zz - center current page
-		if (event.key === 'z' && !leaderPressed && !showWhichKey && !gPressed) {
-			event.preventDefault();
-			if (showFullHelp) closeAll();
-			// Wait for second z
-			const handleSecondZ = (e: KeyboardEvent) => {
-				if (e.key === 'z') {
-					e.preventDefault();
-					centerCurrentPage();
-				}
-				window.removeEventListener('keydown', handleSecondZ);
-			};
-			window.addEventListener('keydown', handleSecondZ);
-			setTimeout(() => window.removeEventListener('keydown', handleSecondZ), 1000);
-			return;
-		}
-
-		// Arrow keys for page navigation (when not in leader mode)
-		if (!leaderPressed && !showWhichKey && !gPressed) {
-			if (event.key === 'ArrowDown') {
-				event.preventDefault();
-				if (showFullHelp) closeAll();
-				goToNextPage();
+		// Help mode - handle special keys
+		if (currentMode === 'help') {
+			// Ignore modifier keys
+			if (['Shift', 'Alt', 'Control', 'Meta'].includes(event.key)) {
 				return;
 			}
-			if (event.key === 'ArrowUp') {
+
+			// / - open search from help
+			if (event.key === '/') {
 				event.preventDefault();
-				if (showFullHelp) closeAll();
-				goToPrevPage();
+				paletteState.enterSearch();
 				return;
 			}
+
+			// Space - open leader menu from help
+			if (event.code === 'Space') {
+				event.preventDefault();
+				paletteState.enterLeader();
+				return;
+			}
+
+			// g - enter goto mode from help
+			if (event.key === 'g') {
+				event.preventDefault();
+				if (gPressed) {
+					// gg - go to top
+					if (gTimeout) clearTimeout(gTimeout);
+					nav.goToTop();
+					gPressed = false;
+					paletteState.reset();
+					return;
+				}
+
+				gPressed = true;
+				paletteState.enterGoto();
+
+				gTimeout = setTimeout(() => {
+					gPressed = false;
+					paletteState.reset();
+				}, 2000) as unknown as number;
+				return;
+			}
+
+			// ? - toggle help (close)
+			if (event.key === '?') {
+				event.preventDefault();
+				paletteState.reset();
+				return;
+			}
+
+			// Any other key will close help and continue processing
+			paletteState.reset();
+			// Continue to process the key below
 		}
 
-		// G (uppercase) - go to end of page
-		if (event.key === 'G' && !leaderPressed && !showWhichKey && !gPressed) {
+		// Space - leader mode
+		if (event.code === 'Space' && !event.metaKey && !event.ctrlKey && !event.altKey) {
 			event.preventDefault();
-			if (showFullHelp) closeAll();
-			goToBottom();
+
+			// Toggle from help to leader
+			if (currentMode === 'help') {
+				paletteState.reset();
+			}
+
+			// Double Space - open search
+			if (currentMode === 'leader') {
+				paletteState.enterSearch();
+				return;
+			}
+
+			paletteState.enterLeader();
 			return;
 		}
 
 		// g key - enter go-to mode
-		if (event.key === 'g' && !leaderPressed && !showWhichKey) {
+		if (event.key === 'g' && currentMode === 'idle') {
 			event.preventDefault();
-
-			if (showFullHelp) closeAll();
 
 			if (gPressed) {
 				// gg - go to top
 				if (gTimeout) clearTimeout(gTimeout);
-				goToTop();
+				nav.goToTop();
 				gPressed = false;
-				showGoTo = false;
+				paletteState.reset();
 				return;
 			}
 
 			gPressed = true;
-			showGoTo = true;
+			paletteState.enterGoto();
 
 			gTimeout = setTimeout(() => {
 				gPressed = false;
-				showGoTo = false;
+				paletteState.reset();
 			}, 2000) as unknown as number;
 			return;
 		}
 
 		// g + key - go to page
-		if (gPressed && showGoTo) {
-			event.preventDefault();
-			const key = event.key;
-
-			const cmd = pages.find((c) => c.key === key);
-			if (cmd) {
-				cmd.action();
-				closeAll();
+		if (gPressed && currentMode === 'goto') {
+			// Ignore modifier keys
+			if (['Shift', 'Alt', 'Control', 'Meta'].includes(event.key)) {
 				return;
 			}
 
-			if (key === 'Escape') {
-				closeAll();
-				return;
-			}
-		}
-
-		// Leader key (Space)
-		if (event.code === 'Space' && !event.metaKey && !event.ctrlKey && !event.altKey) {
 			event.preventDefault();
 
-			// If full help is showing, close it first
-			if (showFullHelp) {
-				showFullHelp = false;
-				if (leaderTimeout) clearTimeout(leaderTimeout);
+			// Execute goto commands
+			if (event.key === 'h') {
+				nav.scrollTo('page-hero');
+			} else if (event.key === 'e') {
+				nav.scrollTo('page-experience');
+			} else if (event.key === 't') {
+				nav.scrollTo('page-tech');
+			} else if (event.key === 'l') {
+				nav.scrollTo('page-tools');
+			} else if (event.key === 'c') {
+				nav.scrollTo('page-contact');
+			} else if (event.key === 'b') {
+				window.location.href = '/blog';
 			}
 
-			if (leaderPressed) {
-				if (leaderTimeout) clearTimeout(leaderTimeout);
-				openSearch();
-				leaderPressed = false;
-				return;
-			}
-
-			leaderPressed = true;
-			showWhichKey = true;
-
-			leaderTimeout = setTimeout(() => {
-				if (showWhichKey && !showSearch) {
-					closeAll();
-				}
-			}, 3000) as unknown as number;
+			// Close goto menu
+			gPressed = false;
+			if (gTimeout) clearTimeout(gTimeout);
+			paletteState.reset();
 			return;
 		}
 
-		// Leader shortcuts
-		if (leaderPressed && showWhichKey) {
+		// Leader shortcuts (when in leader mode)
+		if (currentMode === 'leader') {
+			// Ignore modifier keys
+			if (['Shift', 'Alt', 'Control', 'Meta'].includes(event.key)) {
+				return;
+			}
+
 			event.preventDefault();
-			const key = event.key;
 
-			const cmd = [...pages, ...themeKeys].find((c) => c.key === key);
-			if (cmd) {
-				cmd.action();
-				closeAll();
-				return;
+			// Execute leader commands
+			if (event.key === 'h') {
+				nav.scrollTo('page-hero');
+				paletteState.reset();
+			} else if (event.key === 'e') {
+				nav.scrollTo('page-experience');
+				paletteState.reset();
+			} else if (event.key === 't') {
+				nav.scrollTo('page-tech');
+				paletteState.reset();
+			} else if (event.key === 'l') {
+				nav.scrollTo('page-tools');
+				paletteState.reset();
+			} else if (event.key === 'c') {
+				nav.scrollTo('page-contact');
+				paletteState.reset();
+			} else if (event.key === 'b') {
+				window.location.href = '/blog';
+				paletteState.reset();
+			} else if (event.key === '1') {
+				theme.set('latte');
+				paletteState.reset();
+			} else if (event.key === '2') {
+				theme.set('frappe');
+				paletteState.reset();
+			} else if (event.key === '3') {
+				theme.set('macchiato');
+				paletteState.reset();
+			} else if (event.key === '4') {
+				theme.set('mocha');
+				paletteState.reset();
+			} else if (event.key === 'G') {
+				const githubUrl = addUTM(config.contact.github, { content: 'command_palette_github' });
+				window.open(githubUrl, '_blank');
+				paletteState.reset();
+			} else if (event.key === 'L') {
+				const linkedinUrl = addUTM(config.contact.linkedin, { content: 'command_palette_linkedin' });
+				window.open(linkedinUrl, '_blank');
+				paletteState.reset();
+			} else if (event.key === 'E') {
+				window.location.href = `mailto:${config.contact.email}?subject=Contact from Portfolio (Command Palette)`;
+				paletteState.reset();
+			} else {
+				// Key doesn't match any command, close the menu
+				paletteState.reset();
 			}
-
-			if (key === 'G') {
-				window.open(config.contact.github, '_blank');
-				closeAll();
-				return;
-			}
-			if (key === 'L') {
-				window.open(config.contact.linkedin, '_blank');
-				closeAll();
-				return;
-			}
-			if (key === 'E') {
-				window.location.href = `mailto:${config.contact.email}`;
-				closeAll();
-				return;
-			}
-
-			if (key === 'Escape') {
-				closeAll();
-				return;
-			}
+			return;
 		}
+
+		// Execute registered commands
+		const matchedCommand = commands.find((cmd) => {
+			if (cmd.key !== event.key) return false;
+			if (cmd.ctrl && !event.ctrlKey) return false;
+			if (cmd.shift && !event.shiftKey) return false;
+			if (cmd.alt && !event.altKey) return false;
+			if (cmd.meta && !event.metaKey) return false;
+			return cmd.activeModes.includes(currentMode);
+		});
+
+		if (matchedCommand) {
+			event.preventDefault();
+			matchedCommand.execute();
+			return;
+		}
+	}
+
+	function handleCommandExecute(command: any) {
+		command.action();
+		paletteState.reset();
+	}
+
+	function handleGotoCommand(page: any) {
+		page.action();
+		gPressed = false;
+		if (gTimeout) clearTimeout(gTimeout);
+		paletteState.reset();
 	}
 
 	onMount(() => {
@@ -449,311 +282,34 @@
 	onDestroy(() => {
 		if (browser) {
 			window.removeEventListener('keydown', handleKeydown);
-			if (leaderTimeout) clearTimeout(leaderTimeout);
 			if (gTimeout) clearTimeout(gTimeout);
 		}
 	});
 </script>
 
-{#if showGoTo && !showSearch && !showWhichKey && !showFullHelp}
-	<div class="which-key go-to">
-		<div class="which-key-header">
-			<kbd>g</kbd> + key
-		</div>
-		<div class="which-key-grid">
-			<div class="which-key-group">
-				<span class="group-title">Go to</span>
-				<div class="which-key-item"><kbd>g</kbd><span>Top</span></div>
-				{#each pages as cmd}
-					<div class="which-key-item">
-						<kbd>{cmd.key}</kbd>
-						<span>{cmd.label}</span>
-					</div>
-				{/each}
-			</div>
-		</div>
-	</div>
+{#if $isGoto}
+	<GoToMenu onCommand={handleGotoCommand} />
 {/if}
 
-{#if showWhichKey && !showSearch}
-	<div class="which-key">
-		<div class="which-key-header">
-			<kbd>SPC</kbd> + key
-		</div>
-		<div class="which-key-grid">
-			<div class="which-key-group">
-				<span class="group-title">Pages</span>
-				{#each pages as cmd}
-					<div class="which-key-item">
-						<kbd>{cmd.key}</kbd>
-						<span>{cmd.label}</span>
-					</div>
-				{/each}
-			</div>
-			<div class="which-key-group">
-				<span class="group-title">Theme</span>
-				{#each themeKeys as cmd}
-					<div class="which-key-item">
-						<kbd>{cmd.key}</kbd>
-						<span>{cmd.label}</span>
-					</div>
-				{/each}
-			</div>
-			<div class="which-key-group">
-				<span class="group-title">Links</span>
-				<div class="which-key-item"><kbd>G</kbd><span>GitHub</span></div>
-				<div class="which-key-item"><kbd>L</kbd><span>LinkedIn</span></div>
-				<div class="which-key-item"><kbd>E</kbd><span>Email</span></div>
-			</div>
-		</div>
-	</div>
+{#if $isLeader}
+	<LeaderMenu onCommand={handleCommandExecute} />
 {/if}
 
-{#if showFullHelp && !showSearch}
-	<div class="which-key full-help">
-		<div class="which-key-header">
-			<kbd>?</kbd> - Keybindings
-		</div>
-		<div class="which-key-grid">
-			<div class="which-key-group">
-				<span class="group-title">Navigation</span>
-				<div class="which-key-item"><kbd>/</kbd><span>Search</span></div>
-				<div class="which-key-item"><kbd>j/w</kbd><span>Next</span></div>
-				<div class="which-key-item"><kbd>k/b</kbd><span>Prev</span></div>
-				<div class="which-key-item"><kbd>gg</kbd><span>Top</span></div>
-				<div class="which-key-item"><kbd>G</kbd><span>Bottom</span></div>
-				<div class="which-key-item"><kbd>0/^</kbd><span>First</span></div>
-				<div class="which-key-item"><kbd>$</kbd><span>Last</span></div>
-			</div>
-			<div class="which-key-group">
-				<span class="group-title">Scroll</span>
-				<div class="which-key-item"><kbd>^d</kbd><span>Half ↓</span></div>
-				<div class="which-key-item"><kbd>^u</kbd><span>Half ↑</span></div>
-				<div class="which-key-item"><kbd>^f</kbd><span>Full ↓</span></div>
-				<div class="which-key-item"><kbd>^b</kbd><span>Full ↑</span></div>
-				<div class="which-key-item"><kbd>Tab</kbd><span>Next</span></div>
-				<div class="which-key-item"><kbd>S-Tab</kbd><span>Prev</span></div>
-			</div>
-			<div class="which-key-group">
-				<span class="group-title">Other</span>
-				<div class="which-key-item"><kbd>SPC</kbd><span>Leader</span></div>
-				<div class="which-key-item"><kbd>g+key</kbd><span>Go to</span></div>
-			</div>
-		</div>
-	</div>
+{#if $isHelp}
+	<HelpMenu />
 {/if}
 
-{#if showSearch}
-	<div class="backdrop" on:click={closeAll} role="presentation">
-		<div class="palette">
-			<div class="search-container">
-				<span class="prompt">&gt;</span>
-				<input
-					bind:this={inputElement}
-					bind:value={searchQuery}
-					type="text"
-					placeholder="Search..."
-					class="search-input"
-				/>
-				<kbd class="hint">esc</kbd>
-			</div>
-			<div class="commands">
-				{#each filteredCommands as command, i}
-					<button
-						class="command"
-						class:selected={i === selectedIndex}
-						on:click={() => { command.action(); closeAll(); }}
-						on:mouseenter={() => (selectedIndex = i)}
-					>
-						<span class="command-label">{command.label}</span>
-						<span class="command-category">{command.category}</span>
-					</button>
-				{/each}
-				{#if filteredCommands.length === 0}
-					<div class="no-results">No results</div>
-				{/if}
-			</div>
-			<div class="search-footer">
-				<span><kbd>↑↓</kbd> navigate</span>
-				<span><kbd>↵</kbd> select</span>
-			</div>
-		</div>
-	</div>
+{#if $isSearch}
+	<SearchPalette onCommand={handleCommandExecute} onClose={() => paletteState.reset()} />
 {/if}
 
-<aside class="trigger" aria-label="Keyboard shortcut hint">
-	<kbd>SPC</kbd>
-</aside>
+{#if $isIdle}
+	<aside class="trigger" aria-label="Keyboard shortcut hint">
+		<kbd>SPC</kbd>
+	</aside>
+{/if}
 
 <style>
-	.which-key {
-		position: fixed;
-		bottom: 1rem;
-		right: 1rem;
-		background-color: var(--mantle);
-		border: 1px solid var(--surface0);
-		border-radius: 8px;
-		padding: 0.75rem;
-		z-index: 1000;
-		font-size: 0.8rem;
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-	}
-
-	.which-key-header {
-		color: var(--subtext);
-		margin-bottom: 0.5rem;
-		padding-bottom: 0.5rem;
-		border-bottom: 1px solid var(--surface0);
-	}
-
-	.which-key-grid {
-		display: flex;
-		gap: 1.5rem;
-	}
-
-	.which-key-group {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-	}
-
-	.group-title {
-		color: var(--accent);
-		font-size: 0.7rem;
-		text-transform: uppercase;
-		margin-bottom: 0.25rem;
-	}
-
-	.which-key-item {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		color: var(--text);
-	}
-
-	.which-key-item kbd {
-		min-width: 1.2rem;
-		text-align: center;
-		padding: 0.1rem 0.3rem;
-		background-color: var(--surface0);
-		border-radius: 3px;
-		color: var(--text);
-		font-size: 0.7rem;
-	}
-
-	.backdrop {
-		position: fixed;
-		inset: 0;
-		background-color: rgba(0, 0, 0, 0.5);
-		display: flex;
-		align-items: flex-start;
-		justify-content: center;
-		padding-top: 15vh;
-		z-index: 1000;
-	}
-
-	.palette {
-		width: 90%;
-		max-width: 400px;
-		background-color: var(--mantle);
-		border: 1px solid var(--surface0);
-		border-radius: 8px;
-		overflow: hidden;
-	}
-
-	.search-container {
-		display: flex;
-		align-items: center;
-		padding: 0.75rem;
-		border-bottom: 1px solid var(--surface0);
-		gap: 0.5rem;
-	}
-
-	.prompt {
-		color: var(--accent);
-		font-weight: bold;
-	}
-
-	.search-input {
-		flex: 1;
-		background: transparent;
-		border: none;
-		color: var(--text);
-		font-family: 'Fira Code', monospace;
-		font-size: 0.9rem;
-		outline: none;
-	}
-
-	.search-input::placeholder {
-		color: var(--subtext);
-	}
-
-	.hint {
-		font-size: 0.65rem;
-		padding: 0.15rem 0.3rem;
-		background-color: var(--surface0);
-		color: var(--subtext);
-		border-radius: 3px;
-	}
-
-	.commands {
-		max-height: 250px;
-		overflow-y: auto;
-	}
-
-	.command {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		width: 100%;
-		padding: 0.5rem 0.75rem;
-		background: transparent;
-		border: none;
-		color: var(--text);
-		font-family: 'Fira Code', monospace;
-		font-size: 0.85rem;
-		cursor: pointer;
-		text-align: left;
-	}
-
-	.command.selected {
-		background-color: var(--surface0);
-	}
-
-	.command-label {
-		color: var(--text);
-	}
-
-	.command-category {
-		font-size: 0.7rem;
-		color: var(--subtext);
-	}
-
-	.no-results {
-		padding: 1.5rem;
-		text-align: center;
-		color: var(--subtext);
-		font-size: 0.85rem;
-	}
-
-	.search-footer {
-		display: flex;
-		justify-content: center;
-		gap: 1rem;
-		padding: 0.5rem;
-		border-top: 1px solid var(--surface0);
-		background-color: var(--crust);
-		font-size: 0.7rem;
-		color: var(--subtext);
-	}
-
-	.search-footer kbd {
-		font-size: 0.65rem;
-		padding: 0.1rem 0.25rem;
-		background-color: var(--surface0);
-		border-radius: 3px;
-	}
-
 	.trigger {
 		position: fixed;
 		bottom: 1rem;
@@ -768,11 +324,5 @@
 
 	.trigger kbd {
 		color: var(--accent);
-	}
-
-	.which-key ~ .trigger,
-	.go-to ~ .trigger,
-	.full-help ~ .trigger {
-		display: none;
 	}
 </style>
