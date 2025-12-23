@@ -1,57 +1,59 @@
-export interface BlogPost {
-	slug: string;
-	title: string;
-	description: string;
-	date: string;
-	tags: string[];
-	readTime?: string;
-	published: boolean;
-}
+/**
+ * Blog Posts - Backward Compatibility Layer
+ *
+ * This file maintains backward compatibility while using the new Repository Pattern.
+ * All functions now delegate to the BlogRepository.
+ *
+ * For new code, prefer importing from './BlogRepository' directly.
+ */
 
-export interface PostModule {
-	metadata: BlogPost;
-	default: ConstructorOfATypedSvelteComponent;
-}
+import type { BlogPost, PostModule } from './types';
 
-// Import all markdown files from posts directory
-const postFiles = import.meta.glob<PostModule>('/src/posts/*.md', { eager: true });
+export type { BlogPost, PostModule } from './types';
+export { getBlogRepository } from './BlogRepository';
+export type { BlogRepository } from './BlogRepository';
 
-// Parse posts from markdown files
-export const posts: BlogPost[] = Object.entries(postFiles)
-	.map(([path, module]) => {
-		const slug = path.split('/').pop()?.replace('.md', '') || '';
-		return {
-			...module.metadata,
-			slug
-		};
-	})
-	.filter(post => post.published)
-	.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+// Get the singleton repository instance
+const repository = await import('./BlogRepository').then((m) => m.getBlogRepository());
 
+// Eager load posts for backward compatibility
+export const posts = await repository.getAll();
+
+/**
+ * @deprecated Use repository.getBySlug() instead
+ */
 export function getPostBySlug(slug: string): BlogPost | undefined {
-	return posts.find(p => p.slug === slug);
+	return posts.find((p) => p.slug === slug);
 }
 
+/**
+ * @deprecated Use repository.getByTag() instead
+ */
 export function getPostsByTag(tag: string): BlogPost[] {
-	return posts.filter(p => p.tags.includes(tag));
+	return posts.filter((p) => p.tags.includes(tag));
 }
 
+/**
+ * @deprecated Use repository.getAllTags() instead
+ */
 export function getAllTags(): string[] {
 	const tags = new Set<string>();
-	posts.forEach(p => p.tags.forEach(t => tags.add(t)));
+	posts.forEach((p) => p.tags.forEach((t) => tags.add(t)));
 	return Array.from(tags).sort();
 }
 
-export async function getPostContent(slug: string): Promise<PostModule | null> {
-	const path = `/src/posts/${slug}.md`;
-	if (postFiles[path]) {
-		return postFiles[path];
-	}
-	return null;
+/**
+ * @deprecated Use repository.getPostContent() instead
+ */
+export async function getPostContent(slug: string) {
+	return repository.getPostContent(slug);
 }
 
+/**
+ * @deprecated Use repository.getAdjacentPosts() instead
+ */
 export function getAdjacentPosts(slug: string): { prev: BlogPost | null; next: BlogPost | null } {
-	const index = posts.findIndex(p => p.slug === slug);
+	const index = posts.findIndex((p) => p.slug === slug);
 	return {
 		prev: index < posts.length - 1 ? posts[index + 1] : null,
 		next: index > 0 ? posts[index - 1] : null
